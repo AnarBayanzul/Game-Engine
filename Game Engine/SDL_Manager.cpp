@@ -1,16 +1,22 @@
 #include "SDL_Manager.h"
+#include <GL/glew.h>
+#include <SDL_opengl.h>
+#include <glm/glm.hpp> // TODO remove if not needed
+#include <iostream>
 
 
 SDL_Manager::SDL_Manager() {
 	count = 0;
 	SDL_Init(SDL_INIT_VIDEO);
+
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 }
 
 SDL_Manager::~SDL_Manager() {
-	// TODO:Delete all remaining windows
-	while (count != 0) {
-		SDL_Manager::closeWindow(0);
-	}
+	SDL_Manager::closeWindow(0);
 	SDL_Quit();
 }
 
@@ -21,19 +27,33 @@ SDL_Manager& SDL_Manager::sdl() {
 
 void SDL_Manager::closeWindow(uint32_t id) {
 	if (count == 0) {
-		// IDK if this is even possible
-		std::cout << "Close window when no windows?\n";
 		return;
 	}
 	// iterate over windows, using SDL_GetWindowID to find window
 	for (int i = 0; i < count; i++) {
 		if (SDL_GetWindowID(windows[i]) == id) {
+			// If OpenGL window
+			if (i == 0) {
+				SDL_GL_DeleteContext(context);
+				// Delete every window
+				while (count != 0) {
+					SDL_DestroyWindow(windows[count - 1]);
+					windows[count - 1] = nullptr;
+					count--;
+				}
+				// Manually issue quit event
+				SDL_Event e;
+				e.type = SDL_QUIT;
+				SDL_PushEvent(&e);
+				return;
+			}
+			// Otherwise:
+
 			// Swap
 			std::swap(buffers[i], buffers[count - 1]);
 			std::swap(windows[i], windows[count - 1]);
 			// n pop
 			SDL_DestroyWindow(windows[count - 1]);
-			// TODO: do i need to destroy buffer?
 			windows[count - 1] = nullptr;
 			count--;
 		}
@@ -46,7 +66,25 @@ void SDL_Manager::spawnWindow(const char* title, int width, int height, SDL_bool
 		std::cout << "max windows already reached\n";
 		return;
 	}
-	windows[count] = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS);
+	if (count == 0) { // If first window
+		windows[count] = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_OPENGL);
+		context = SDL_GL_CreateContext(windows[count]);
+		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+
+
+		// initialize glew
+		glewExperimental = GL_TRUE;
+		GLenum glewerror = glewInit();
+		if (glewerror != GLEW_OK) {
+			//bad times..
+			std::cout << "glew error!\n";
+			throw;
+		}
+
+	}
+	else {
+		windows[count] = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS);
+	}
 	if (windows[count] == NULL) {
 		// error
 		// TODO: cleanup and shutdown with grace
@@ -56,7 +94,6 @@ void SDL_Manager::spawnWindow(const char* title, int width, int height, SDL_bool
 	SDL_SetWindowResizable(windows[count], resizable);
 
 	buffers[count] = SDL_GetWindowSurface(windows[count]);
-	SDL_FillRect(buffers[count], NULL, SDL_MapRGB((buffers[count])->format, 0xFF, 0x00, 0xFF));
 
 
 	count++;
@@ -76,7 +113,13 @@ void SDL_Manager::handleResize(uint32_t id) {
 
 void SDL_Manager::updateWindows() {
 	for (size_t i = 0; i < count; i++) {
-		SDL_UpdateWindowSurface(windows[i]);
-		// TODO: later apply special case for when applying OpenGL rendering context
+		// GL window
+		if (i == 0) {
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			SDL_GL_SwapWindow(windows[i]);
+		} else {
+			// Rest of the windows
+			SDL_UpdateWindowSurface(windows[i]);
+		}
 	}
 }

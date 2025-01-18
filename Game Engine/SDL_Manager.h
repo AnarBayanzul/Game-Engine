@@ -1,8 +1,8 @@
 #pragma once
 
 // TODO: header guard
+
 #include <SDL.h>
-#include <iostream> // for strings
 
 #define MAXWINDOWS 8
 
@@ -10,6 +10,7 @@ class SDL_Manager {
 private:
 	SDL_Surface* buffers[MAXWINDOWS] = {};
 	SDL_Window* windows[MAXWINDOWS] = {};
+	SDL_GLContext context = NULL;
 	size_t count;
 
 	~SDL_Manager();
