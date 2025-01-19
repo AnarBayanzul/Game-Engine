@@ -116,6 +116,13 @@ void SDL_Manager::updateWindows() {
 		// GL window
 		if (i == 0) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glBindVertexArray(vao);
+			glUseProgram(program);
+			glm::mat4 proj = glm::perspective(1.309f, 16.0f / 9.0f, 0.1f, 1000.0f);
+			glUniformMatrix4fv(uniformIndex, 1, GL_FALSE, glm::value_ptr(proj));
+			glDrawArrays(GL_TRIANGLES, 0, shape.getVertexCount());
+			glBindVertexArray(0);
+			glUseProgram(0);
 			SDL_GL_SwapWindow(windows[i]);
 		} else {
 			// Rest of the windows

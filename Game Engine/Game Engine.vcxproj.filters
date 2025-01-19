@@ -39,4 +39,14 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="mesh.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="game_engine_blender_custom_export.py">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
