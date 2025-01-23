@@ -3,7 +3,7 @@ import bpy
 
 def write_some_data(context, filepath, use_some_setting):
     # Whether writing bytes or plain text
-    bytes = True
+    bytes = False
     print("running write_some_data...")
     if bytes:
         f = open(filepath, 'wb')

@@ -31,6 +31,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="mesh.txt" />
+    <Text Include="monkeyMesh.txt" />
+    <Text Include="triangle.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_custom_export.py" />

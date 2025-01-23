@@ -3,6 +3,7 @@
 // TODO: header guard
 
 #include <SDL.h>
+#include "Shape.h"
 
 #define MAXWINDOWS 8
 

@@ -43,6 +43,12 @@
     <Text Include="mesh.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="triangle.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="monkeyMesh.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_custom_export.py">
