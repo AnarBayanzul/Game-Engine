@@ -49,6 +49,9 @@
     <Text Include="monkeyMesh.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="torusMesh.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_custom_export.py">

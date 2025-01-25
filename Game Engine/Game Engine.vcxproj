@@ -32,6 +32,7 @@
   <ItemGroup>
     <Text Include="mesh.txt" />
     <Text Include="monkeyMesh.txt" />
+    <Text Include="torusMesh.txt" />
     <Text Include="triangle.txt" />
   </ItemGroup>
   <ItemGroup>

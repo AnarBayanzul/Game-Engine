@@ -1,7 +1,5 @@
 #pragma once
 
-// TODO: header guard
-
 #include <SDL.h>
 #include "Shape.h"
 
@@ -18,7 +16,7 @@ private:
 	SDL_Manager();
 
 public:
-	static SDL_Manager& sdl(); // TODO: i don't understand ampersand at end
+	static SDL_Manager& sdl();
 	void closeWindow(uint32_t id);
 	void spawnWindow(const char* title, int width, int height, SDL_bool resizable);
 	void handleResize(uint32_t id);

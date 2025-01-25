@@ -70,6 +70,15 @@ void SDL_Manager::spawnWindow(const char* title, int width, int height, SDL_bool
 	if (count == 0) { // If first window
 		windows[count] = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_OPENGL);
 		context = SDL_GL_CreateContext(windows[count]);
+
+
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glEnable(GL_BLEND);
+		glEnable(GL_DEPTH_TEST);
+		//glDepthMask(GL_TRUE);
+		glEnable(GL_CULL_FACE);
+
+
 		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
 
@@ -114,6 +123,7 @@ void SDL_Manager::handleResize(uint32_t id) {
 extern GLuint program;
 extern GLint uniformIndex;
 extern GLint uniformIndex2;
+extern GLint uniformIndex3;
 
 extern Shape* cube;
 float t = 0;
@@ -125,14 +135,27 @@ void SDL_Manager::updateWindows() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glBindVertexArray(cube->getVAO());
 			glUseProgram(program);
-			glm::mat4 proj = glm::perspective(1.309f, 16.0f / 9.0f, 0.1f, 1000.0f);
+			glm::mat4 proj = glm::perspective(1.309f, 16.0f / 9.0f, 0.1f, 100.0f);
 			glUniformMatrix4fv(uniformIndex, 1, GL_FALSE, glm::value_ptr(proj));
+
+
+
+
+
 
 			// TODO: remove later
 			glm::mat4 tran = glm::rotate(glm::mat4(1.0f), 0.005f * t, glm::vec3(1.0f, 1.0f, 0.0f));
 			t += 1;
 			glUniformMatrix4fv(uniformIndex2, 1, GL_FALSE, glm::value_ptr(tran));
-			glEnable(GL_CULL_FACE);
+
+			glm::mat4 tranNorm = glm::transpose(glm::inverse(tran));
+			glUniformMatrix4fv(uniformIndex3, 1, GL_FALSE, glm::value_ptr(tranNorm));
+
+
+
+
+
+
 
 			glDrawArrays(GL_TRIANGLES, 0, cube->getVertexCount());
 			glBindVertexArray(0);

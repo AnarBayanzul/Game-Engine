@@ -11,6 +11,7 @@ GLuint program;
 Shape* cube;
 GLint uniformIndex;
 GLint uniformIndex2;
+GLint uniformIndex3;
 
 
 int main(int argc, char** argv) {
@@ -21,10 +22,10 @@ int main(int argc, char** argv) {
 
 	// Read mesh file
 	std::vector<float> data = {};
-	//cube = new Shape(parseMesh("monkeyMesh.txt", data), data);
-	cube = new Shape(parseMesh("mesh.txt", data), data);
+	cube = new Shape(parseMesh("monkeyMesh.txt", data), data);
+	//cube = new Shape(parseMesh("torusMesh.txt", data), data);
+	//cube = new Shape(parseMesh("mesh.txt", data), data);
 	//cube = new Shape(parseMesh("triangle.txt", data), data);
-	//cube = new Shape(); // TODO free cube
 
 
 	// Define shaders
@@ -34,8 +35,10 @@ int main(int argc, char** argv) {
 		layout(location = 1) in vec3 norm;
 		uniform mat4 proj;
 		uniform mat4 tran;
+		uniform mat4 tranNorm;
 		smooth out vec3 normal;
 		void main() {
+			normal = (tranNorm * vec4(norm.xyz, 0.0)).xyz;
 			normal = (tran * vec4(norm.xyz, 0.0)).xyz;
 			//normal = norm;
 			gl_Position = proj * (tran * vec4(pos.xyz, 1.0) + vec4(0.0, 0.0, -5.0, 0.0)); // The addition is an offset as we are not using a 'camera' matrix yet...
@@ -50,15 +53,15 @@ int main(int argc, char** argv) {
 
 		void main() {
 
-			vec3 lightDir = vec3(0.0f, 0.707f, 0.707f);
-			vec4 matCol = vec4(0.1f, 0.8f, 0.8f, 1.0f);
+			vec3 lightDir = vec3(0.0f, 1.0f, 0.0f);
+			vec4 matCol = vec4(0.3f, 0.5f, 0.5f, 1.0f);
 
 			float intensity = 1 - dot(lightDir.xyz, normal.xyz);
 
 			vec4 diffuse = intensity * vec4(matCol.xyz, 1.0f);
 			color = diffuse;
 			//color = vec4(normal.xyz, 1.0f);
-			//FragColor = matCol;
+			//FragColor = abs(vec4(normal.xyz, 1.0));
 		}
 		)";
 	// Compile shaders
@@ -104,6 +107,7 @@ int main(int argc, char** argv) {
 	glUseProgram(0);
 	uniformIndex = glGetUniformLocation(program, "proj");
 	uniformIndex2 = glGetUniformLocation(program, "tran");
+	uniformIndex3 = glGetUniformLocation(program, "tranNorm");
 
 
 
@@ -152,5 +156,8 @@ int main(int argc, char** argv) {
 		//std::cout << std::hex << e.type << std::endl;
 		SDL_Manager::sdl().updateWindows();
 	}
+
+
+	delete cube;
 	return 0;
 }

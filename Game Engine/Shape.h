@@ -14,7 +14,6 @@ private:
 	GLuint vao;
 	GLuint vbo;
 public:
-	Shape();
 	Shape(const size_t triangleCount, const std::vector<float>& data);
 	~Shape();
 	GLuint getVAO();
