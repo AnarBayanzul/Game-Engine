@@ -36,6 +36,7 @@
     <Text Include="triangle.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cube.gex" />
     <None Include="game_engine_blender_custom_export.py" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

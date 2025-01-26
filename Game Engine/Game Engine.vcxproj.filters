@@ -57,5 +57,8 @@
     <None Include="game_engine_blender_custom_export.py">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="cube.gex">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

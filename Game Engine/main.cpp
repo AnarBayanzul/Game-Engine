@@ -22,10 +22,11 @@ int main(int argc, char** argv) {
 
 	// Read mesh file
 	std::vector<float> data = {};
-	cube = new Shape(parseMesh("monkeyMesh.txt", data), data);
-	//cube = new Shape(parseMesh("torusMesh.txt", data), data);
-	//cube = new Shape(parseMesh("mesh.txt", data), data);
-	//cube = new Shape(parseMesh("triangle.txt", data), data);
+	cube = new Shape(parseMesh("monkeyMesh.txt", data, false), data);
+	//cube = new Shape(parseMesh("cube.gex", data, true), data);
+	//cube = new Shape(parseMesh("torusMesh.txt", data, false), data);
+	//cube = new Shape(parseMesh("mesh.txt", data, false), data);
+	//cube = new Shape(parseMesh("triangle.txt", data, false), data);
 
 
 	// Define shaders
@@ -53,10 +54,11 @@ int main(int argc, char** argv) {
 
 		void main() {
 
-			vec3 lightDir = vec3(0.0f, 1.0f, 0.0f);
+			vec3 lightDir = vec3(0.0f, 0.707f, -0.707f);
 			vec4 matCol = vec4(0.3f, 0.5f, 0.5f, 1.0f);
 
-			float intensity = 1 - dot(lightDir.xyz, normal.xyz);
+			float intensity = - dot(lightDir.xyz, normal.xyz);
+			intensity = float(intensity >= 0.0f) * intensity; // negative values become 0
 
 			vec4 diffuse = intensity * vec4(matCol.xyz, 1.0f);
 			color = diffuse;

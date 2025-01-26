@@ -1,9 +1,10 @@
-import bpy
+import bpy, struct
 
+
+bytes = True
 
 def write_some_data(context, filepath, use_some_setting):
     # Whether writing bytes or plain text
-    bytes = False
     print("running write_some_data...")
     if bytes:
         f = open(filepath, 'wb')
@@ -34,15 +35,16 @@ def write_some_data(context, filepath, use_some_setting):
             
       
     if bytes:
-        f.write(triangleCount)
+        # int and floats are 4 bytes
+        f.write(struct.pack('<i', triangleCount))
         for vertex in vertices:
             for element in vertex:
-                f.write(delimiter)
-                f.write(element)
+#                f.write(delimiter)
+                f.write(struct.pack('<f', element))
         for normal in normals:
             for element in normal:
-                f.write(delimiter)
-                f.write(element)
+#                f.write(delimiter)
+                f.write(struct.pack('<f', element))
     else:
         output = ""  
         output += str(triangleCount)
@@ -76,8 +78,15 @@ class ExportSomeData(Operator, ExportHelper):
     bl_idname = "export_test.some_data"  # important since its how bpy.ops.import_test.some_data is constructed
     bl_label = "Export Some Data"
 
+
+
+
+
     # ExportHelper mix-in class uses this.
-    filename_ext = ".txt"
+    if bytes:
+        filename_ext = ".gex"
+    else:
+        filename_ext = ".txt"
 
     filter_glob: StringProperty(
         default="*.txt",
@@ -90,7 +99,7 @@ class ExportSomeData(Operator, ExportHelper):
     use_setting: BoolProperty(
         name="Example Boolean",
         description="Example Tooltip",
-        default=True,
+        default = True,
     )
 
     type: EnumProperty(
