@@ -121,9 +121,9 @@ void SDL_Manager::handleResize(uint32_t id) {
 }
 
 extern GLuint program;
-extern GLint uniformIndex;
-extern GLint uniformIndex2;
-extern GLint uniformIndex3;
+extern GLint uniformIndexProj;
+extern GLint uniformIndexTran;
+extern GLint uniformIndexTranNorm;
 
 extern Shape* cube;
 float t = 0;
@@ -136,20 +136,19 @@ void SDL_Manager::updateWindows() {
 			glBindVertexArray(cube->getVAO());
 			glUseProgram(program);
 			glm::mat4 proj = glm::perspective(1.309f, 16.0f / 9.0f, 0.1f, 100.0f);
-			glUniformMatrix4fv(uniformIndex, 1, GL_FALSE, glm::value_ptr(proj));
-
+			glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(proj));
 
 
 
 
 
 			// TODO: remove later
-			glm::mat4 tran = glm::rotate(glm::mat4(1.0f), 0.005f * t, glm::vec3(1.0f, 1.0f, 0.0f));
+			glm::mat4 tran = glm::rotate(glm::rotate(glm::mat4(1.0f), -3.1415f / 2.0f, glm::vec3(1.0f, 0.0f, 0.0f)), 0.005f * t, glm::vec3(0.0f, 0.0f, 1.0f));
 			t += 1;
-			glUniformMatrix4fv(uniformIndex2, 1, GL_FALSE, glm::value_ptr(tran));
+			glUniformMatrix4fv(uniformIndexTran, 1, GL_FALSE, glm::value_ptr(tran));
 
 			glm::mat4 tranNorm = glm::transpose(glm::inverse(tran));
-			glUniformMatrix4fv(uniformIndex3, 1, GL_FALSE, glm::value_ptr(tranNorm));
+			glUniformMatrix4fv(uniformIndexTranNorm, 1, GL_FALSE, glm::value_ptr(tranNorm));
 
 
 

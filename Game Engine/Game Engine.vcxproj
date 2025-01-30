@@ -30,6 +30,8 @@
     <ClInclude Include="Shape.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="defaultFragmentShader.txt" />
+    <Text Include="defaultVertexShader.txt" />
     <Text Include="mesh.txt" />
     <Text Include="monkeyMesh.txt" />
     <Text Include="torusMesh.txt" />
