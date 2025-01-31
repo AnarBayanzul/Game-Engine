@@ -20,14 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="helloworld.cpp" />
+    <ClCompile Include="Instance.cpp" />
     <ClCompile Include="OpenGL_testscript.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SDL_Manager.cpp" />
-    <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Instance.h" />
     <ClInclude Include="SDL_Manager.h" />
-    <ClInclude Include="Shape.h" />
+    <ClInclude Include="Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="defaultFragmentShader.txt" />

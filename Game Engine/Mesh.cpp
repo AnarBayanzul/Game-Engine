@@ -1,4 +1,4 @@
-#include "Shape.h"
+#include "Mesh.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -34,7 +34,7 @@ int parseMesh(std::string filename, std::vector<float>& data, bool bytes) {
 	return triangleCount;
 }
 
-Shape::Shape(const size_t triangleCount, const std::vector<float>& vertexData) {
+Mesh::Mesh(const size_t triangleCount, const std::vector<float>& vertexData) {
 	glGenBuffers(1, &vbo);
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -55,17 +55,17 @@ Shape::Shape(const size_t triangleCount, const std::vector<float>& vertexData) {
 
 }
 
-Shape::~Shape() {
+Mesh::~Mesh() {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 	vao = 0;
 	vbo = 0;
 }
 
-GLuint Shape::getVAO() {
+GLuint Mesh::getVAO() {
 	return vao;
 }
 
-GLsizei Shape::getVertexCount() {
+GLsizei Mesh::getVertexCount() {
 	return pos.size();
 }

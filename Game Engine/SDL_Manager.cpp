@@ -1,7 +1,9 @@
 #include "SDL_Manager.h"
-#include "Shape.h"
+#include "Mesh.h"
+#include "Instance.h"
 #include <GL/glew.h>
 #include <SDL_opengl.h>
+#include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <iostream>
 
@@ -125,15 +127,14 @@ extern GLint uniformIndexProj;
 extern GLint uniformIndexTran;
 extern GLint uniformIndexTranNorm;
 
-extern Shape* cube;
-float t = 0;
+extern Instance* cube;
 
 void SDL_Manager::updateWindows() {
 	for (size_t i = 0; i < count; i++) {
 		// GL window
 		if (i == 0) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glBindVertexArray(cube->getVAO());
+			glBindVertexArray(cube->mesh->getVAO());
 			glUseProgram(program);
 			glm::mat4 proj = glm::perspective(1.309f, 16.0f / 9.0f, 0.1f, 100.0f);
 			glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(proj));
@@ -141,22 +142,17 @@ void SDL_Manager::updateWindows() {
 
 
 
-
 			// TODO: remove later
-			glm::mat4 tran = glm::rotate(glm::rotate(glm::mat4(1.0f), -3.1415f / 2.0f, glm::vec3(1.0f, 0.0f, 0.0f)), 0.005f * t, glm::vec3(0.0f, 0.0f, 1.0f));
-			t += 1;
-			glUniformMatrix4fv(uniformIndexTran, 1, GL_FALSE, glm::value_ptr(tran));
-
-			glm::mat4 tranNorm = glm::transpose(glm::inverse(tran));
-			glUniformMatrix4fv(uniformIndexTranNorm, 1, GL_FALSE, glm::value_ptr(tranNorm));
+			cube->transform = glm::rotate(cube->transform, 0.005f, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformIndexTran, 1, GL_FALSE, glm::value_ptr(cube->transform));
+			glUniformMatrix4fv(uniformIndexTranNorm, 1, GL_FALSE, glm::value_ptr(cube->normalTransform()));
 
 
 
 
 
 
-
-			glDrawArrays(GL_TRIANGLES, 0, cube->getVertexCount());
+			glDrawArrays(GL_TRIANGLES, 0, cube->mesh->getVertexCount());
 			glBindVertexArray(0);
 			glUseProgram(0);
 			SDL_GL_SwapWindow(windows[i]);

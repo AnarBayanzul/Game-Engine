@@ -1,14 +1,19 @@
 #include "SDL_Manager.h"
-#include "Shape.h"
+#include "Mesh.h"
+#include "Instance.h"
 #include <SDL_opengl.h>
 #include <iostream>
 #include <fstream>
 #include <iterator>
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+
 
 GLuint program;
 
 // TODO uniformIndex and cube are not supposed to be globals, temp fix
-Shape* cube;
+Mesh* cubeMesh;
+Instance* cube;
 GLint uniformIndexProj;
 GLint uniformIndexTran;
 GLint uniformIndexTranNorm;
@@ -86,11 +91,12 @@ int main(int argc, char** argv) {
 
 	// Read mesh file
 	std::vector<float> data = {};
-	cube = new Shape(parseMesh("monkeyMesh.txt", data, false), data);
-	//cube = new Shape(parseMesh("cube.gex", data, true), data);
-	//cube = new Shape(parseMesh("torusMesh.txt", data, false), data);
-	//cube = new Shape(parseMesh("mesh.txt", data, false), data);
-	//cube = new Shape(parseMesh("triangle.txt", data, false), data);
+	cubeMesh = new Mesh(parseMesh("monkeyMesh.txt", data, false), data);
+	//cube = new Mesh(parseMesh("cube.gex", data, true), data);
+	//cube = new Mesh(parseMesh("torusMesh.txt", data, false), data);
+	//cube = new Mesh(parseMesh("mesh.txt", data, false), data);
+	//cube = new Mesh(parseMesh("triangle.txt", data, false), data);
+	cube = new Instance(cubeMesh, glm::rotate(glm::mat4(1.0f), -3.1415f / 2.0f, glm::vec3(1.0f, 0.0f, 0.0f)));
 
 
 

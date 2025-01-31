@@ -7,15 +7,15 @@
 
 int parseMesh(std::string filename, std::vector<float>& data, bool bytes);
 
-class Shape {
+class Mesh {
 private:
 	std::vector<glm::vec3> pos;
 	std::vector<glm::vec3> norm;
 	GLuint vao;
 	GLuint vbo;
 public:
-	Shape(const size_t triangleCount, const std::vector<float>& data);
-	~Shape();
+	Mesh(const size_t triangleCount, const std::vector<float>& data);
+	~Mesh();
 	GLuint getVAO();
 	GLsizei getVertexCount();
 };

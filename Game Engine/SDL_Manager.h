@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SDL.h>
-#include "Shape.h"
+#include "Mesh.h"
 
 #define MAXWINDOWS 8
 
