@@ -89,6 +89,15 @@ int main(int argc, char** argv) {
 	SDL_Manager::sdl().spawnWindow("1. Hello SDL", 500, 500, SDL_TRUE);
 	//SDL_Manager::sdl().spawnWindow("2. Second SDL", 200, 200, SDL_FALSE);
 
+
+	if (loadShaders("defaultVertexShader.txt", "defaultFragmentShader.txt") != 0) {
+		std::cout << "Shaders didn't load correctly\n";
+		return 1;
+	}
+
+
+
+
 	// Read mesh file
 	std::vector<float> data = {};
 	cubeMesh = new Mesh(parseMesh("monkeyMesh.txt", data, false), data);
@@ -96,14 +105,8 @@ int main(int argc, char** argv) {
 	//cube = new Mesh(parseMesh("torusMesh.txt", data, false), data);
 	//cube = new Mesh(parseMesh("mesh.txt", data, false), data);
 	//cube = new Mesh(parseMesh("triangle.txt", data, false), data);
-	cube = new Instance(cubeMesh, glm::rotate(glm::mat4(1.0f), -3.1415f / 2.0f, glm::vec3(1.0f, 0.0f, 0.0f)));
+	cube = new Instance(cubeMesh, glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f)), -3.1415f / 2.0f, glm::vec3(1.0f, 0.0f, 0.0f)), uniformIndexTran, uniformIndexTranNorm);
 
-
-
-	if (loadShaders("defaultVertexShader.txt", "defaultFragmentShader.txt") != 0) {
-		std::cout << "Shaders didn't load correctly\n";
-		return 1;
-	}
 
 
 
@@ -134,8 +137,14 @@ int main(int argc, char** argv) {
 
 
 
-
-
+		// Rotate cube
+		glBindVertexArray(cube->mesh->getVAO());
+		glUseProgram(program);
+		cube->transform = glm::rotate(cube->transform, 0.005f, glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(cube->transformUniform, 1, GL_FALSE, glm::value_ptr(cube->transform));
+		glUniformMatrix4fv(cube->normalTransformUniform, 1, GL_FALSE, glm::value_ptr(cube->normalTransform()));
+		glBindVertexArray(0);
+		glUseProgram(0);
 
 
 
@@ -146,7 +155,7 @@ int main(int argc, char** argv) {
 		SDL_Manager::sdl().updateWindows();
 	}
 
-
+	delete cubeMesh;
 	delete cube;
 	return 0;
 }

@@ -7,7 +7,9 @@ private:
 public:
 	Mesh* mesh;
 	glm::mat4 transform;
-	Instance(Mesh* inputMesh, glm::mat4 inputTransform);
+	GLint transformUniform;
+	GLint normalTransformUniform;
+	Instance(Mesh* inputMesh, glm::mat4 inputTransform, GLint tranUI, GLint normTranUI);
 	~Instance();
 	glm::mat4 normalTransform();
 };

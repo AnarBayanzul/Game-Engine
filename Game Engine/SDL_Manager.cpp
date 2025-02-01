@@ -124,8 +124,6 @@ void SDL_Manager::handleResize(uint32_t id) {
 
 extern GLuint program;
 extern GLint uniformIndexProj;
-extern GLint uniformIndexTran;
-extern GLint uniformIndexTranNorm;
 
 extern Instance* cube;
 
@@ -137,18 +135,7 @@ void SDL_Manager::updateWindows() {
 			glBindVertexArray(cube->mesh->getVAO());
 			glUseProgram(program);
 			glm::mat4 proj = glm::perspective(1.309f, 16.0f / 9.0f, 0.1f, 100.0f);
-			glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(proj));
-
-
-
-
-			// TODO: remove later
-			cube->transform = glm::rotate(cube->transform, 0.005f, glm::vec3(0.0f, 0.0f, 1.0f));
-			glUniformMatrix4fv(uniformIndexTran, 1, GL_FALSE, glm::value_ptr(cube->transform));
-			glUniformMatrix4fv(uniformIndexTranNorm, 1, GL_FALSE, glm::value_ptr(cube->normalTransform()));
-
-
-
+			glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(proj)); // TODO: there's gotta be a better way than just every frame
 
 
 

@@ -6,9 +6,11 @@
 
 
 
-Instance::Instance(Mesh* inputMesh, glm::mat4 inputTransform) {
+Instance::Instance(Mesh* inputMesh, glm::mat4 inputTransform, GLint tranUI, GLint normTranUI) {
 	mesh = inputMesh;
 	transform = inputTransform;
+	transformUniform = tranUI;
+	normalTransformUniform = normTranUI;
 }
 
 Instance::~Instance() {
