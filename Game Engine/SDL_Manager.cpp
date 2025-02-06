@@ -33,7 +33,7 @@ void SDL_Manager::closeWindow(uint32_t id) {
 		return;
 	}
 	// iterate over windows, using SDL_GetWindowID to find window
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < count; ++i) {
 		if (SDL_GetWindowID(windows[i]) == id) {
 			// If OpenGL window
 			if (i == 0) {
@@ -73,7 +73,7 @@ void SDL_Manager::spawnWindow(const char* title, int width, int height, SDL_bool
 		windows[count] = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_OPENGL);
 		context = SDL_GL_CreateContext(windows[count]);
 
-
+		// TODO Google what all these do
 		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		//glEnable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
@@ -99,7 +99,6 @@ void SDL_Manager::spawnWindow(const char* title, int width, int height, SDL_bool
 	}
 	if (windows[count] == NULL) {
 		// error
-		// TODO: cleanup and shutdown with grace
 		std::cout << "window creation unsuccessful\n";
 		return;
 	}
@@ -109,9 +108,6 @@ void SDL_Manager::spawnWindow(const char* title, int width, int height, SDL_bool
 
 
 	count++;
-
-
-
 }
 
 void SDL_Manager::handleResize(uint32_t id) {

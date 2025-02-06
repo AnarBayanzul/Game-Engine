@@ -60,12 +60,19 @@
     </Text>
     <Text Include="defaultVertexShader.txt" />
     <Text Include="defaultFragmentShader.txt" />
+    <Text Include="celShadingFragment.txt" />
+    <Text Include="monkeySmoothNormal.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_custom_export.py">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="cube.gex">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="monkeySmoothNormal.gex">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

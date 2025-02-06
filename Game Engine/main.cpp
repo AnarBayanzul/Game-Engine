@@ -88,6 +88,7 @@ int main(int argc, char** argv) {
 
 	SDL_Manager::sdl().spawnWindow("1. Hello SDL", 500, 500, SDL_TRUE);
 	//SDL_Manager::sdl().spawnWindow("2. Second SDL", 200, 200, SDL_FALSE);
+	//SDL_Manager::sdl().spawnWindow("2. Second SDL", 200, 200, SDL_FALSE);
 
 
 	if (loadShaders("defaultVertexShader.txt", "defaultFragmentShader.txt") != 0) {
@@ -100,7 +101,9 @@ int main(int argc, char** argv) {
 
 	// Read mesh file
 	std::vector<float> data = {};
-	cubeMesh = new Mesh(parseMesh("monkeyMesh.txt", data, false), data);
+	//cubeMesh = new Mesh(parseMesh("monkeyMesh.txt", data, false), data);
+	//cubeMesh = new Mesh(parseMesh("monkeySmoothNormal.gex", data, true), data); // TODO why doesn't this work?
+	cubeMesh = new Mesh(parseMesh("monkeySmoothNormal.txt", data, false), data);
 	//cube = new Mesh(parseMesh("cube.gex", data, true), data);
 	//cube = new Mesh(parseMesh("torusMesh.txt", data, false), data);
 	//cube = new Mesh(parseMesh("mesh.txt", data, false), data);
@@ -155,6 +158,7 @@ int main(int argc, char** argv) {
 		SDL_Manager::sdl().updateWindows();
 	}
 
+	// Deallocate from heap
 	delete cubeMesh;
 	delete cube;
 	return 0;

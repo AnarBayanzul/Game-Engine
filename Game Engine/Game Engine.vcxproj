@@ -32,16 +32,19 @@
     <ClInclude Include="Mesh.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="celShadingFragment.txt" />
     <Text Include="defaultFragmentShader.txt" />
     <Text Include="defaultVertexShader.txt" />
     <Text Include="mesh.txt" />
     <Text Include="monkeyMesh.txt" />
+    <Text Include="monkeySmoothNormal.txt" />
     <Text Include="torusMesh.txt" />
     <Text Include="triangle.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cube.gex" />
     <None Include="game_engine_blender_custom_export.py" />
+    <None Include="monkeySmoothNormal.gex" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

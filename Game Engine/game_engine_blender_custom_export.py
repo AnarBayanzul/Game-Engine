@@ -1,7 +1,11 @@
 import bpy, struct
 
+# Making enum
+class normalEnum:
+    vertex, polygon = range(2)
 
 bytes = True
+normalType = normalEnum.vertex
 
 def write_some_data(context, filepath, use_some_setting):
     # Whether writing bytes or plain text
@@ -17,8 +21,8 @@ def write_some_data(context, filepath, use_some_setting):
     
     # The meaty stuff
     delimiter = ' '
-    
     selected = bpy.context.view_layer.objects.active.data
+    
     # has polygons and vertices attributes
     
     triangleCount = len(selected.polygons)
@@ -31,8 +35,10 @@ def write_some_data(context, filepath, use_some_setting):
     for polygon in selected.polygons:
         for index in polygon.vertices:
             vertices.append(selected.vertices[index].co)
-            normals.append(polygon.normal)
-            
+            if normalType == normalEnum.polygon:
+                normals.append(polygon.normal)
+            elif normalType == normalEnum.vertex:
+                normals.append(selected.vertices[index].normal)
       
     if bytes:
         # int and floats are 4 bytes
