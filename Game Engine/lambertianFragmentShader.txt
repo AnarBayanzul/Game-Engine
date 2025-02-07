@@ -1,0 +1,17 @@
+#version 410
+smooth in vec3 normal;
+out vec4 color;
+
+void main() {
+
+	vec3 lightDir = vec3(-0.707f, 0.0f, -0.707f);
+	vec4 matCol = vec4(0.3f, 0.5f, 0.5f, 1.0f);
+
+	float intensity = - dot(lightDir.xyz, normal.xyz);
+	intensity = float(intensity >= 0.0f) * intensity; // negative values become 0
+
+	vec4 diffuse = intensity * vec4(matCol.xyz, 1.0f);
+	color = diffuse;
+	//color = vec4(normal.xyz, 1.0f);
+	//FragColor = abs(vec4(normal.xyz, 1.0));
+}

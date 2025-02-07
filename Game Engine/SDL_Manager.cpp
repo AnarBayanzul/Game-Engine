@@ -130,7 +130,7 @@ void SDL_Manager::updateWindows() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glBindVertexArray(cube->mesh->getVAO());
 			glUseProgram(program);
-			glm::mat4 proj = glm::perspective(1.309f, 16.0f / 9.0f, 0.1f, 100.0f);
+			glm::mat4 proj = glm::perspective(1.309f, 1.0f, 0.1f, 100.0f);
 			glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(proj)); // TODO: there's gotta be a better way than just every frame
 
 

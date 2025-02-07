@@ -35,6 +35,7 @@
     <Text Include="celShadingFragment.txt" />
     <Text Include="defaultFragmentShader.txt" />
     <Text Include="defaultVertexShader.txt" />
+    <Text Include="lambertianFragmentShader.txt" />
     <Text Include="mesh.txt" />
     <Text Include="monkeyMesh.txt" />
     <Text Include="monkeySmoothNormal.txt" />

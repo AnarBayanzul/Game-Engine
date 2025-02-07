@@ -5,10 +5,14 @@ uniform mat4 proj;
 uniform mat4 tran;
 uniform mat4 tranNorm;
 smooth out vec3 normal;
+
+out vec3 worldPos;
+
 void main() {
 	normal = (tranNorm * vec4(norm.xyz, 0.0)).xyz;
-	//normal = (tran * vec4(norm.xyz, 0.0)).xyz;
-	//normal = norm;
-	gl_Position = proj * (tran * vec4(pos.xyz, 1.0)); // The addition is an offset as we are not using a 'camera' matrix yet...
-	//gl_Position = vec4(pos.xyz + vec3(0.0, 0.0, 2.0), 1.0);
+
+
+	vec3 worldPos = (tran * vec4(pos, 1.0f)).xyz;
+
+	gl_Position = proj * vec4(worldPos, 1.0f);
 }

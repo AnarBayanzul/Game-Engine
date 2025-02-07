@@ -86,7 +86,7 @@ int loadShaders(std::string vertFile, std::string fragFile) {
 int main(int argc, char** argv) {
 	// Preloop
 
-	SDL_Manager::sdl().spawnWindow("1. Hello SDL", 500, 500, SDL_TRUE);
+	SDL_Manager::sdl().spawnWindow("1. Hello SDL", 400, 400, SDL_TRUE);
 	//SDL_Manager::sdl().spawnWindow("2. Second SDL", 200, 200, SDL_FALSE);
 	//SDL_Manager::sdl().spawnWindow("2. Second SDL", 200, 200, SDL_FALSE);
 
@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
 	//cube = new Mesh(parseMesh("torusMesh.txt", data, false), data);
 	//cube = new Mesh(parseMesh("mesh.txt", data, false), data);
 	//cube = new Mesh(parseMesh("triangle.txt", data, false), data);
-	cube = new Instance(cubeMesh, glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f)), -3.1415f / 2.0f, glm::vec3(1.0f, 0.0f, 0.0f)), uniformIndexTran, uniformIndexTranNorm);
+	cube = new Instance(cubeMesh, glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.5f)), -3.1415f / 2.0f, glm::vec3(1.0f, 0.0f, 0.0f)), uniformIndexTran, uniformIndexTranNorm);
 
 
 
