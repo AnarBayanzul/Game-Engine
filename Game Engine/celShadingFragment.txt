@@ -4,12 +4,13 @@
 #version 410
 smooth in vec3 normal;
 out vec4 color;
+uniform vec4 matColor;
 
 in vec3 worldPos;
 
 void main() {
 	// Colors
-	vec4 matColor = vec4(0.3f, 0.5f, 0.5f, 1.0f);
+	//vec4 matColor = vec4(0.3f, 0.5f, 0.5f, 1.0f);
 	vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
 	vec3 lightDir = vec3(-0.707f, 0.0f, -0.707f);
 	vec3 cameraPos = vec3(0.0f, 0.0f, -2.5f);
@@ -35,4 +36,9 @@ void main() {
 	vec3 specular = specularI * spec * lightColor;
 	
 	color = vec4(ambient + diffuse + specular, 1.0f) * matColor;
+
+	// Discretize lighting
+	float smoothness = 4.0f;
+	color = round(smoothness * color) / smoothness;
+
 }

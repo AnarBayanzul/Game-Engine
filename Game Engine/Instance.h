@@ -9,7 +9,9 @@ public:
 	glm::mat4 transform;
 	GLint transformUniform;
 	GLint normalTransformUniform;
-	Instance(Mesh* inputMesh, glm::mat4 inputTransform, GLint tranUI, GLint normTranUI);
+	GLint colorUniform;
+	glm::vec4 color;
+	Instance(Mesh* inputMesh, glm::mat4 inputTransform, GLint tranUI, GLint normTranUI, GLint colorUI, glm::vec4 inputColor);
 	~Instance();
 	glm::mat4 normalTransform();
 };

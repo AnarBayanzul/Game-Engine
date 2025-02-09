@@ -17,6 +17,7 @@ Instance* cube;
 GLint uniformIndexProj;
 GLint uniformIndexTran;
 GLint uniformIndexTranNorm;
+GLint uniformIndexColor;
 
 
 int loadShaders(std::string vertFile, std::string fragFile) {
@@ -79,6 +80,7 @@ int loadShaders(std::string vertFile, std::string fragFile) {
 	uniformIndexProj = glGetUniformLocation(program, "proj");
 	uniformIndexTran = glGetUniformLocation(program, "tran");
 	uniformIndexTranNorm = glGetUniformLocation(program, "tranNorm");
+	uniformIndexColor = glGetUniformLocation(program, "matColor");
 
 	return 0;
 }
@@ -90,8 +92,8 @@ int main(int argc, char** argv) {
 	//SDL_Manager::sdl().spawnWindow("2. Second SDL", 200, 200, SDL_FALSE);
 	//SDL_Manager::sdl().spawnWindow("2. Second SDL", 200, 200, SDL_FALSE);
 
-
-	if (loadShaders("defaultVertexShader.txt", "defaultFragmentShader.txt") != 0) {
+	//if (loadShaders("defaultVertexShader.txt", "defaultFragmentShader.txt") != 0) {
+	if (loadShaders("defaultVertexShader.txt", "celShadingFragment.txt") != 0) {
 		std::cout << "Shaders didn't load correctly\n";
 		return 1;
 	}
@@ -108,7 +110,7 @@ int main(int argc, char** argv) {
 	//cube = new Mesh(parseMesh("torusMesh.txt", data, false), data);
 	//cube = new Mesh(parseMesh("mesh.txt", data, false), data);
 	//cube = new Mesh(parseMesh("triangle.txt", data, false), data);
-	cube = new Instance(cubeMesh, glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.5f)), -3.1415f / 2.0f, glm::vec3(1.0f, 0.0f, 0.0f)), uniformIndexTran, uniformIndexTranNorm);
+	cube = new Instance(cubeMesh, glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.5f)), -3.1415f / 2.0f, glm::vec3(1.0f, 0.0f, 0.0f)), uniformIndexTran, uniformIndexTranNorm, uniformIndexColor, glm::vec4(0.3f, 0.5f, 0.5f, 1.0f));
 
 
 
@@ -146,6 +148,7 @@ int main(int argc, char** argv) {
 		cube->transform = glm::rotate(cube->transform, 0.005f, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(cube->transformUniform, 1, GL_FALSE, glm::value_ptr(cube->transform));
 		glUniformMatrix4fv(cube->normalTransformUniform, 1, GL_FALSE, glm::value_ptr(cube->normalTransform()));
+		glUniform4fv(cube->colorUniform, 1, glm::value_ptr(cube->color));
 		glBindVertexArray(0);
 		glUseProgram(0);
 

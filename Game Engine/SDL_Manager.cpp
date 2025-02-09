@@ -134,6 +134,21 @@ void SDL_Manager::updateWindows() {
 			glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(proj)); // TODO: there's gotta be a better way than just every frame
 
 
+			// TODO what does this do?
+			// Cel shading
+			glUniform4fv(cube->colorUniform, 1, glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+			glCullFace(GL_FRONT);
+			glLineWidth(4.0f);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glEnable(GL_POLYGON_OFFSET_LINE);
+			glPolygonOffset(1.0f, 1.0f);
+			glDrawArrays(GL_TRIANGLES, 0, cube->mesh->getVertexCount());
+			glDisable(GL_POLYGON_OFFSET_LINE);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glCullFace(GL_BACK);
+			glUniform4fv(cube->colorUniform, 1, glm::value_ptr(cube->color));
+
+
 
 			glDrawArrays(GL_TRIANGLES, 0, cube->mesh->getVertexCount());
 			glBindVertexArray(0);

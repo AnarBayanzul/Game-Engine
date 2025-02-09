@@ -6,11 +6,13 @@
 
 
 
-Instance::Instance(Mesh* inputMesh, glm::mat4 inputTransform, GLint tranUI, GLint normTranUI) {
+Instance::Instance(Mesh* inputMesh, glm::mat4 inputTransform, GLint tranUI, GLint normTranUI, GLint colorUI, glm::vec4 inputColor) {
 	mesh = inputMesh;
 	transform = inputTransform;
 	transformUniform = tranUI;
 	normalTransformUniform = normTranUI;
+	colorUniform = colorUI;
+	color = inputColor;
 }
 
 Instance::~Instance() {
