@@ -1,6 +1,6 @@
 #include "SDL_Manager.h"
 #include "Mesh.h"
-#include "Instance.h"
+#include "GameObject.h"
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 #include <glm/glm.hpp>
@@ -40,9 +40,9 @@ void SDL_Manager::closeWindow(uint32_t id) {
 				SDL_GL_DeleteContext(context);
 				// Delete every window
 				while (count != 0) {
-					SDL_DestroyWindow(windows[count - 1]);
-					windows[count - 1] = nullptr;
-					count--;
+					--count;
+					SDL_DestroyWindow(windows[count]);
+					windows[count] = nullptr;
 				}
 				// Manually issue quit event
 				SDL_Event e;
@@ -51,14 +51,13 @@ void SDL_Manager::closeWindow(uint32_t id) {
 				return;
 			}
 			// Otherwise:
-
+			--count;
 			// Swap
-			std::swap(buffers[i], buffers[count - 1]);
-			std::swap(windows[i], windows[count - 1]);
+			std::swap(buffers[i], buffers[count]);
+			std::swap(windows[i], windows[count]);
 			// n pop
-			SDL_DestroyWindow(windows[count - 1]);
-			windows[count - 1] = nullptr;
-			count--;
+			SDL_DestroyWindow(windows[count]);
+			windows[count] = nullptr;
 		}
 	}
 }
@@ -107,11 +106,11 @@ void SDL_Manager::spawnWindow(const char* title, int width, int height, SDL_bool
 	buffers[count] = SDL_GetWindowSurface(windows[count]);
 
 
-	count++;
+	++count;
 }
 
 void SDL_Manager::handleResize(uint32_t id) {
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < count; ++i) {
 		if (SDL_GetWindowID(windows[i]) == id) {
 			buffers[i] = SDL_GetWindowSurface(windows[i]);
 		}
@@ -121,10 +120,10 @@ void SDL_Manager::handleResize(uint32_t id) {
 extern GLuint program;
 extern GLint uniformIndexProj;
 
-extern Instance* cube;
+extern GameObject* cube;
 
 void SDL_Manager::updateWindows() {
-	for (size_t i = 0; i < count; i++) {
+	for (size_t i = 0; i < count; ++i) {
 		// GL window
 		if (i == 0) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -136,17 +135,17 @@ void SDL_Manager::updateWindows() {
 
 			// TODO what does this do?
 			// Cel shading
-			glUniform4fv(cube->colorUniform, 1, glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)));
-			glCullFace(GL_FRONT);
-			glLineWidth(4.0f);
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			glEnable(GL_POLYGON_OFFSET_LINE);
-			glPolygonOffset(1.0f, 1.0f);
-			glDrawArrays(GL_TRIANGLES, 0, cube->mesh->getVertexCount());
-			glDisable(GL_POLYGON_OFFSET_LINE);
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glCullFace(GL_BACK);
-			glUniform4fv(cube->colorUniform, 1, glm::value_ptr(cube->color));
+			//glUniform4fv(cube->colorUniform, 1, glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)));
+			//glCullFace(GL_FRONT);
+			//glLineWidth(4.0f);
+			//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			//glEnable(GL_POLYGON_OFFSET_LINE);
+			//glPolygonOffset(1.0f, 1.0f);
+			//glDrawArrays(GL_TRIANGLES, 0, cube->mesh->getVertexCount());
+			//glDisable(GL_POLYGON_OFFSET_LINE);
+			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			//glCullFace(GL_BACK);
+			//glUniform4fv(cube->colorUniform, 1, glm::value_ptr(cube->color));
 
 
 

@@ -1,11 +1,8 @@
 #pragma once
 
-#include <string>
 #include <vector>
 #include <glm/glm.hpp>
 #include <Gl/glew.h>
-
-int parseMesh(std::string filename, std::vector<float>& data, bool bytes);
 
 class Mesh {
 private:

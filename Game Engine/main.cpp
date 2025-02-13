@@ -1,102 +1,35 @@
 #include "SDL_Manager.h"
 #include "Mesh.h"
-#include "Instance.h"
+#include "GameObject.h"
 #include <SDL_opengl.h>
 #include <iostream>
-#include <fstream>
-#include <iterator>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <chrono>
 
+#include "Utility.h"
+#include "Engine.h"
 
-GLuint program;
-
-// TODO uniformIndex and cube are not supposed to be globals, temp fix
-Mesh* cubeMesh;
-Instance* cube;
-GLint uniformIndexProj;
-GLint uniformIndexTran;
-GLint uniformIndexTranNorm;
-GLint uniformIndexColor;
-
-
-int loadShaders(std::string vertFile, std::string fragFile) {
-	const GLchar* vertShader;
-	const GLchar* fragShader;
-	
-	GLuint vert;
-	GLuint frag;
-
-	std::ifstream inputVert(vertFile);
-	std::string vertCode(std::istreambuf_iterator<char>{inputVert}, {});
-	vertShader = (GLchar*)vertCode.data();
-
-	std::ifstream inputFrag(fragFile);
-	std::string fragCode(std::istreambuf_iterator<char>{inputFrag}, {});
-	fragShader = (GLchar*)fragCode.data();
-
-
-	// Compile shaders
-	vert = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vert, 1, &vertShader, NULL);
-
-	glCompileShader(vert);
-	// check for shader compile errors
-	int success;
-	char infoLog[512];
-	glGetShaderiv(vert, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(vert, 512, NULL, infoLog);
-		std::cout << "Vertex Shader:\n";
-		std::cout << infoLog;
-	}
-	frag = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(frag, 1, &fragShader, NULL);
-
-	glCompileShader(frag);
-	// check for shader compile errors
-	glGetShaderiv(frag, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(frag, 512, NULL, infoLog);
-		std::cout << "Fragment Shader:\n";
-		std::cout << infoLog;
-	}
-
-	program = glCreateProgram();
-	glAttachShader(program, vert);
-	glAttachShader(program, frag);
-	glLinkProgram(program);
-	glGetProgramiv(program, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(program, 512, NULL, infoLog);
-		std::cout << "Combined\n";
-		std::cout << infoLog;
-	}
-
-	glDeleteShader(vert);
-	glDeleteShader(frag);
-
-	glUseProgram(0);
-	uniformIndexProj = glGetUniformLocation(program, "proj");
-	uniformIndexTran = glGetUniformLocation(program, "tran");
-	uniformIndexTranNorm = glGetUniformLocation(program, "tranNorm");
-	uniformIndexColor = glGetUniformLocation(program, "matColor");
-
-	return 0;
-}
 
 int main(int argc, char** argv) {
 	// Preloop
-
 	SDL_Manager::sdl().spawnWindow("1. Hello SDL", 400, 400, SDL_TRUE);
 	//SDL_Manager::sdl().spawnWindow("2. Second SDL", 200, 200, SDL_FALSE);
-	//SDL_Manager::sdl().spawnWindow("2. Second SDL", 200, 200, SDL_FALSE);
+	//SDL_Manager::sdl().spawnWindow("3. Third SDL", 200, 200, SDL_FALSE);
 
-	//if (loadShaders("defaultVertexShader.txt", "defaultFragmentShader.txt") != 0) {
-	if (loadShaders("defaultVertexShader.txt", "celShadingFragment.txt") != 0) {
+	if (loadShaders("defaultVertexShader.txt", "defaultFragmentShader.txt")) {
+	//if (loadShaders("defaultVertexShader.txt", "lambertianFragmentShader.txt") != 0) {
+	//if (loadShaders("defaultVertexShader.txt", "celShadingFragment.txt") != 0) {
 		std::cout << "Shaders didn't load correctly\n";
 		return 1;
 	}
+
+	// For time updates
+	std::chrono::steady_clock::time_point current;
+	std::chrono::steady_clock::time_point previous = std::chrono::steady_clock::now();
+
+
+
 
 
 
@@ -104,21 +37,26 @@ int main(int argc, char** argv) {
 	// Read mesh file
 	std::vector<float> data = {};
 	//cubeMesh = new Mesh(parseMesh("monkeyMesh.txt", data, false), data);
-	//cubeMesh = new Mesh(parseMesh("monkeySmoothNormal.gex", data, true), data); // TODO why doesn't this work?
 	cubeMesh = new Mesh(parseMesh("monkeySmoothNormal.txt", data, false), data);
 	//cube = new Mesh(parseMesh("cube.gex", data, true), data);
-	//cube = new Mesh(parseMesh("torusMesh.txt", data, false), data);
 	//cube = new Mesh(parseMesh("mesh.txt", data, false), data);
-	//cube = new Mesh(parseMesh("triangle.txt", data, false), data);
-	cube = new Instance(cubeMesh, glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.5f)), -3.1415f / 2.0f, glm::vec3(1.0f, 0.0f, 0.0f)), uniformIndexTran, uniformIndexTranNorm, uniformIndexColor, glm::vec4(0.3f, 0.5f, 0.5f, 1.0f));
+	cube = new GameObject(cubeMesh, glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.5f)), -3.1415f / 2.0f, glm::vec3(1.0f, 0.0f, 0.0f)), uniformIndexTran, uniformIndexColor, glm::vec4(0.3f, 0.5f, 0.5f, 1.0f));
 
 
-
+	// User intialization
+	initialize();
 
 
 	bool exit = false;
 	SDL_Event e;
 	while (!exit) {
+		// Calculate time delta
+		current = std::chrono::steady_clock::now();
+		delta = std::chrono::duration_cast<std::chrono::milliseconds>(current - previous);
+		deltaSec = std::chrono::duration_cast<std::chrono::seconds>(delta);
+		previous = current;
+
+		// Poll events
 		while (SDL_PollEvent(&e)) {
 			switch (e.type) {
 			case SDL_QUIT:
@@ -141,13 +79,11 @@ int main(int argc, char** argv) {
 
 
 
-
 		// Rotate cube
 		glBindVertexArray(cube->mesh->getVAO());
 		glUseProgram(program);
 		cube->transform = glm::rotate(cube->transform, 0.005f, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(cube->transformUniform, 1, GL_FALSE, glm::value_ptr(cube->transform));
-		glUniformMatrix4fv(cube->normalTransformUniform, 1, GL_FALSE, glm::value_ptr(cube->normalTransform()));
 		glUniform4fv(cube->colorUniform, 1, glm::value_ptr(cube->color));
 		glBindVertexArray(0);
 		glUseProgram(0);

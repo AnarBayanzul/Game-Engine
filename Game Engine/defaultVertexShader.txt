@@ -3,13 +3,12 @@ layout(location = 0) in vec3 pos;
 layout(location = 1) in vec3 norm;
 uniform mat4 proj;
 uniform mat4 tran;
-uniform mat4 tranNorm;
 smooth out vec3 normal;
 
 out vec3 worldPos;
 
 void main() {
-	normal = (tranNorm * vec4(norm.xyz, 0.0)).xyz;
+	normal = (tran * vec4(norm.xyz, 0.0)).xyz;
 
 
 	vec3 worldPos = (tran * vec4(pos, 1.0f)).xyz;

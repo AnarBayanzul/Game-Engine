@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="helloworld.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SDL_Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -30,7 +27,16 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Instance.cpp">
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +47,13 @@
     <ClInclude Include="Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Instance.h">
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -49,13 +61,7 @@
     <Text Include="mesh.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="triangle.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
     <Text Include="monkeyMesh.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="torusMesh.txt">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="defaultVertexShader.txt" />
@@ -71,9 +77,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="cube.gex">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="monkeySmoothNormal.gex">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
