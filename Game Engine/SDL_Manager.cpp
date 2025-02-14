@@ -1,6 +1,7 @@
 #include "SDL_Manager.h"
 #include "Mesh.h"
 #include "GameObject.h"
+
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 #include <glm/glm.hpp>

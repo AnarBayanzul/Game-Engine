@@ -1,8 +1,8 @@
 #pragma once
 
+#include <Gl/glew.h>
 #include <vector>
 #include <glm/glm.hpp>
-#include <Gl/glew.h>
 
 class Mesh {
 private:

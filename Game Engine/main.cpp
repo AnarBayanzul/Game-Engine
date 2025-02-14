@@ -1,14 +1,16 @@
 #include "SDL_Manager.h"
 #include "Mesh.h"
 #include "GameObject.h"
+
+#include "Utility.h"
+#include "Engine.h"
+
+#include <GL/glew.h>
 #include <SDL_opengl.h>
 #include <iostream>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <chrono>
-
-#include "Utility.h"
-#include "Engine.h"
 
 
 int main(int argc, char** argv) {

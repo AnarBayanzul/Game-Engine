@@ -1,4 +1,8 @@
 #include "Utility.h"
+
+#include "Mesh.h"
+#include "GameObject.h"
+
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 #include <fstream>
@@ -6,8 +10,6 @@
 #include <string>
 #include <chrono>
 
-#include "Mesh.h"
-#include "GameObject.h"
 
 GLuint program;
 

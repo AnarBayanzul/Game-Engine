@@ -1,11 +1,12 @@
 #pragma once
 // For internal global variables and functions (hidden from end user space)
-#include <string>
-#include <GL/glew.h>
-#include <chrono>
-
 #include "Mesh.h"
 #include "GameObject.h"
+
+#include <GL/glew.h>
+
+#include <string>
+#include <chrono>
 
 // For the shader program
 extern GLuint program;
