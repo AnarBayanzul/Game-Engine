@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
 		// Rotate cube
 		glBindVertexArray(cube->mesh->getVAO());
 		glUseProgram(program);
-		cube->transform = glm::rotate(cube->transform, 0.005f, glm::vec3(0.0f, 0.0f, 1.0f));
+		cube->transform = glm::rotate(cube->transform, 0.0005f, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(cube->transformUniform, 1, GL_FALSE, glm::value_ptr(cube->transform));
 		glUniform4fv(cube->colorUniform, 1, glm::value_ptr(cube->color));
 		glBindVertexArray(0);
