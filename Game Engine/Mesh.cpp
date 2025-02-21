@@ -13,8 +13,6 @@ Mesh::Mesh(const size_t triangleCount, const std::vector<float>& vertexData) {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	void* offset = (void*)(sizeof(float) * 9 * triangleCount);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, offset);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
 
 	for (int i = 0; i < 9 * triangleCount; i = i + 3) {
 		pos.push_back(glm::vec3(vertexData[i], vertexData[i + 1], vertexData[i + 2]));

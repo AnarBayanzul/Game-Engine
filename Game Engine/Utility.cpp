@@ -11,78 +11,38 @@
 #include <chrono>
 
 
-GLuint program;
-
-Mesh* cubeMesh;
-GameObject* cube;
-GLint uniformIndexProj;
-GLint uniformIndexTran;
-GLint uniformIndexColor;
-
-std::chrono::milliseconds delta;
-std::chrono::seconds deltaSec;
-
-int loadShaders(std::string vertFile, std::string fragFile) {
-	const GLchar* vertShader;
-	const GLchar* fragShader;
-
-	GLuint vert;
-	GLuint frag;
-
-	std::ifstream inputVert(vertFile);
-	std::string vertCode(std::istreambuf_iterator<char>{inputVert}, {});
-	vertShader = (GLchar*)vertCode.data();
-
-	std::ifstream inputFrag(fragFile);
-	std::string fragCode(std::istreambuf_iterator<char>{inputFrag}, {});
-	fragShader = (GLchar*)fragCode.data();
+size_t delta;
+float deltaSec;
 
 
-	// Compile shaders
-	vert = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vert, 1, &vertShader, NULL);
-
-	glCompileShader(vert);
-	// check for shader compile errors
-	int success;
-	char infoLog[512];
-	glGetShaderiv(vert, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(vert, 512, NULL, infoLog);
-		std::cout << "Vertex Shader:\n";
-		std::cout << infoLog;
+// Returns triangle count, takes in file name and vector for vertices and normals
+size_t parseMesh(std::string filename, std::vector<float>& data, bool bytes) {
+	int triangleCount = 0;
+	std::fstream input(filename);
+	if (bytes) {
+		float value;
+		if (input.is_open()) {
+			// triangle count
+			input.read((char*)&triangleCount, 4);
+			for (int i = 0; i < 18 * triangleCount; ++i) {
+				input.read((char*)&value, 4);
+				data.push_back(value);
+			}
+		}
 	}
-	frag = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(frag, 1, &fragShader, NULL);
-
-	glCompileShader(frag);
-	// check for shader compile errors
-	glGetShaderiv(frag, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(frag, 512, NULL, infoLog);
-		std::cout << "Fragment Shader:\n";
-		std::cout << infoLog;
+	else {
+		char delimiter = ' ';
+		if (input.is_open()) {
+			std::string line;
+			// triangle count
+			std::getline(input, line, delimiter);
+			triangleCount = std::stoi(line);
+			// Rest of the lines
+			for (int i = 0; i < 18 * triangleCount; ++i) {
+				std::getline(input, line, delimiter);
+				data.push_back(std::stof(line));
+			}
+		}
 	}
-
-	program = glCreateProgram();
-	glAttachShader(program, vert);
-	glAttachShader(program, frag);
-	glLinkProgram(program);
-	glGetProgramiv(program, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(program, 512, NULL, infoLog);
-		std::cout << "Combined\n";
-		std::cout << infoLog;
-	}
-
-	glDeleteShader(vert);
-	glDeleteShader(frag);
-
-	glUseProgram(0);
-	uniformIndexProj = glGetUniformLocation(program, "proj");
-	uniformIndexTran = glGetUniformLocation(program, "tran");
-	uniformIndexColor = glGetUniformLocation(program, "matColor");
-
-	return 0;
+	return (size_t)triangleCount;
 }
-

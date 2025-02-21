@@ -1,14 +1,19 @@
 #pragma once
+#include "Render.h"
+
 #include <string>
-#include <vector>
 // For external global functions, the API
 // Intention is for source file to remain hidden
 // Including additional libraries for the user is useful here
 
+#define MAXRENDEROBJECTS 2
+extern Render* RenderQueue[MAXRENDEROBJECTS];
+extern int renderCount;
+
 // Declared in Application.cpp
-void initialize();
+int initialize();
 
-int parseMesh(std::string filename, std::vector<float>& data, bool bytes);
+int addToRenderQueue(Render* renderObject);
 
-int getDeltaTime();
+size_t getDeltaTime();
 float getDeltaSeconds();

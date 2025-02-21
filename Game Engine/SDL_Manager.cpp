@@ -1,6 +1,8 @@
 #include "SDL_Manager.h"
 #include "Mesh.h"
 #include "GameObject.h"
+#include "Engine.h"
+#include "Utility.h"
 
 #include <GL/glew.h>
 #include <SDL_opengl.h>
@@ -41,8 +43,7 @@ void SDL_Manager::closeWindow(uint32_t id) {
 				SDL_GL_DeleteContext(context);
 				// Delete every window
 				while (count != 0) {
-					--count;
-					SDL_DestroyWindow(windows[count]);
+					SDL_DestroyWindow(windows[--count]);
 					windows[count] = nullptr;
 				}
 				// Manually issue quit event
@@ -52,9 +53,8 @@ void SDL_Manager::closeWindow(uint32_t id) {
 				return;
 			}
 			// Otherwise:
-			--count;
 			// Swap
-			std::swap(buffers[i], buffers[count]);
+			std::swap(buffers[i], buffers[--count]);
 			std::swap(windows[i], windows[count]);
 			// n pop
 			SDL_DestroyWindow(windows[count]);
@@ -118,21 +118,11 @@ void SDL_Manager::handleResize(uint32_t id) {
 	}
 }
 
-extern GLuint program;
-extern GLint uniformIndexProj;
-
-extern GameObject* cube;
-
 void SDL_Manager::updateWindows() {
 	for (size_t i = 0; i < count; ++i) {
 		// GL window
 		if (i == 0) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glBindVertexArray(cube->mesh->getVAO());
-			glUseProgram(program);
-			glm::mat4 proj = glm::perspective(1.309f, 1.0f, 0.1f, 100.0f);
-			glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(proj)); // TODO: there's gotta be a better way than just every frame
-
 
 			// TODO what does this do?
 			// Cel shading
@@ -147,12 +137,13 @@ void SDL_Manager::updateWindows() {
 			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			//glCullFace(GL_BACK);
 			//glUniform4fv(cube->colorUniform, 1, glm::value_ptr(cube->color));
+			
 
+			// Update all game objects
+			for (int j = 0; j < renderCount; ++j) {
+				RenderQueue[j]->update(deltaSec);
+			}
 
-
-			glDrawArrays(GL_TRIANGLES, 0, cube->mesh->getVertexCount());
-			glBindVertexArray(0);
-			glUseProgram(0);
 			SDL_GL_SwapWindow(windows[i]);
 		} else {
 			// Rest of the windows

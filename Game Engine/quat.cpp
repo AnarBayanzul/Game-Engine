@@ -9,13 +9,18 @@ quat::quat(glm::vec3 axis, float angle) {
 	float sinA = sin(halfAngle);
 
 	quaternion = glm::vec4(cosA, sinA * axis.x, sinA * axis.y, sinA * axis.z);
-	std::cout << "Square magnitude: " << glm::dot(quaternion, quaternion) << std::endl;
+	//std::cout << "Square magnitude: " << glm::dot(quaternion, quaternion) << std::endl;
 	//quaternion = glm::normalize(quaternion); // normalize line might not be needed
 }
 
 quat::quat(glm::vec4 direct) {
 	quaternion = direct;
 }
+
+quat::~quat() {
+
+}
+
 
 
 // Hamilton product

@@ -9,6 +9,7 @@ private:
 public:
 	quat(glm::vec3 axis, float angle);
 	quat(glm::vec4 direct); // Directly define elements of quaternion
+	~quat();
 	quat operator*(quat second);
 	glm::vec3 operator*(glm::vec3 point);
 	operator glm::mat4();

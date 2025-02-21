@@ -7,25 +7,19 @@
 
 class GameObject {
 private:
-public:
-	Mesh* mesh;
-	glm::mat4 transform;
-	GLint transformUniform;
-	GLint colorUniform;
+	glm::vec3 position;
+	quat rotation = {glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)};
+	int renderElement; // mesh element
+	int textureElement;
+	glm::vec3 linearV;
+	glm::vec3 angularV;
 	glm::vec4 color;
-	GameObject(Mesh* inputMesh, glm::mat4 inputTransform, GLint tranUI, GLint colorUI, glm::vec4 inputColor);
-	~GameObject();
+public:
+	bool show;
+	GameObject(glm::vec3 pos, quat rot, int RE, int TE, glm::vec3 LV, glm::vec3 AV, glm::vec4 inputColor, bool showToScreen);
+	GameObject();
+	void update(float delta);
+	const glm::mat4 getModel();
+	const int getRenderElement();
+	const glm::vec4 getColor();
 };
-
-//class GameObject {
-//private:
-//	glm::vec3 position;
-//	quat rotation;
-//	int renderElement;
-//	glm::vec3 linearV;
-//	glm::vec3 angularV;
-//public:
-//	void update(float delta);
-//	glm::mat4 getModel();
-//	int getRenderElement();
-//};
