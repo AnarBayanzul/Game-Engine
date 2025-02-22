@@ -30,7 +30,7 @@ public:
 	int addMesh(Mesh* inputMesh); // conceivably only needed when wanting to add already loaded mesh to different render
 	int addTexture(std::string fileName);
 	int addObject(GameObject* obj);
-	void update(float delta);
+	virtual void update(float delta);
 
 	Render(std::string vertFile, std::string fragFile, glm::mat4 proj);
 	~Render();

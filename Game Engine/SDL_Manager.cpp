@@ -123,22 +123,6 @@ void SDL_Manager::updateWindows() {
 		// GL window
 		if (i == 0) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			// TODO what does this do?
-			// Cel shading
-			//glUniform4fv(cube->colorUniform, 1, glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)));
-			//glCullFace(GL_FRONT);
-			//glLineWidth(4.0f);
-			//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			//glEnable(GL_POLYGON_OFFSET_LINE);
-			//glPolygonOffset(1.0f, 1.0f);
-			//glDrawArrays(GL_TRIANGLES, 0, cube->mesh->getVertexCount());
-			//glDisable(GL_POLYGON_OFFSET_LINE);
-			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			//glCullFace(GL_BACK);
-			//glUniform4fv(cube->colorUniform, 1, glm::value_ptr(cube->color));
-			
-
 			// Update all game objects
 			for (int j = 0; j < renderCount; ++j) {
 				RenderQueue[j]->update(deltaSec);

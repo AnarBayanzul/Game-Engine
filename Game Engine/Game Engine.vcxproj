@@ -27,6 +27,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="quat.cpp" />
     <ClCompile Include="Render.cpp" />
+    <ClCompile Include="RenderCel.cpp" />
     <ClCompile Include="SDL_Manager.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="SoundSystem.cpp" />
@@ -38,6 +39,7 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="quat.h" />
     <ClInclude Include="Render.h" />
+    <ClInclude Include="RenderCel.h" />
     <ClInclude Include="SDL_Manager.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="SoundSystem.h" />
