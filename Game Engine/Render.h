@@ -34,15 +34,5 @@ public:
 
 	Render(std::string vertFile, std::string fragFile, glm::mat4 proj);
 	~Render();
-
-
-	// Should have:
-		// render queue
-		// binding assets
-			// texture buffers?
-			// meshes?
-			// vertex information?
-			// other attributes?
-		// draw invocation
 };
 

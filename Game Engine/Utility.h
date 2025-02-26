@@ -8,11 +8,13 @@
 
 #include <string>
 #include <chrono>
+#include <SDL_surface.h>
 
 // For timing
 extern size_t delta;
 extern float deltaSec;
 
 
+SDL_Surface* parseTexture(std::string fileName);
 
 size_t parseMesh(std::string filename, std::vector<float>& data, bool bytes);

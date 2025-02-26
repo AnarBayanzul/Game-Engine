@@ -3,7 +3,10 @@
 #include "Utility.h" // TODO this might be unnecessary
 #include "Render.h"
 #include "RenderCel.h"
+#include "Texture.h"
 
+
+#include "SoundSystem.h"
 
 
 #include <iostream>
@@ -14,7 +17,7 @@
 #include <glm/ext.hpp>
 
 
-void example() {
+static void example() {
 	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", glm::perspective(1.309f, 1.0f, 0.1f, 100.0f));
 	int monkeyMesh = renderObject->addMesh("monkeySmoothNormal.txt", false);
 	int cubeMesh = renderObject->addMesh("mesh.txt", false);
@@ -52,7 +55,7 @@ void example() {
 	addToRenderQueue(renderObject);
 }
 
-void exampleCel() {
+static void exampleCel() {
 	RenderCel* renderObject = new RenderCel("defaultVertexShader.txt", "celShadingFragment.txt", glm::perspective(1.309f, 1.0f, 0.1f, 100.0f));
 		
 	
@@ -97,6 +100,11 @@ int initialize() { // What should default initialize look like?
 
 	//example();
 	exampleCel();
+
+	Texture example = Texture("ohMyGah.bmp", 0);
+
+	SoundSystem s = {};
+	s.loadSound("ohMyGah.wav");
 
 	return 0;
 }

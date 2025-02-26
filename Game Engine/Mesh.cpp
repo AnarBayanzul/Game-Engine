@@ -10,6 +10,10 @@ Mesh::Mesh(const size_t triangleCount, const std::vector<float>& vertexData) {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexData.size(), &vertexData[0], GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
+
+
+	// Enable UV vertex attribute
+
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	void* offset = (void*)(sizeof(float) * 9 * triangleCount);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, offset);
@@ -28,10 +32,10 @@ Mesh::~Mesh() {
 	vbo = 0;
 }
 
-GLuint Mesh::getVAO() {
+const GLuint Mesh::getVAO() {
 	return vao;
 }
 
-GLsizei Mesh::getVertexCount() {
+const GLsizei Mesh::getVertexCount() {
 	return (GLsizei) pos.size();
 }

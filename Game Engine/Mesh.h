@@ -13,6 +13,6 @@ private:
 public:
 	Mesh(const size_t triangleCount, const std::vector<float>& data);
 	~Mesh();
-	GLuint getVAO();
-	GLsizei getVertexCount();
+	const GLuint getVAO();
+	const GLsizei getVertexCount();
 };

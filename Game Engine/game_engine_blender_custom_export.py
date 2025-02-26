@@ -4,7 +4,7 @@ import bpy, struct
 class normalEnum:
     vertex, polygon = range(2)
 
-bytes = True
+bytes = False
 normalType = normalEnum.vertex
 
 def write_some_data(context, filepath, use_some_setting):
@@ -31,7 +31,9 @@ def write_some_data(context, filepath, use_some_setting):
     vertices = []
     # polygon normal, three times, per polygon
     normals = []
-    
+
+    uvs = []
+    times = 0
     for polygon in selected.polygons:
         for index in polygon.vertices:
             vertices.append(selected.vertices[index].co)
@@ -39,6 +41,14 @@ def write_some_data(context, filepath, use_some_setting):
                 normals.append(polygon.normal)
             elif normalType == normalEnum.vertex:
                 normals.append(selected.vertices[index].normal)
+            # TODO this is super inefficient
+            for vert_idx, loop_idx in zip(polygon.vertices, polygon.loop_indices):
+                uv_coords = selected.uv_layers.active.data[loop_idx].uv
+                if vert_idx == index:
+                    uvs.append(uv_coords)
+                    break
+                    
+        
       
     if bytes:
         # int and floats are 4 bytes
@@ -51,6 +61,9 @@ def write_some_data(context, filepath, use_some_setting):
             for element in normal:
 #                f.write(delimiter)
                 f.write(struct.pack('<f', element))
+        for uv in uvs:
+            for element in uv:
+                f.write(struct.pack('<f', element))
     else:
         output = ""  
         output += str(triangleCount)
@@ -60,6 +73,10 @@ def write_some_data(context, filepath, use_some_setting):
                 output += str(element)
         for normal in normals:
             for element in normal:
+                output += str(delimiter)
+                output += str(element)
+        for uv in uvs:
+            for element in uv:
                 output += str(delimiter)
                 output += str(element)
         f.write(output)
