@@ -8,7 +8,7 @@
 class GameObject {
 private:
 	glm::vec3 position;
-	quat rotation = {glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)};
+	quat rotation = {glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)}; // TODO change?
 	int renderElement; // mesh element
 	int textureElement;
 	glm::vec3 linearV;
@@ -21,5 +21,6 @@ public:
 	virtual void update(float delta);
 	const glm::mat4 getModel();
 	const int getRenderElement();
+	const int getTextureElement();
 	const glm::vec4 getColor();
 };

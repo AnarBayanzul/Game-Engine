@@ -1,4 +1,4 @@
-#include "Render.h"
+ #include "Render.h"
 #include "Utility.h"
 
 #include <iostream>
@@ -66,7 +66,7 @@ int Render::loadShaders(std::string vertFile, std::string fragFile) {
 	glUseProgram(0);
 	uniformIndexProj = glGetUniformLocation(program, "proj");
 	uniformIndexTran = glGetUniformLocation(program, "tran");
-	uniformIndexColor = glGetUniformLocation(program, "matColor");
+	uniformIndexColor = glGetUniformLocation(program, "baseColor");
 	return 0;
 }
 
@@ -92,8 +92,17 @@ int Render::addTexture(std::string fileName) {
 	if (textureCount >= MAXTEXTURES) {
 		return -1;
 	}
-	// run parse texture function
+	// run parse texture function TODO
 	std::cout << "incomplete" << std::endl;
+
+	return textureCount++;
+}
+
+int Render::addTexture(Texture* inputTexture) {
+	if (textureCount >= MAXTEXTURES) {
+		return -1;
+	}
+	textures[textureCount] = inputTexture;
 
 	return textureCount++;
 }
@@ -114,6 +123,8 @@ void Render::update(float delta) {
 	for (int i = 0; i < objectCount; ++i) {
 		objects[i]->update(delta);
 		glBindVertexArray((meshes[objects[i]->getRenderElement()])->getVAO());
+		glActiveTexture(GL_TEXTURE0); // TODO may be unneccessary
+		glBindTexture(GL_TEXTURE_2D, (textures[objects[i]->getTextureElement()])->getTBO());
 		glUniformMatrix4fv(uniformIndexTran, 1, GL_FALSE, glm::value_ptr(objects[i]->getModel()));
 		glUniform4fv(uniformIndexColor, 1, glm::value_ptr(objects[i]->getColor()));
 		//TODO bind texture
@@ -142,5 +153,8 @@ Render::~Render() {
 	}
 	for (int i = 0; i < objectCount; ++i) {
 		delete objects[i];
+	}
+	for (int i = 0; i < textureCount; ++i) {
+		delete textures[i];
 	}
 }

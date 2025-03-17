@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Mesh.h"
+#include "Texture.h"
 
 #include <GL/glew.h>
 #include <string>
@@ -15,7 +16,7 @@ public:
 	int meshCount;
 	int textureCount;
 	GLuint program;
-	GLuint textures[MAXTEXTURES] = {};
+	Texture* textures[MAXTEXTURES];
 	Mesh* meshes[MAXMESHES] = {};
 	GameObject* objects[MAXOBJECTS] = {};
 	glm::mat4 perspective; // TODO change, not a good name, should be projection
@@ -29,6 +30,7 @@ public:
 	int addMesh(std::string fileName, bool bytes);
 	int addMesh(Mesh* inputMesh); // conceivably only needed when wanting to add already loaded mesh to different render
 	int addTexture(std::string fileName);
+	int addTexture(Texture* inputTexture);
 	int addObject(GameObject* obj);
 	virtual void update(float delta);
 

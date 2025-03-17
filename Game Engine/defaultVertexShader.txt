@@ -1,15 +1,19 @@
 #version 410
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec3 norm;
+layout(location = 2) in vec2 texCoord;
+
 uniform mat4 proj;
 uniform mat4 tran;
 smooth out vec3 normal;
+smooth out vec2 uvCoord;
 
 out vec3 worldPos;
 
 void main() {
 	normal = (tran * vec4(norm.xyz, 0.0)).xyz;
 
+	uvCoord = texCoord;
 
 	vec3 worldPos = (tran * vec4(pos, 1.0f)).xyz;
 

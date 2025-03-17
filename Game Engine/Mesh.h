@@ -8,6 +8,7 @@ class Mesh {
 private:
 	std::vector<glm::vec3> pos;
 	std::vector<glm::vec3> norm;
+	std::vector<glm::vec2> uv;
 	GLuint vao;
 	GLuint vbo;
 public:

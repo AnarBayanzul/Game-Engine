@@ -17,4 +17,4 @@ extern float deltaSec;
 
 SDL_Surface* parseTexture(std::string fileName);
 
-size_t parseMesh(std::string filename, std::vector<float>& data, bool bytes);
+size_t parseMesh(std::string fileName, std::vector<float>& data, bool bytes);

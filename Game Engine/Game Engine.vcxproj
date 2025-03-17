@@ -58,7 +58,9 @@
     <Text Include="mesh.txt" />
     <Text Include="monkeyMesh.txt" />
     <Text Include="monkeySmoothNormal.txt" />
+    <Text Include="test.txt" />
     <Text Include="texCube.txt" />
+    <Text Include="uvCube.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cube.gex" />

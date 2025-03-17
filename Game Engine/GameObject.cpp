@@ -42,6 +42,10 @@ const int GameObject::getRenderElement() {
 	return renderElement;
 }
 
+const int GameObject::getTextureElement() {
+	return textureElement;
+}
+
 const glm::vec4 GameObject::getColor() {
 	return color;
 }

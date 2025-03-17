@@ -62,10 +62,7 @@ int main(int argc, char** argv) {
 		}
 
 		// Game loop!
-
-
-
-		
+		globalUpdate(deltaSec);
 		std::this_thread::sleep_for(1ms);
 
 

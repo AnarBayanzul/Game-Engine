@@ -20,15 +20,19 @@
 static void example() {
 	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", glm::perspective(1.309f, 1.0f, 0.1f, 100.0f));
 	int monkeyMesh = renderObject->addMesh("monkeySmoothNormal.txt", false);
-	int cubeMesh = renderObject->addMesh("mesh.txt", false);
+	int cubeMesh = renderObject->addMesh("uvCube.txt", false);
 	if (monkeyMesh == -1) {
 		throw;
 	}
+	Texture* example = new Texture("ohMyGah.bmp", 0);
+	int texIndex = renderObject->addTexture(example);
+
+
 	GameObject* monkey = new GameObject(
 		glm::vec3(-1.0f, 0.0f, -2.5f),
 		quat(glm::vec3(1.0f, 0.0f, 0.0f), -3.1415f / 2.0f),
 		monkeyMesh,
-		-1,
+		texIndex,
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 0.2f, 0.0f),
 		glm::vec4(0.8f, 0.7f, 0.1f, 1.0f),
@@ -36,12 +40,12 @@ static void example() {
 	);
 	GameObject* cube = new GameObject(
 		glm::vec3(1.0f, 0.0f, -4.0f),
-		quat(glm::vec3(1.0f, 0.0f, 0.0f), 0.0f),
+		quat(glm::vec3(1.0f, 0.0f, 0.0f), 3.1415f / 9.0f),
 		cubeMesh,
-		-1,
+		texIndex,
 		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.1f, 0.1f, 0.0f),
-		glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+		glm::vec3(0.0f, -0.2f, 0.0f),
+		glm::vec4(0.1f, 0.1f, 1.0f, 1.0f),
 		true
 	);
 	int monkeyIndex = renderObject->addObject(monkey);
@@ -95,16 +99,18 @@ static void exampleCel() {
 	addToRenderQueue(renderObject);
 }
 
-int initialize() { // What should default initialize look like?
+int initialize() { // What should default initialize look like? 
 	std::cout << "user successfully performs initialization\n";
 
-	//example();
-	exampleCel();
+	example();
+	//exampleCel();
+	SoundSystem::system().loadSound("ohMyGah.wav");
+	SoundSystem::system().playSound(0);
 
-	Texture example = Texture("ohMyGah.bmp", 0);
+	return 0;
+}
 
-	SoundSystem s = {};
-	s.loadSound("ohMyGah.wav");
-
+int globalUpdate(float deltaSec) {
+	// TODO is this necessary?
 	return 0;
 }

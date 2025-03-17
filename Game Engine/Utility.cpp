@@ -15,16 +15,22 @@
 size_t delta;
 float deltaSec;
 
+#include <iostream>
 // Returns error value
 SDL_Surface* parseTexture(std::string fileName) {
+	SDL_Surface* example = SDL_LoadBMP(fileName.c_str());
+
+	//std::cout << example->format->format << std::endl;
+	std::cout << (GLuint)example->format->BytesPerPixel << std::endl;
+
 	return SDL_LoadBMP(fileName.c_str());
 }
 
 
 // Returns triangle count, takes in file name and vector for vertices and normals
-size_t parseMesh(std::string filename, std::vector<float>& data, bool bytes) {
+size_t parseMesh(std::string fileName, std::vector<float>& data, bool bytes) {
 	int triangleCount = 0;
-	std::fstream input(filename);
+	std::fstream input(fileName);
 	if (bytes) {
 		float value;
 		if (input.is_open()) {

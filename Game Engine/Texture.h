@@ -7,10 +7,11 @@
 
 class Texture {
 private:
-	glm::vec2 textureCoordinates[3];
+	//glm::vec2 textureCoordinates[3];
 	GLuint tbo;
 public:
 	Texture(std::string fileName, int mipmapLevel);
 	~Texture();
+	GLuint getTBO();
 };
 

@@ -12,7 +12,9 @@ extern int renderCount;
 
 // Declared in Application.cpp
 int initialize();
+int globalUpdate(float deltaSec);
 
+// Rest declared in Engine.cpp
 int addToRenderQueue(Render* renderObject);
 
 size_t getDeltaTime();

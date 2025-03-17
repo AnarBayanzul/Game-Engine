@@ -5,10 +5,10 @@
 
 class Sound {
 private:
-	Uint8** audio_buf;
-	Uint32* audio_len;
-	SDL_AudioSpec spec;
 public:
+	Uint8* audio_buf; // contains actual file
+	Uint32 audio_len;
+	SDL_AudioSpec spec;
 	Sound(std::string fileName);
 	~Sound();
 };
