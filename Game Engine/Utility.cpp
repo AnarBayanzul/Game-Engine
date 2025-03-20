@@ -18,10 +18,14 @@ float deltaSec;
 #include <iostream>
 // Returns error value
 SDL_Surface* parseTexture(std::string fileName) {
-	SDL_Surface* example = SDL_LoadBMP(fileName.c_str());
+	//SDL_Surface* example = SDL_LoadBMP(fileName.c_str());
 
-	//std::cout << example->format->format << std::endl;
-	std::cout << (GLuint)example->format->BytesPerPixel << std::endl;
+	// ohTheMisery is BGR24
+	// ohMyGah is ARGB8888
+
+	//std::cout << "Image format\n";
+	//std::cout << std::hex << example->format->format << std::endl;
+	//std::cout << (GLuint)example->format->BytesPerPixel << std::endl;
 
 	return SDL_LoadBMP(fileName.c_str());
 }

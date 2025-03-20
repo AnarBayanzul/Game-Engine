@@ -124,7 +124,12 @@ void Render::update(float delta) {
 		objects[i]->update(delta);
 		glBindVertexArray((meshes[objects[i]->getRenderElement()])->getVAO());
 		glActiveTexture(GL_TEXTURE0); // TODO may be unneccessary
-		glBindTexture(GL_TEXTURE_2D, (textures[objects[i]->getTextureElement()])->getTBO());
+		if (objects[i]->getTextureElement() != -1) {
+			glBindTexture(GL_TEXTURE_2D, (textures[objects[i]->getTextureElement()])->getTBO());
+		}
+		else {
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 		glUniformMatrix4fv(uniformIndexTran, 1, GL_FALSE, glm::value_ptr(objects[i]->getModel()));
 		glUniform4fv(uniformIndexColor, 1, glm::value_ptr(objects[i]->getColor()));
 		//TODO bind texture

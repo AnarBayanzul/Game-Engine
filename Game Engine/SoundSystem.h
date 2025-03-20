@@ -7,22 +7,29 @@
 #include <string>
 #include <SDL_audio.h>
 
+#define MAXTRACKS 16
+
 class SoundSystem {
 private:
-	std::vector<Sound> sounds; // Ideally for small sound objects
+	std::vector<Sound*> sounds; // Ideally for small sound objects
 	SDL_AudioDeviceID device;
-	std::vector<SoundStates> playback;
+	SoundStates playback[MAXTRACKS] = {};
+	int playbackSize;
 	Uint8* mix;
 	int mixSize;
 	SoundSystem();
 	~SoundSystem();
 public:
 	Uint8* getMix();
-	std::vector<SoundStates>& getPlayback();
-	std::vector<Sound>& getSounds();
+	int getMixSize();
+	SoundStates* getPlayback();
+	int getPlaybackSize();
+	void setPlaybackSize(int size);
+	std::vector<Sound*>& getSounds();
 	bool loadSound(std::string fileName);
 	bool playSound(int index);
 	bool playSound(std::string fileName);
+	Sound* runtimeSound;
 
 	// enforce singleton
 	static SoundSystem& system();

@@ -8,7 +8,7 @@ uniform vec4 baseColor;
 
 in vec3 worldPos;
 
-in vec2 uv;
+in vec2 uvCoord;
 uniform sampler2D tex;
 
 void main() {
@@ -18,10 +18,10 @@ void main() {
 	vec3 lightDir = vec3(-0.707f, 0.0f, -0.707f);
 	vec3 cameraPos = vec3(0.0f, 0.0f, -2.5f);
 	vec3 FragPos = vec3(0.0f, 0.0f, -2.5f);
+	//vec4 base = baseColor;
 
-	vec4 base = baseColor;
 	// Texture
-	//base = texture(tex, uv);
+	vec4 base = texture(tex, uvCoord);
 
 
 	// Ambient Light

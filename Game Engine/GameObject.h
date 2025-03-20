@@ -18,6 +18,9 @@ public:
 	bool show;
 	GameObject(glm::vec3 pos, quat rot, int RE, int TE, glm::vec3 LV, glm::vec3 AV, glm::vec4 inputColor, bool showToScreen);
 	GameObject();
+	void move(glm::vec3 newP);
+	void setTextureElement(int TE);
+	void setRenderElement(int RE);
 	virtual void update(float delta);
 	const glm::mat4 getModel();
 	const int getRenderElement();

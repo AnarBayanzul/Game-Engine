@@ -138,9 +138,15 @@
     <Image Include="ohMyGah.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="ohTheMisery.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="ohMyGah.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="ohTheMisery.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>

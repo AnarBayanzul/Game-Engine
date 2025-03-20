@@ -4,6 +4,8 @@
 #include <string>
 #include <fstream>
 
+SDL_KeyboardEvent lastKey;
+
 Render* RenderQueue[MAXRENDEROBJECTS];
 int renderCount = 0;
 

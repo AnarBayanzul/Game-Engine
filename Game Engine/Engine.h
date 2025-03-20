@@ -1,10 +1,15 @@
 #pragma once
 #include "Render.h"
 
+#include <SDL.h>
 #include <string>
 // For external global functions, the API
 // Intention is for source file to remain hidden
 // Including additional libraries for the user is useful here
+
+
+extern SDL_KeyboardEvent lastKey;
+
 
 #define MAXRENDEROBJECTS 2
 extern Render* RenderQueue[MAXRENDEROBJECTS];

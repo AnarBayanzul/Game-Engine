@@ -4,7 +4,7 @@
 
 quat::quat(glm::vec3 axis, float angle) {
 	// real part should be cos half angle
-	float halfAngle = angle / 2.0f; // TODO can you do bitwise operation in float to divide by two?
+	float halfAngle = angle * 0.5f; // TODO can you do bitwise operation in float to divide by two?
 	float cosA = cos(halfAngle);
 	float sinA = sin(halfAngle);
 
@@ -15,6 +15,9 @@ quat::quat(glm::vec3 axis, float angle) {
 
 quat::quat(glm::vec4 direct) {
 	quaternion = direct;
+}
+quat::quat() { // no rotation
+	quaternion = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 }
 
 quat::~quat() {
@@ -37,7 +40,7 @@ quat quat::operator*(quat second) {
 glm::vec3 quat::operator*(glm::vec3 point) {
 	// p = q * p * q^-1
 	glm::vec4 product = ((*this * quat(glm::vec4(0, point))) * conjugate()).quaternion;
-	std::cout << "Should be 0: " << product.x << std::endl;
+	//std::cout << "Should be 0: " << product.x << std::endl;
 	return glm::vec3(product.y, product.z, product.w);
 }
 

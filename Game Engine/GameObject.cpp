@@ -37,7 +37,7 @@ void GameObject::update(float delta) {
 const glm::mat4 GameObject::getModel() {
 	return glm::translate(position) * (glm::mat4) rotation;
 }
-
+  
 const int GameObject::getRenderElement() {
 	return renderElement;
 }
@@ -48,4 +48,13 @@ const int GameObject::getTextureElement() {
 
 const glm::vec4 GameObject::getColor() {
 	return color;
+}
+void GameObject::move(glm::vec3 newP) {
+	position = newP;
+}
+void GameObject::setTextureElement(int TE) {
+	textureElement = TE;
+}
+void GameObject::setRenderElement(int RE) {
+	renderElement = RE;
 }

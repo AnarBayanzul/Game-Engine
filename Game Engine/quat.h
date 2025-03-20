@@ -7,6 +7,7 @@ private:
 	// three remaining are "imaginary" components (axis vector scaled by sine of half the angle)
 	glm::vec4 quaternion;
 public:
+	quat();
 	quat(glm::vec3 axis, float angle);
 	quat(glm::vec4 direct); // Directly define elements of quaternion
 	~quat();

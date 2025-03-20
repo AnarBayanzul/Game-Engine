@@ -12,7 +12,13 @@ void RenderCel::update(float delta) {
 		glBindVertexArray((meshes[objects[i]->getRenderElement()])->getVAO());
 		glUniformMatrix4fv(uniformIndexTran, 1, GL_FALSE, glm::value_ptr(objects[i]->getModel()));
 		//TODO bind texture
-
+		glActiveTexture(GL_TEXTURE0); // TODO may be unneccessary
+		if (objects[i]->getTextureElement() != -1) {
+			glBindTexture(GL_TEXTURE_2D, (textures[objects[i]->getTextureElement()])->getTBO());
+		}
+		else {
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 		// TODO what does this do?
 		// Cel shading
 		glUniform4fv(uniformIndexColor, 1, glm::value_ptr(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)));

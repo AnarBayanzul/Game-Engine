@@ -68,9 +68,11 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="ohMyGah.bmp" />
+    <Image Include="ohTheMisery.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="ohMyGah.wav" />
+    <Media Include="ohTheMisery.wav" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

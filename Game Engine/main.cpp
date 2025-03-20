@@ -14,7 +14,6 @@
 #include <thread>
 using namespace std::chrono_literals;
 
-
 int main(int argc, char** argv) {
 	// Preloop
 	SDL_Manager::sdl().spawnWindow("1. Hello SDL", 400, 400, SDL_TRUE);
@@ -57,6 +56,9 @@ int main(int argc, char** argv) {
 					SDL_Manager::sdl().closeWindow(e.window.windowID);
 					break;
 				}
+				break;
+			case SDL_KEYDOWN:
+				lastKey = e.key;
 				break;
 			}
 		}
