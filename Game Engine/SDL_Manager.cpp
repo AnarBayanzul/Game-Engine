@@ -124,6 +124,7 @@ void SDL_Manager::updateWindows() {
 		if (i == 0) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			// Update all game objects
+			// TODO TODO replace with update parent node
 			for (int j = 0; j < renderCount; ++j) {
 				RenderQueue[j]->update(deltaSec);
 			}

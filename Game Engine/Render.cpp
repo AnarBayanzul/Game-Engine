@@ -1,5 +1,6 @@
  #include "Render.h"
 #include "Utility.h"
+#include "RenderInfo.h"
 
 #include <iostream>
 #include <string>
@@ -117,31 +118,40 @@ int Render::addObject(GameObject* obj) {
 	return objectCount++;
 }
 
-void Render::update(float delta) {
-	glUseProgram(program);
-	glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(perspective));	
-	for (int i = 0; i < objectCount; ++i) {
-		objects[i]->update(delta);
-		glBindVertexArray((meshes[objects[i]->getRenderElement()])->getVAO());
+void draw(RenderInfo info, GameObject* object, glm::mat4 parentTransform) {
+	if (object->show) {
+		glBindVertexArray((info.meshes[object->getRenderElement()])->getVAO());
 		glActiveTexture(GL_TEXTURE0); // TODO may be unneccessary
-		if (objects[i]->getTextureElement() != -1) {
-			glBindTexture(GL_TEXTURE_2D, (textures[objects[i]->getTextureElement()])->getTBO());
+		if (object->getTextureElement() != -1) {
+			glBindTexture(GL_TEXTURE_2D, (info.textures[object->getTextureElement()])->getTBO());
 		}
 		else {
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
-		glUniformMatrix4fv(uniformIndexTran, 1, GL_FALSE, glm::value_ptr(objects[i]->getModel()));
-		glUniform4fv(uniformIndexColor, 1, glm::value_ptr(objects[i]->getColor()));
-		//TODO bind texture
-		if (objects[i]->show) {
-			glDrawArrays(GL_TRIANGLES, 0, (meshes[objects[i]->getRenderElement()])->getVertexCount());
-		}
+		glUniformMatrix4fv(info.uniformIndexTran, 1, GL_FALSE, glm::value_ptr(parentTransform * object->getModel()));
+		glUniform4fv(info.uniformIndexColor, 1, glm::value_ptr(object->getColor()));
+		glDrawArrays(GL_TRIANGLES, 0, (info.meshes[object->getRenderElement()])->getVertexCount());
 	}
+}
+
+void Render::update(float delta) {
+	// Update Objects
+	for (int i = 0; i < objectCount; ++i) {
+		objects[i]->update(delta);
+	}
+	RenderInfo info = { uniformIndexProj, uniformIndexTran, uniformIndexColor, textures, meshes };
+	glUseProgram(program);
+	glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(camera->getProjection()));
+	//for (int i = 0; i < objectCount; ++i) {
+	//	draw(info, objects[i], glm::mat4(1));
+	//}
+	// Render objects using tree
+	root->render(info, camera, glm::mat4(1), draw);
 	glBindVertexArray(0);
 	glUseProgram(0);
 }
 
-Render::Render(std::string vertFile, std::string fragFile, glm::mat4 proj) {
+Render::Render(std::string vertFile, std::string fragFile, Camera* cameraIn) {
 	if (loadShaders(vertFile, fragFile)) {
 		std::cout << "Shaders didn't load correctly\n";
 		throw;
@@ -149,7 +159,8 @@ Render::Render(std::string vertFile, std::string fragFile, glm::mat4 proj) {
 	objectCount = 0;
 	meshCount = 0;
 	textureCount = 0;
-	perspective = proj; // TODO send perspective matrix over
+	camera = cameraIn;
+	root = nullptr;
 }
 
 Render::~Render() {
@@ -162,4 +173,14 @@ Render::~Render() {
 	for (int i = 0; i < textureCount; ++i) {
 		delete textures[i];
 	}
+	delete camera;
+	delete root;
+}
+
+GameObject** Render::getObjects() {
+	return objects;
+}
+
+Camera* Render::getCamera() {
+	return camera;
 }

@@ -4,6 +4,7 @@
 #include "Render.h"
 #include "RenderCel.h"
 #include "Texture.h"
+#include "Node.h"
 
 
 #include "SoundSystem.h"
@@ -19,7 +20,8 @@
 
 
 static void example() {
-	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", glm::perspective(1.309f, 1.0f, 0.1f, 100.0f));
+
+	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
 	int monkeyMesh = renderObject->addMesh("monkeySmoothNormal.txt", false);
 	int cubeMesh = renderObject->addMesh("uvCube.txt", false);
 	if (monkeyMesh == -1) {
@@ -62,7 +64,7 @@ static void example() {
 }
 
 static void exampleCel() {
-	RenderCel* renderObject = new RenderCel("defaultVertexShader.txt", "celShadingFragment.txt", glm::perspective(1.309f, 1.0f, 0.1f, 100.0f));
+	RenderCel* renderObject = new RenderCel("defaultVertexShader.txt", "celShadingFragment.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
 	int monkeyMesh = renderObject->addMesh("monkeySmoothNormal.txt", false);
 	int cubeMesh = renderObject->addMesh("uvCube.txt", false);
 	if (monkeyMesh == -1) {
@@ -103,7 +105,7 @@ static void exampleCel() {
 }
 
 static void exampleAudio() {
-	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", glm::perspective(1.309f, 1.0f, 0.1f, 100.0f));
+	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
 	
 	int cubeMesh = renderObject->addMesh("uvCube.txt", false);
 
@@ -152,10 +154,12 @@ int headTexIndex;
 int tailTexIndex;
 
 bool lost = false;
-
 static void snakeInit() {
-	//RenderCel* renderObject = new RenderCel("defaultVertexShader.txt", "celShadingFragment.txt", glm::perspective(1.309f, 1.0f, 0.1f, 100.0f));
-	renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", glm::perspective(1.309f, 1.0f, 0.1f, 100.0f));
+	//RenderCel* renderObject = new RenderCel("defaultVertexShader.txt", "celShadingFragment.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
+	renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
+	renderObject->root = new Node(new GameObject());
+	renderObject->root->getObject()->move(glm::vec3(0.0f, 0.0f, 0.0f));
+
 
 	int snakeBodyMesh = renderObject->addMesh("uvCube.txt", false);
 
@@ -174,9 +178,10 @@ static void snakeInit() {
 	// 0, 0 is bottom left
 	map[5][5] = 2;
 	map[5][4] = 1;
+	int objectIndex;
 	for (int i = 0; i < MAPSIZE; ++i) {
 		for (int j = 0; j < MAPSIZE; ++j) {
-			renderObject->addObject(
+			objectIndex = renderObject->addObject(
 				new GameObject(
 					glm::vec3(2.0f * i - 10.0f + 1, 2.0f * j - 10.0f + 1, -15.0f),
 					quat(),
@@ -188,6 +193,7 @@ static void snakeInit() {
 					(bool)map[i][j]
 				)
 			);
+			renderObject->root->addChild(new Node(renderObject->getObjects()[objectIndex]));
 		}
 	}
 	do { // find empty space for fruit
@@ -198,7 +204,7 @@ static void snakeInit() {
 	map[fruitLocation[0]][fruitLocation[1]] = -1;
 
 	// add fruit object
-	renderObject->addObject(
+	objectIndex = renderObject->addObject(
 		new GameObject(
 			glm::vec3(2.0f * fruitLocation[0] - 10.0f + 1, 2.0f * fruitLocation[1] - 10.0f + 1, -15.0f),
 			quat(glm::vec3(1.0f, 0.0f, 0.0f), -3.1415f / 2.0f),
@@ -210,8 +216,9 @@ static void snakeInit() {
 			true
 		)
 	);
+	renderObject->root->addChild(new Node(renderObject->getObjects()[objectIndex]));
 	// set head tex
-	renderObject->objects[5 * MAPSIZE + 5]->setTextureElement(headTexIndex);
+	renderObject->getObjects()[5 * MAPSIZE + 5]->setTextureElement(headTexIndex);
 
 
 	addToRenderQueue(renderObject);
@@ -221,7 +228,7 @@ static void snakeInit() {
 }
 float wait = 0.1;
 float elapsed = 0.0f;
-void snakeUpdate(float deltaSec) {
+static void snakeUpdate(float deltaSec) {
 	if (lost) {
 		return;
 	}
@@ -290,7 +297,7 @@ void snakeUpdate(float deltaSec) {
 				fruitLocation[1] = rand() % MAPSIZE;
 			} while (map[fruitLocation[0]][fruitLocation[1]]);
 			map[fruitLocation[0]][fruitLocation[1]] = -1;
-			renderObject->objects[MAPSIZE * MAPSIZE]->move(glm::vec3(2.0f * fruitLocation[0] - 10.0f + 1, 2.0f * fruitLocation[1] - 10.0f + 1, -15.0f));
+			renderObject->getObjects()[MAPSIZE * MAPSIZE]->move(glm::vec3(2.0f * fruitLocation[0] - 10.0f + 1, 2.0f * fruitLocation[1] - 10.0f + 1, -15.0f));
 		}
 		else if (map[headLocation[0]][headLocation[1]] > 0) {
 			// has snake already
@@ -320,13 +327,13 @@ void snakeUpdate(float deltaSec) {
 					// TODO show fruit
 					continue;
 				} else if (map[i][j] == 1) { // check if head tail or body
-					renderObject->objects[i * MAPSIZE + j]->setTextureElement(tailTexIndex);
+					renderObject->getObjects()[i * MAPSIZE + j]->setTextureElement(tailTexIndex);
 				} else if (map[i][j] == headSize) {
-					renderObject->objects[i * MAPSIZE + j]->setTextureElement(headTexIndex);
+					renderObject->getObjects()[i * MAPSIZE + j]->setTextureElement(headTexIndex);
 				} else {
-					renderObject->objects[i * MAPSIZE + j]->setTextureElement(snakeTexIndex);
+					renderObject->getObjects()[i * MAPSIZE + j]->setTextureElement(snakeTexIndex);
 				}
-				renderObject->objects[i * MAPSIZE + j]->show = (bool)map[i][j];
+				renderObject->getObjects()[i * MAPSIZE + j]->show = (bool)map[i][j];
 			}
 		}
 	}

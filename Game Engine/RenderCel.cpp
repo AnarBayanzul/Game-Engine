@@ -5,7 +5,7 @@
 
 void RenderCel::update(float delta) {
 	glUseProgram(program);
-	glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(perspective));
+	glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(camera->getProjection()));
 
 	for (int i = 0; i < objectCount; ++i) {
 		objects[i]->update(delta);

@@ -151,6 +151,10 @@ bool SoundSystem::loadSound(std::string fileName) {
 
 bool SoundSystem::playSound(int index) {
 	// play sound indexing sounds vector
+	if (playbackSize + 1 >= MAXTRACKS) {
+		std::cout << "Reached max playback count\n";
+		return false;
+	}
 	playback[playbackSize++] = SoundStates{ sounds[index]->audio_buf, sounds[index]->audio_len };
 	return true;
 }

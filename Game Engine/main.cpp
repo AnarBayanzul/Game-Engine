@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 		// Calculate time delta
 		current = std::chrono::steady_clock::now();
 		deltaSec = (current - previous).count() / 1000000000.0f;
-		delta = (size_t) deltaSec;
+		delta = (size_t) (deltaSec * 1000);
 		previous = current;
 		//std::cout << deltaSec << std::endl;
 		//std::cout << delta << std::endl << std::endl;
