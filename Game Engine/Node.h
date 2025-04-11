@@ -20,7 +20,7 @@ public:
 	~Node();
 	int addChild(Node* node);
 	int popChild();
-	void render(RenderInfo info, Camera* camera, glm::mat4 parentTran, void (*drawCall)(RenderInfo, GameObject*, glm::mat4)); // TODO arguments may vary depending on how render queue implemented
+	void render(RenderInfo info, Camera* camera, glm::mat4 parentTran, void (*drawCall)(RenderInfo, GameObject*)); // TODO arguments may vary depending on how render queue implemented
 	bool shouldRender(Camera* camera, glm::mat4 parentTran);
 	GameObject* getObject();
 };

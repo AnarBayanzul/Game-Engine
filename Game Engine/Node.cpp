@@ -43,8 +43,7 @@ bool Node::shouldRender(Camera* camera, glm::mat4 parentTran) {
 	return true;
 }
 
-
-void Node::render(RenderInfo info, Camera* camera, glm::mat4 parentTran, void (*drawCall)(RenderInfo, GameObject*, glm::mat4)) {
+void Node::render(RenderInfo info, Camera* camera, glm::mat4 parentTran, void (*drawCall)(RenderInfo, GameObject*)) {
 	glm::mat4 currentTran;
 	if (object == nullptr) {
 		currentTran = parentTran;
@@ -53,7 +52,8 @@ void Node::render(RenderInfo info, Camera* camera, glm::mat4 parentTran, void (*
 	}
 	for (int i = 0; i < children.size(); ++i) {
 		if (shouldRender(camera, parentTran)) {
-			drawCall(info, children[i]->object, currentTran);
+			children[i]->object->setParentTransform(currentTran);
+			drawCall(info, children[i]->object);
 			children[i]->render(info, camera, children[i]->object->getModel() * parentTran, drawCall);
 		}
 	}

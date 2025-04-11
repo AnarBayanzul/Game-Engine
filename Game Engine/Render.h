@@ -4,13 +4,21 @@
 #include "Texture.h"
 #include "Camera.h"
 #include "Node.h"
+#include "tile.h"
+#include "Engine.h"
 
 #include <GL/glew.h>
 #include <string>
+#include <set>
+#include <utility>
 
 #define MAXOBJECTS 256
 #define MAXMESHES 128
 #define MAXTEXTURES 128
+
+#define GRIDSIZE 32 // this is gridsize on a side
+#define WORLDMIN -128.0
+#define WORLDMAX 128.0
 
 class Render { // One program per render object
 protected:
@@ -20,6 +28,7 @@ protected:
 	GLuint program;
 	Texture* textures[MAXTEXTURES];
 	Mesh* meshes[MAXMESHES] = {};
+	Mesh* physicsMeshes[MAXMESHES] = {}; // Convex versions of meshes (indices are one to one with meshes)
 	GameObject* objects[MAXOBJECTS] = {};
 	Camera* camera; // TODO for now, support for only one;
 
@@ -27,20 +36,49 @@ protected:
 	GLint uniformIndexProj;
 	GLint uniformIndexTran;
 	GLint uniformIndexColor;
+
+	// TODO for AABB
+	void assignAABB(GameObject* obj);
+
+	std::set<std::pair<GameObject*, GameObject*>> collisionSet;
+	const float TILESIZE = (WORLDMAX - WORLDMIN) / (float)GRIDSIZE;
+	tile collisionGrid[GRIDSIZE][GRIDSIZE][GRIDSIZE];
+	void initializeGrid(); // Call only once
+	void addToGrid(GameObject* obj);
+	// make sure this func has old min and max values
+	void removeFromGrid(GameObject* obj);
+	void generateCollisionSet();
+
+
 public:
 	Node* root;
 	// these methods return index
+	// these two are for convex meshes
 	int addMesh(std::string fileName, bool bytes);
 	int addMesh(Mesh* inputMesh); // conceivably only needed when wanting to add already loaded mesh to different render
+	// these two are to define your own physics meshes
+	int addMesh(Mesh* inputMesh, Mesh* inputPhysicsMesh);
+	int addMesh(std::string fileName, std::string physicsFileName, bool bytes);
+
 	int addTexture(std::string fileName);
 	int addTexture(Texture* inputTexture);
 	int addObject(GameObject* obj);
 	GameObject** getObjects();
 	Camera* getCamera();
 	virtual void update(float delta);
+	Mesh** getMeshes();
+
+
+
+
+
+
 
 
 	Render(std::string vertFile, std::string fragFile, Camera* CameraIn);
 	~Render();
 };
 
+void draw(RenderInfo info, GameObject* object);
+
+int addToRenderQueue(Render* renderObject);

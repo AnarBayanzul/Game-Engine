@@ -15,6 +15,12 @@ extern size_t delta;
 extern float deltaSec;
 
 
+#define MAXRENDEROBJECTS 2
+extern Render* RenderQueue[MAXRENDEROBJECTS];
+extern int renderCount;
+
+
+
 SDL_Surface* parseTexture(std::string fileName);
 
 size_t parseMesh(std::string fileName, std::vector<float>& data, bool bytes);

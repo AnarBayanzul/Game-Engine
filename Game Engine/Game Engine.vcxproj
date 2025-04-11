@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -47,10 +47,12 @@
     <ClInclude Include="RenderInfo.h" />
     <ClInclude Include="SDL_Manager.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="simplex.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundStates.h" />
     <ClInclude Include="SoundSystem.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="tile.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +61,7 @@
     <Text Include="defaultVertexShader.txt" />
     <Text Include="lambertianFragmentShader.txt" />
     <Text Include="mesh.txt" />
+    <Text Include="monkeyHull.txt" />
     <Text Include="monkeyMesh.txt" />
     <Text Include="monkeySmoothNormal.txt" />
     <Text Include="test.txt" />

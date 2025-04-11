@@ -5,6 +5,7 @@ class normalEnum:
     vertex, polygon = range(2)
 
 bytes = False
+bones = False
 normalType = normalEnum.vertex
 
 def write_some_data(context, filepath, use_some_setting):
@@ -21,11 +22,28 @@ def write_some_data(context, filepath, use_some_setting):
     
     # The meaty stuff
     delimiter = ' '
-    selected = bpy.context.view_layer.objects.active.data
+    
+    for obj in bpy.context.view_layer.objects:
+        if type(obj.data) == bpy.types.Mesh:
+            meshObj = obj
+            selectedMesh = obj.data
+        elif type(obj.data) == bpy.types.Armature:
+            selectedArmature = obj
+        
+    
+    
+#    selectedMesh = bpy.context.view_layer.objects.active.data # this must be type bpy_types.Mesh
+#    selectedArmature = None
+#    if type(selectedMesh) == bpy.types.Armature:
+#        for obj in bpy.data.objects:
+#            if obj.parent == selectedMesh:
+#                selectedArmature = selectedMesh
+#                selectedMesh = obj
+    
     
     # has polygons and vertices attributes
     
-    triangleCount = len(selected.polygons)
+    triangleCount = len(selectedMesh.polygons)
     
     # Each vertex position per polygon
     vertices = []
@@ -34,20 +52,50 @@ def write_some_data(context, filepath, use_some_setting):
 
     uvs = []
     times = 0
-    for polygon in selected.polygons:
+    for polygon in selectedMesh.polygons:
         for index in polygon.vertices:
-            vertices.append(selected.vertices[index].co)
+            vertices.append(selectedMesh.vertices[index].co)
             if normalType == normalEnum.polygon:
                 normals.append(polygon.normal)
             elif normalType == normalEnum.vertex:
-                normals.append(selected.vertices[index].normal)
+                normals.append(selectedMesh.vertices[index].normal)
             # TODO this is super inefficient
             for vert_idx, loop_idx in zip(polygon.vertices, polygon.loop_indices):
-                uv_coords = selected.uv_layers.active.data[loop_idx].uv
+                uv_coords = selectedMesh.uv_layers.active.data[loop_idx].uv
                 if vert_idx == index:
                     uvs.append(uv_coords)
                     break
-                    
+       
+       
+    # stuff for armature
+    
+    # armature data:
+        # identifier conditional if bones preset
+            # bone indices[4]
+            # bone weights[4]
+    boneCount = 0
+    boneHeads= [] # parent-child separation
+    boneTails = [] # bone location with respect to parent
+    if bones:        
+        selectedArmature.vertex_groups # array of vertex_groups created from armature
+        selectedMesh.vertices # group data
+        
+        boneCount = len(meshObj.vertex_groups)
+        print(boneCount)
+        print(len(selectedMesh.vertices))
+        
+        print(type(selectedArmature))
+        for bone in selectedArmature.data.bones:
+            print(bone.tail)
+            boneTails.append(bone.tail)
+            boneHeads.append(bone.head)
+        
+        for v in selectedMesh.vertices:
+            for g in v.groups:
+                print(g.group, end=":  ")
+                print(g.weight, end=",")
+            print("")
+                  
         
       
     if bytes:
@@ -64,6 +112,8 @@ def write_some_data(context, filepath, use_some_setting):
         for uv in uvs:
             for element in uv:
                 f.write(struct.pack('<f', element))
+                
+        
     else:
         output = ""  
         output += str(triangleCount)
@@ -79,10 +129,11 @@ def write_some_data(context, filepath, use_some_setting):
             for element in uv:
                 output += str(delimiter)
                 output += str(element)
+        
+        
+        
         f.write(output)
-    
-    
-    
+        
     
     f.close()
 

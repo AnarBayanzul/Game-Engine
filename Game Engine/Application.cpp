@@ -158,8 +158,8 @@ static void snakeInit() {
 	//RenderCel* renderObject = new RenderCel("defaultVertexShader.txt", "celShadingFragment.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
 	renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
 	renderObject->root = new Node(new GameObject());
-	renderObject->root->getObject()->move(glm::vec3(0.0f, 0.0f, 0.0f));
-
+	renderObject->root->getObject()->setPosition(glm::vec3(0.0f, 0.0f, -15.0f));
+	//renderObject->root->getObject()->setRotation(quat(glm::vec3(0.0f, 1.0f, 0.0f), 3.1415f / 4.0f));
 
 	int snakeBodyMesh = renderObject->addMesh("uvCube.txt", false);
 
@@ -183,7 +183,7 @@ static void snakeInit() {
 		for (int j = 0; j < MAPSIZE; ++j) {
 			objectIndex = renderObject->addObject(
 				new GameObject(
-					glm::vec3(2.0f * i - 10.0f + 1, 2.0f * j - 10.0f + 1, -15.0f),
+					glm::vec3(2.0f * i - 10.0f + 1, 2.0f * j - 10.0f + 1, 0.0f),
 					quat(),
 					snakeBodyMesh,
 					snakeTexIndex,
@@ -199,14 +199,14 @@ static void snakeInit() {
 	do { // find empty space for fruit
 		fruitLocation[0] = rand() % MAPSIZE;
 		fruitLocation[1] = rand() % MAPSIZE;
-		std::cout << "initial fruit: " << fruitLocation[0] << " " << fruitLocation[1] << std::endl;
+		//std::cout << "initial fruit: " << fruitLocation[0] << " " << fruitLocation[1] << std::endl;
 	} while (map[fruitLocation[0]][fruitLocation[1]]);
 	map[fruitLocation[0]][fruitLocation[1]] = -1;
 
 	// add fruit object
 	objectIndex = renderObject->addObject(
 		new GameObject(
-			glm::vec3(2.0f * fruitLocation[0] - 10.0f + 1, 2.0f * fruitLocation[1] - 10.0f + 1, -15.0f),
+			glm::vec3(2.0f * fruitLocation[0] - 10.0f + 1, 2.0f * fruitLocation[1] - 10.0f + 1, 0.0f),
 			quat(glm::vec3(1.0f, 0.0f, 0.0f), -3.1415f / 2.0f),
 			fruitMesh,
 			fruitTexIndex,
@@ -229,6 +229,19 @@ static void snakeInit() {
 float wait = 0.1;
 float elapsed = 0.0f;
 static void snakeUpdate(float deltaSec) {
+	//renderObject->getObjects()[0]->angularV = glm::vec3(1, 1, 1);
+	//std::cout << "obj 0\n";
+	//for (int i = 0; i < 3; ++i) {
+	//	std::cout << renderObject->getObjects()[0]->getAABBmin()[i];
+	//	std::cout << ",";
+	//}
+	//std::cout << std::endl;
+	//for (int i = 0; i < 3; ++i) {
+	//	std::cout << renderObject->getObjects()[0]->getAABBmax()[i];
+	//	std::cout << ",";
+	//}
+	//std::cout << std::endl;
+
 	if (lost) {
 		return;
 	}
@@ -236,26 +249,26 @@ static void snakeUpdate(float deltaSec) {
 	if (elapsed > wait) {
 		elapsed = 0.0f;
 		// actual update
-		system("cls");
+		//system("cls");
 		// take direction input
 		switch (lastKey.keysym.sym) {
 		case SDLK_LEFT:
-			std::cout << "left\n";
+			//std::cout << "left\n";
 			newDirection[0] = -1;
 			newDirection[1] = 0;
 			break;
 		case SDLK_RIGHT:
-			std::cout << "right\n";
+			//std::cout << "right\n";
 			newDirection[0] = 1;
 			newDirection[1] = 0;
 			break;
 		case SDLK_UP:
-			std::cout << "up\n";
+			//std::cout << "up\n";
 			newDirection[0] = 0;
 			newDirection[1] = 1;
 			break;
 		case SDLK_DOWN:
-			std::cout << "down\n";
+			//std::cout << "down\n";
 			newDirection[0] = 0;
 			newDirection[1] = -1;
 			break;
@@ -297,7 +310,7 @@ static void snakeUpdate(float deltaSec) {
 				fruitLocation[1] = rand() % MAPSIZE;
 			} while (map[fruitLocation[0]][fruitLocation[1]]);
 			map[fruitLocation[0]][fruitLocation[1]] = -1;
-			renderObject->getObjects()[MAPSIZE * MAPSIZE]->move(glm::vec3(2.0f * fruitLocation[0] - 10.0f + 1, 2.0f * fruitLocation[1] - 10.0f + 1, -15.0f));
+			renderObject->getObjects()[MAPSIZE * MAPSIZE]->setPosition(glm::vec3(2.0f * fruitLocation[0] - 10.0f + 1, 2.0f * fruitLocation[1] - 10.0f + 1, 0.0f));
 		}
 		else if (map[headLocation[0]][headLocation[1]] > 0) {
 			// has snake already
@@ -341,14 +354,79 @@ static void snakeUpdate(float deltaSec) {
 
 
 
+
+Render* AABBscene;
+void AABBtest() {
+	AABBscene = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
+	AABBscene->root = new Node(new GameObject());
+	AABBscene->root->getObject()->setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
+
+
+	int cubeMesh = AABBscene->addMesh("uvCube.txt", false);
+	int monkeyMesh = AABBscene->addMesh("monkeySmoothNormal.txt", "monkeyHull.txt", false);
+
+	Texture* cubeTex = new Texture("ohTheMisery.bmp", 0);
+	int cubeTexIndex = AABBscene->addTexture(cubeTex);
+
+	Texture* monkeyTex = new Texture("ohMyGah.bmp", 0);
+	int monkeyTexIndex = AABBscene->addTexture(monkeyTex);
+
+	int cubeIndex = AABBscene->addObject(
+		new GameObject(
+			glm::vec3(3.0, 3.0, 3.0),
+			quat(glm::vec3(1.0f, 0.0f, 0.0f), 0.0f),
+			cubeMesh,
+			cubeTexIndex,
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, 0.0f, 0.5f),
+			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+			true
+		)
+	);
+	AABBscene->root->addChild(new Node(AABBscene->getObjects()[cubeIndex]));
+
+	int monkeyIndex = AABBscene->addObject(
+		new GameObject(
+			glm::vec3(0.3, 3.0, 3.0),
+			quat(glm::vec3(1.0f, 0.0f, 0.0f), -3.1415f / 2.0f),
+			monkeyMesh,
+			monkeyTexIndex,
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+			true
+		)
+	);
+	AABBscene->root->addChild(new Node(AABBscene->getObjects()[monkeyIndex]));
+
+	addToRenderQueue(AABBscene);
+}
+
+void AABBtestUpdate(float deltaSec) {
+	//std::cout << "obj 0\n";
+	//for (int i = 0; i < 3; ++i) {
+	//	std::cout << AABBscene->getObjects()[0]->getAABBmin()[i];
+	//	std::cout << ",";
+	//}
+	//std::cout << std::endl;
+	//for (int i = 0; i < 3; ++i) {
+	//	std::cout << AABBscene->getObjects()[0]->getAABBmax()[i];
+	//	std::cout << ",";
+	//}
+	//std::cout << std::endl;
+}
+
+
 int initialize() { // What should default initialize look like? 
-	std::cout << "user successfully performs initialization\n";
+	//std::cout << "user successfully performs initialization\n";
 
 	//example();
 	//exampleCel();
 	//exampleAudio();
+	//snakeInit();
 
-	snakeInit();
+	AABBtest();
+
 
 
 	return 0;
@@ -357,7 +435,7 @@ int initialize() { // What should default initialize look like?
 int globalUpdate(float deltaSec) {
 	// TODO is this necessary?
 
-	snakeUpdate(deltaSec);
-
+	//snakeUpdate(deltaSec);
+	AABBtestUpdate(deltaSec);
 	return 0;
 }

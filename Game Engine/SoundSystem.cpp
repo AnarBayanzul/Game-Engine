@@ -103,13 +103,13 @@ SoundSystem::SoundSystem() {
 		std::cout << "First device error\n";
 	}
 	
-	std::cout << "System Format:\n";
-	std::cout << "\tChannels: " << (int) obtained.channels << std::endl;
-	std::cout << "\tFrequency: " << std::dec << obtained.freq << std::endl;
-	std::cout << "\tFormat: " << std::hex << obtained.format << std::endl;
-	std::cout << "\tSize: " << std::dec << obtained.size << std::endl;
-	std::cout << "\tSamples: " << std::dec << obtained.samples << std::endl;
-	std::cout << "\tSilence: " << std::hex << obtained.silence << std::endl;
+	//std::cout << "System Format:\n";
+	//std::cout << "\tChannels: " << (int) obtained.channels << std::endl;
+	//std::cout << "\tFrequency: " << std::dec << obtained.freq << std::endl;
+	//std::cout << "\tFormat: " << std::hex << obtained.format << std::endl;
+	//std::cout << "\tSize: " << std::dec << obtained.size << std::endl;
+	//std::cout << "\tSamples: " << std::dec << obtained.samples << std::endl;
+	//std::cout << "\tSilence: " << std::hex << obtained.silence << std::endl;
 
 
 	playbackSize = 0;
