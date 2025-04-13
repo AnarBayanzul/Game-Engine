@@ -12,7 +12,7 @@ enum planes {
 	FAR
 };
 
-class Camera: GameObject {
+class Camera: public GameObject {
 private:
 	float fov; // TODO these may be unnecessary
 	float aspectRatio;

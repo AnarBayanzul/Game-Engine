@@ -220,6 +220,7 @@ void Render::update(float delta) {
 	//std::cout << collisionSet.size() << std::endl;
 	glm::mat4 firstTran;
 	glm::mat4 secondTran;
+	objectType A, B;
 	for (iter = collisionSet.begin(); iter != collisionSet.end(); ++iter) {
 		firstTran = iter->first->getParentTransform();
 		secondTran = iter->second->getParentTransform();
@@ -231,8 +232,14 @@ void Render::update(float delta) {
 			iter->second->getRotation(),
 			iter->second->getPosition()
 		)) {
-			std::cout << "yay intersect!\n";
-			// TODO apply func table here
+			// apply func table here
+			A = iter->first->getType();
+			B = iter->second->getType();
+			if (B < A) {
+				getFromCollisionTable(B, A)(iter->second, iter->first);
+			} else {
+				getFromCollisionTable(A, B)(iter->first, iter->second);
+			}
 		}
 	}
 

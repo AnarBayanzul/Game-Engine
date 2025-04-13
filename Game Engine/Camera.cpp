@@ -12,6 +12,7 @@ Camera::Camera(float fovIn, float aspectIn, float closeIn, float farIn) {
 	aspectRatio = aspectIn;
 	close = closeIn;
 	far = farIn;
+	selfType = CAMERA;
 
 	projection = glm::perspective(fov, aspectRatio, close, far);
 }

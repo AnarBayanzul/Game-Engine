@@ -15,6 +15,7 @@ GameObject::GameObject() {
 	linearV = glm::vec3(0.0f, 0.0f, 0.0f);
 	angularV = glm::vec3(0.0f, 0.0f, 0.0f);
 	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	selfType = GAMEOBJECT;
 }
 
 GameObject::GameObject(glm::vec3 pos, quat rot, int RE, int TE, glm::vec3 LV, glm::vec3 AV, glm::vec4 inputColor, bool showToScreen) {
@@ -26,6 +27,7 @@ GameObject::GameObject(glm::vec3 pos, quat rot, int RE, int TE, glm::vec3 LV, gl
 	linearV = LV;
 	angularV = AV;
 	color = inputColor;
+	selfType = GAMEOBJECT;
 }
 
 void GameObject::update(float delta) {
@@ -103,6 +105,10 @@ void GameObject::setRenderElement(int RE) {
 }
 void GameObject::setRotation(quat rotationIn) {
 	rotation = rotationIn;
+}
+
+objectType GameObject::getType() {
+	return selfType;
 }
 
 glm::vec3 GameObject::getAABBmin() {

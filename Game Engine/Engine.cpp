@@ -9,6 +9,21 @@
 
 SDL_KeyboardEvent lastKey;
 
+
+
+collisionFunc collisionTable[(NUMOFTYPES * (NUMOFTYPES + 1)) / 2] = {};
+
+void addToCollisionTable(objectType A, objectType B, collisionFunc inputFunc) {
+	// Assuming A is the *lesser* objectType
+	int index = (B * (B + 1)) / 2 + A;
+	collisionTable[index] = inputFunc;
+}
+collisionFunc getFromCollisionTable(objectType A, objectType B) {
+	int index = (B * (B + 1)) / 2 + A;
+	return collisionTable[index];
+}
+
+
 size_t getDeltaTime() {
 	return delta;
 }

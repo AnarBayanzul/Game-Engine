@@ -355,8 +355,17 @@ static void snakeUpdate(float deltaSec) {
 
 
 
+
+
+
+void genericCollision(GameObject* A, GameObject* B) {
+	std::cout << "OMG a collision\n";
+}
+
 Render* AABBscene;
 void AABBtest() {
+	addToCollisionTable(GAMEOBJECT, GAMEOBJECT, genericCollision);
+
 	AABBscene = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
 	AABBscene->root = new Node(new GameObject());
 	AABBscene->root->getObject()->setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
@@ -426,8 +435,6 @@ int initialize() { // What should default initialize look like?
 	//snakeInit();
 
 	AABBtest();
-
-
 
 	return 0;
 }

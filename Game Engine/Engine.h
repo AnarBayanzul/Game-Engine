@@ -1,6 +1,7 @@
 #pragma once
 #include "quat.h"
 #include "Mesh.h"
+#include "GameObject.h"
 
 #include <SDL.h>
 #include <string>
@@ -29,7 +30,17 @@ quat integrateAngular(float deltaTime, const glm::vec3 angular);
 // Collisions stuff
 bool GJK(Mesh* A, quat aQ, glm::vec3 sA, Mesh* B, quat bQ, glm::vec3 sB);
 
-//void test1();
-//void test2();
-//
-//void (*funcptr[])() = { test1, test2 };
+
+typedef void (*collisionFunc)(GameObject*, GameObject*);
+// A must always be less than B
+//   __0_1_2_3  <- A
+// 0 | 0
+// 1 | 1 2
+// 2 | 3 4 5
+// 3 | 6 7 8 9
+// ^ B
+extern collisionFunc collisionTable[(NUMOFTYPES * (NUMOFTYPES + 1)) / 2];
+
+
+void addToCollisionTable(objectType A, objectType B, collisionFunc inputFunc);
+collisionFunc getFromCollisionTable(objectType A, objectType B);

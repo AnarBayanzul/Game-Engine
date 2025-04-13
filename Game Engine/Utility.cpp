@@ -18,7 +18,6 @@ float deltaSec;
 Render* RenderQueue[MAXRENDEROBJECTS];
 int renderCount = 0;
 
-#include <iostream>
 // Returns error value
 SDL_Surface* parseTexture(std::string fileName) {
 	//SDL_Surface* example = SDL_LoadBMP(fileName.c_str());
