@@ -32,7 +32,39 @@ float getDeltaSeconds() {
 	return deltaSec;
 }
 
-// Integration functions TODO
+quat slerp(quat a, quat b, float t) {
+	glm::vec4 result;
+	glm::vec4 vA = a.getElements();
+	glm::vec4 vB = b.getElements();
+
+	float cosHalfTheta = glm::dot(vA, vB);
+	if (std::abs(cosHalfTheta) >= 1.0) {
+		return a;
+	}
+	float halfTheta = glm::acos(cosHalfTheta);
+	float sinHalfTheta = glm::sqrt(1.0 - cosHalfTheta * cosHalfTheta);
+	if (std::abs(sinHalfTheta) < 0.001) {
+		result.x = 0.5 * vA.x + 0.5 * vB.x;
+		result.y = 0.5 * vA.y + 0.5 * vB.y;
+		result.z = 0.5 * vA.z + 0.5 * vB.z;
+		result.w = 0.5 * vA.w + 0.5 * vB.w;
+		return quat(result);
+	}
+	float ratioA = glm::sin((1 - t) * halfTheta) / sinHalfTheta;
+	float ratioB = glm::sin(t * halfTheta) / sinHalfTheta;
+
+	result.x = ratioA * vA.x + ratioB * vB.x;
+	result.y = ratioA * vA.y + ratioB * vB.y;
+	result.z = ratioA * vA.z + ratioB * vB.z;
+	result.w = ratioB * vA.w + ratioB * vB.w;
+
+	return quat(result);
+}
+
+
+
+
+
 glm::vec3 integrateLinear(float deltaTime, const glm::vec3& linear) {
 	// s += t * v
 	return deltaTime * linear;

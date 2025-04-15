@@ -66,3 +66,8 @@ quat quat::conjugate() {
 		-quaternion.w
 	));
 }
+
+
+glm::vec4 quat::getElements() {
+	return quaternion;
+}

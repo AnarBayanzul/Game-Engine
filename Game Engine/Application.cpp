@@ -5,6 +5,7 @@
 #include "RenderCel.h"
 #include "Texture.h"
 #include "Node.h"
+#include "Animation.h"
 
 
 #include "SoundSystem.h"
@@ -22,8 +23,8 @@
 static void example() {
 
 	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
-	int monkeyMesh = renderObject->addMesh("monkeySmoothNormal.txt", false);
-	int cubeMesh = renderObject->addMesh("uvCube.txt", false);
+	int monkeyMesh = renderObject->addMesh("monkeySmoothNormal.txt", false, false);
+	int cubeMesh = renderObject->addMesh("uvCube.txt", false, false);
 	if (monkeyMesh == -1) {
 		throw;
 	}
@@ -65,8 +66,8 @@ static void example() {
 
 static void exampleCel() {
 	RenderCel* renderObject = new RenderCel("defaultVertexShader.txt", "celShadingFragment.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
-	int monkeyMesh = renderObject->addMesh("monkeySmoothNormal.txt", false);
-	int cubeMesh = renderObject->addMesh("uvCube.txt", false);
+	int monkeyMesh = renderObject->addMesh("monkeySmoothNormal.txt", false, false);
+	int cubeMesh = renderObject->addMesh("uvCube.txt", false, false);
 	if (monkeyMesh == -1) {
 		throw;
 	}
@@ -107,7 +108,7 @@ static void exampleCel() {
 static void exampleAudio() {
 	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
 	
-	int cubeMesh = renderObject->addMesh("uvCube.txt", false);
+	int cubeMesh = renderObject->addMesh("uvCube.txt", false, false);
 
 	Texture* example = new Texture("ohMyGah.bmp", 0);
 	int texIndex = renderObject->addTexture(example);
@@ -161,7 +162,7 @@ static void snakeInit() {
 	renderObject->root->getObject()->setPosition(glm::vec3(0.0f, 0.0f, -15.0f));
 	//renderObject->root->getObject()->setRotation(quat(glm::vec3(0.0f, 1.0f, 0.0f), 3.1415f / 4.0f));
 
-	int snakeBodyMesh = renderObject->addMesh("uvCube.txt", false);
+	int snakeBodyMesh = renderObject->addMesh("uvCube.txt", false, false);
 
 	Texture* snakeBodyTex = new Texture("ohTheMisery.bmp", 0);
 	snakeTexIndex = renderObject->addTexture(snakeBodyTex);
@@ -170,7 +171,7 @@ static void snakeInit() {
 	Texture* headTex = new Texture("ohMyGah.bmp", 0);
 	headTexIndex = renderObject->addTexture(headTex);
 	
-	int fruitMesh = renderObject->addMesh("monkeySmoothNormal.txt", false);
+	int fruitMesh = renderObject->addMesh("monkeySmoothNormal.txt", false, false);
 	Texture* fruitTex = new Texture("ohMyGah.bmp", 0);
 	int fruitTexIndex = renderObject->addTexture(snakeBodyTex);
 
@@ -366,13 +367,13 @@ Render* AABBscene;
 void AABBtest() {
 	addToCollisionTable(GAMEOBJECT, GAMEOBJECT, genericCollision);
 
-	AABBscene = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
+	AABBscene = new Render("armatureVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
 	AABBscene->root = new Node(new GameObject());
 	AABBscene->root->getObject()->setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 
 
-	int cubeMesh = AABBscene->addMesh("uvCube.txt", false);
-	int monkeyMesh = AABBscene->addMesh("monkeySmoothNormal.txt", "monkeyHull.txt", false);
+	int cubeMesh = AABBscene->addMesh("uvCube.txt", false, false);
+	int monkeyMesh = AABBscene->addMesh("monkeySmoothNormal.txt", "monkeyHull.txt", false, false);
 
 	Texture* cubeTex = new Texture("ohTheMisery.bmp", 0);
 	int cubeTexIndex = AABBscene->addTexture(cubeTex);
@@ -407,6 +408,29 @@ void AABBtest() {
 		)
 	);
 	AABBscene->root->addChild(new Node(AABBscene->getObjects()[monkeyIndex]));
+
+
+
+
+	// armature
+	int bodyMesh = AABBscene->addMesh("body.txt", false, true);
+	int bodyIndex = AABBscene->addObject(
+		new GameObject(
+			glm::vec3(0.0, 0.0, 0.0),
+			quat(glm::vec3(1.0f, 0.0f, 0.0f), -3.1415f / 2.0f),
+			bodyMesh,
+			cubeTexIndex,
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, -0.5f, 0.0f),
+			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+			true
+		)
+	);
+	AABBscene->root->addChild(new Node(AABBscene->getObjects()[bodyIndex]));
+
+
+	int animIndex = AABBscene->addAnimation("dabAnim.txt", false);
+	AABBscene->playAnimation(animIndex, bodyIndex);
 
 	addToRenderQueue(AABBscene);
 }

@@ -52,6 +52,8 @@ public:
 	glm::mat4 getParentTransform();
 	void setParentTransform(glm::mat4 newM);
 
+	std::vector<glm::mat4> bonesBufferable = {};
+
 	objectType getType();
 
 	glm::vec3 getAABBmin();

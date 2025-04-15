@@ -63,6 +63,12 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyframe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SDL_Manager.h">
@@ -116,6 +122,21 @@
     <ClInclude Include="tile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vertexBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="boneData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyframe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="mesh.txt">
@@ -143,12 +164,22 @@
     <Text Include="monkeyHull.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="body.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="armatureVertexShader.txt" />
+    <Text Include="dabAnim.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="game_engine_blender_custom_export.py">
+    <None Include="game_engine_blender_mesh_export.py">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="cube.gex">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="game_engine_blender_animation_export.py">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

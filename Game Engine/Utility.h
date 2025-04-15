@@ -23,4 +23,6 @@ extern int renderCount;
 
 SDL_Surface* parseTexture(std::string fileName);
 
-size_t parseMesh(std::string fileName, std::vector<float>& data, bool bytes);
+size_t parseMesh(std::string fileName, std::vector<float>& data, std::vector<vertexBone>& vertexBoneData, std::vector<boneData>& bones, bool bytes, bool boned);
+
+size_t parseAnim(std::string fileName, int& boneCount, std::vector<Keyframe>& data, bool bytes);

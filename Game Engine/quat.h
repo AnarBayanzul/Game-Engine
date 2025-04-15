@@ -15,5 +15,6 @@ public:
 	glm::vec3 operator*(glm::vec3 point);
 	operator glm::mat4();
 	quat conjugate();
+	glm::vec4 getElements();
 };
 

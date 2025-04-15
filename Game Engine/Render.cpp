@@ -68,6 +68,8 @@ int Render::loadShaders(std::string vertFile, std::string fragFile) {
 	uniformIndexProj = glGetUniformLocation(program, "proj");
 	uniformIndexTran = glGetUniformLocation(program, "tran");
 	uniformIndexColor = glGetUniformLocation(program, "baseColor");
+	uniformIndexBones = glGetUniformLocation(program, "bones");
+
 	return 0;
 }
 
@@ -100,12 +102,15 @@ void Render::assignAABB(GameObject* obj) {
 	obj->setAABBmax(max);
 }
 
-int Render::addMesh(std::string fileName, bool bytes) {
+int Render::addMesh(std::string fileName, bool bytes, bool boned) {
 	if (meshCount >= MAXMESHES) {
+		std::cout << "Too many meshes\n";
 		return -1;
 	}
 	std::vector<float>data = {};
-	meshes[meshCount] = new Mesh(parseMesh(fileName, data, bytes), data);
+	std::vector<vertexBone>vertexBoneData = {};
+	std::vector<boneData>  bones = {};
+	meshes[meshCount] = new Mesh(parseMesh(fileName, data, vertexBoneData, bones, bytes, boned), data, vertexBoneData, bones, boned);
 	physicsMeshes[meshCount] = meshes[meshCount];
 	//std::cout << fileName << std::endl;
 	//for (int i = 0; i < 8; ++i) {
@@ -119,6 +124,7 @@ int Render::addMesh(std::string fileName, bool bytes) {
 
 int Render::addMesh(Mesh* inputMesh) {
 	if (meshCount >= MAXMESHES) {
+		std::cout << "Too many meshes\n";
 		return -1;
 	}
 	meshes[meshCount] = inputMesh;
@@ -128,26 +134,49 @@ int Render::addMesh(Mesh* inputMesh) {
 
 int Render::addMesh(Mesh* inputMesh, Mesh* inputPhysicsMesh) {
 	if (meshCount >= MAXMESHES) {
+		std::cout << "Too many meshes\n";
 		return -1;
 	}
 	meshes[meshCount] = inputMesh;
 	physicsMeshes[meshCount] = inputPhysicsMesh;
 	return meshCount++;
 }
-int Render::addMesh(std::string fileName, std::string physicsFileName, bool bytes) {
+int Render::addMesh(std::string fileName, std::string physicsFileName, bool bytes, bool boned) {
 	if (meshCount >= MAXMESHES) {
+		std::cout << "Too many meshes\n";
 		return -1;
 	}
 	std::vector<float>data = {};
-	meshes[meshCount] = new Mesh(parseMesh(fileName, data, bytes), data);
+	std::vector<vertexBone>vertexBoneData = {};
+	std::vector<boneData>  bones = {};
+	meshes[meshCount] = new Mesh(parseMesh(fileName, data, vertexBoneData, bones, bytes, boned), data, vertexBoneData, bones, boned);
 	data.clear();
-	physicsMeshes[meshCount] = new Mesh(parseMesh(physicsFileName, data, bytes), data);
+	vertexBoneData.clear();
+	bones.clear();
+	physicsMeshes[meshCount] = new Mesh(parseMesh(physicsFileName, data, vertexBoneData, bones, bytes, boned), data, vertexBoneData, bones, boned);
 
 	return meshCount++;
 }
 
+
+
+int Render::addAnimation(std::string fileName, bool bytes) {
+	if (animationCount >= MAXANIMATIONS) {
+		std::cout << "Too many animations\n";
+		return -1;
+	}
+	std::vector<Keyframe> animData = {};
+	int boneCount;
+	int frameCount = parseAnim(fileName, boneCount, animData, bytes);
+	animations[animationCount] = new Animation(frameCount, boneCount, animData);
+	return animationCount++;
+}
+
+
+
 int Render::addTexture(std::string fileName) {
 	if (textureCount >= MAXTEXTURES) {
+		std::cout << "Too many textures\n";
 		return -1;
 	}
 	// run parse texture function TODO
@@ -158,6 +187,7 @@ int Render::addTexture(std::string fileName) {
 
 int Render::addTexture(Texture* inputTexture) {
 	if (textureCount >= MAXTEXTURES) {
+		std::cout << "Too many textures\n";
 		return -1;
 	}
 	textures[textureCount] = inputTexture;
@@ -187,6 +217,19 @@ void draw(RenderInfo info, GameObject* object) {
 		}
 		glUniformMatrix4fv(info.uniformIndexTran, 1, GL_FALSE, glm::value_ptr(object->getParentTransform() * object->getModel()));
 		glUniform4fv(info.uniformIndexColor, 1, glm::value_ptr(object->getColor()));
+		
+		if (object->bonesBufferable.size() > 0) {
+			glm::mat4 cheat[19];
+			for (int i = 0; i < 19; ++i) {
+				cheat[i] = glm::mat4(1.0);
+			}
+			glUniformMatrix4fv(info.uniformIndexBones, ANIMATIONBONES, GL_FALSE, glm::value_ptr(cheat[0]));
+			//glUniformMatrix4fv(info.uniformIndexBones, ANIMATIONBONES, GL_FALSE, glm::value_ptr((object->bonesBufferable)[0]));
+		} else {
+			glm::mat4 blankMat = glm::mat4(0);
+			glUniformMatrix4fv(info.uniformIndexBones, 1, GL_FALSE, glm::value_ptr(blankMat));
+		}
+
 		glDrawArrays(GL_TRIANGLES, 0, (info.meshes[object->getRenderElement()])->getVertexCount());
 	}
 }
@@ -198,8 +241,9 @@ void Render::update(float delta) {
 		removeFromGrid(objects[i]);
 		objects[i]->update(delta);
 	}
+	updateAnimation(delta); // Internally loops through playback
 
-	RenderInfo info = { uniformIndexProj, uniformIndexTran, uniformIndexColor, textures, meshes };
+	RenderInfo info = { uniformIndexProj, uniformIndexTran, uniformIndexColor, uniformIndexBones, textures, meshes };
 	glUseProgram(program);
 	glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(camera->getProjection()));
 	//for (int i = 0; i < objectCount; ++i) {
@@ -353,6 +397,108 @@ void Render::generateCollisionSet() {
 	}
 }
 
+int Render::playAnimation(int animationIndex, int objIndex) {
+	if (playbackSize >= MAXPLAYINGANIMATIONS) {
+		std::cout << "Too many playing animations\n";
+		return false;
+	}
+	playback[playbackSize].anim = animations[animationIndex];
+	playback[playbackSize].obj = objects[objIndex];
+	playback[playbackSize].meshIn = meshes[objects[objIndex]->getRenderElement()];
+	playback[playbackSize].time = 0.0;
+
+	return playbackSize++;
+}
+bool Render::stopAnimation(int playBackIndex) {
+	if (playBackIndex >= playbackSize) {
+		std::cout << "Animation to stop doesn't exist.\n";
+		return false;
+	}
+	--playbackSize;
+	std::swap(playback[playBackIndex], playback[playbackSize]);
+	return true;
+}
+
+void Render::updateAnimation(float delta) {
+	// loop through playback
+	int keyBegin = 0;
+	int keyEnd = 1;
+	float t = 0.0;
+	quat betweenRot;
+	int ID;
+	int k;
+	glm::mat4 toBuffer;
+	std::vector<quat> rotation;
+	std::vector<glm::vec3> displacement;
+	for (int i = 0; i < playbackSize; ++i) {
+		// find keyframes to interpolate between
+		keyEnd = 0;
+		while (playback[i].time > playback[i].anim->animData[keyEnd].timeStamp) {
+			keyEnd += 1;
+			if (keyEnd == playback[i].anim->keyCount) {
+				break;
+			}
+		}
+		keyBegin = keyEnd - 1;
+		if (keyEnd == playback[i].anim->keyCount) {
+			--keyEnd;
+		}
+		// parameter for interpolating
+		t = (playback[i].time - playback[i].anim->animData[keyBegin].timeStamp) / (playback[i].anim->animData[keyEnd].timeStamp - playback[i].anim->animData[keyBegin].timeStamp);
+		if (t > 1.0) {
+			t = 1.0;
+		}
+
+		// stream ID and quat data
+			// struct of origin, parent_to_this, and parent index
+			// convert to mat4
+		rotation.clear();
+		displacement.clear();
+		playback[i].obj->bonesBufferable.clear();
+		for (int j = 0; j < playback[i].anim->boneCount; ++j) {
+			// finds interpolated rotation
+			k = 0; // this is ID
+			while (playback[i].anim->animData[keyBegin].boneTransform[k].first != j && k < playback[i].anim->boneCount) {
+				++k;
+			}
+			ID = playback[i].anim->animData[keyBegin].boneTransform[k].first;
+			if (k == playback[i].anim->boneCount) {
+				betweenRot = quat(glm::vec4(1.0, 0.0, 0.0, 0.0));
+			} else {
+				betweenRot = slerp(playback[i].anim->animData[keyBegin].boneTransform[k].second, playback[i].anim->animData[keyEnd].boneTransform[k].second, t);
+			}
+
+			// local transforms
+			if (playback[i].meshIn->bones[j].parent == -1) {
+				// no parent, identity transform
+				rotation.push_back(quat(glm::vec4(1.0, 0.0, 0.0, 0.0)));
+				displacement.push_back(glm::vec3(0));
+			}
+			else {
+				rotation.push_back(
+					rotation[playback[i].meshIn->bones[j].parent] * betweenRot
+				);
+				displacement.push_back(
+					displacement[playback[i].meshIn->bones[j].parent] + (rotation.back() * playback[i].meshIn->bones[j].parent_to_this)
+				);
+			}
+			// convert bonesIn[i] to mat4
+			//playback[i].meshIn->bones[j].origin;
+			//playback[i].meshIn->bones[j].parent;
+			//playback[i].meshIn->bones[j].origin;
+			toBuffer =  glm::translate((glm::mat4) rotation.back(), displacement.back() - playback[i].meshIn->bones[j].origin);
+			//playback[i].obj->bonesBufferable.push_back(toBuffer);
+			playback[i].obj->bonesBufferable.push_back(glm::mat4(1));
+		}
+		//std::cout << glm::to_string(playback[i].obj->bonesBufferable[3]) << "\n\n";
+		playback[i].time += delta;
+	}
+
+}
+
+
+
+
 Render::Render(std::string vertFile, std::string fragFile, Camera* cameraIn) {
 	if (loadShaders(vertFile, fragFile)) {
 		std::cout << "Shaders didn't load correctly\n";
@@ -361,6 +507,8 @@ Render::Render(std::string vertFile, std::string fragFile, Camera* cameraIn) {
 	objectCount = 0;
 	meshCount = 0;
 	textureCount = 0;
+	animationCount = 0;
+	playbackSize = 0;
 	camera = cameraIn;
 	root = nullptr;
 	initializeGrid();
@@ -376,6 +524,9 @@ Render::~Render() {
 	}
 	for (int i = 0; i < textureCount; ++i) {
 		delete textures[i];
+	}
+	for (int i = 0; i < animationCount; ++i) {
+		delete animations[i];
 	}
 	delete camera;
 	delete root;

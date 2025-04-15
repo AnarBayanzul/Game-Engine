@@ -1,6 +1,8 @@
 #pragma once
 
 #include "quat.h"
+#include "vertexBone.h"
+#include "boneData.h"
 
 #include <Gl/glew.h>
 #include <vector>
@@ -25,7 +27,11 @@ private:
 	// 7 max max max
 	glm::vec3 boundaryPoints[8];
 public:
-	Mesh(const size_t triangleCount, const std::vector<float>& data);
+	// bone data
+	std::vector<vertexBone> boneWeights;
+	std::vector<boneData> bones;
+
+	Mesh(const size_t triangleCount, const std::vector<float>& data, const std::vector<vertexBone>& vertexBoneData, const std::vector<boneData>& bonesIn, bool boned);
 	~Mesh();
 	const GLuint getVAO();
 	const GLsizei getVertexCount();

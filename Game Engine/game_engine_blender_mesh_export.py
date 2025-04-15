@@ -5,7 +5,7 @@ class normalEnum:
     vertex, polygon = range(2)
 
 bytes = False
-bones = False
+bones = True
 normalType = normalEnum.vertex
 
 def write_some_data(context, filepath, use_some_setting):
@@ -51,6 +51,11 @@ def write_some_data(context, filepath, use_some_setting):
     normals = []
 
     uvs = []
+    
+        # each entry in lists below represent one vertex
+    boneIndices = []
+    boneWeights = []
+
     times = 0
     for polygon in selectedMesh.polygons:
         for index in polygon.vertices:
@@ -65,38 +70,56 @@ def write_some_data(context, filepath, use_some_setting):
                 if vert_idx == index:
                     uvs.append(uv_coords)
                     break
-       
+            # bone weights
+            if bones:
+                groupCount = 0
+                for g in selectedMesh.vertices[index].groups:
+                    boneIndices.append(g.group)
+                    boneWeights.append(g.weight)
+                    groupCount += 1
+                while groupCount < 4:
+                    boneIndices.append(0)
+                    boneWeights.append(0.0)
+                    groupCount += 1
        
     # stuff for armature
+    if bones:    
+        nameIndex = {}
+        for i in range(len(meshObj.vertex_groups)):
+            nameIndex[meshObj.vertex_groups[i].name] = i
+        # armature data:
+            # identifier conditional if bones preset
+                # bone indices[4]
+                # bone weights[4]
+
+        boneCount = len(meshObj.vertex_groups)
+        parent_to_this = [None] * boneCount # vector between head of parent and head of child
+        bone_origin = [None] * boneCount # original head position of a bone (local space of mesh
+        boneParent = [-1] * boneCount # index of parent
     
-    # armature data:
-        # identifier conditional if bones preset
-            # bone indices[4]
-            # bone weights[4]
-    boneCount = 0
-    boneHeads= [] # parent-child separation
-    boneTails = [] # bone location with respect to parent
-    if bones:        
         selectedArmature.vertex_groups # array of vertex_groups created from armature
         selectedMesh.vertices # group data
         
-        boneCount = len(meshObj.vertex_groups)
-        print(boneCount)
-        print(len(selectedMesh.vertices))
-        
-        print(type(selectedArmature))
         for bone in selectedArmature.data.bones:
-            print(bone.tail)
-            boneTails.append(bone.tail)
-            boneHeads.append(bone.head)
-        
-        for v in selectedMesh.vertices:
-            for g in v.groups:
-                print(g.group, end=":  ")
-                print(g.weight, end=",")
-            print("")
-                  
-        
+            thisIndex = nameIndex[bone.name]
+            if bone.parent == None:
+                parentIndex = -1
+            else:
+                parentIndex = nameIndex[bone.parent.name]
+            bone_origin[thisIndex] = bone.head_local                     # change to bone.head if you want parent space
+            boneParent[thisIndex] = parentIndex
+            if bone.parent == None:
+                parent_to_this[thisIndex] = bone.head_local
+            else:
+                parent_to_this[thisIndex] = bone.head_local - bone.parent.head_local
+
+#        print(boneCount) # int
+#        print(len(bone_origin)) # vectors
+#        print(len(parent_to_this)) # vectors
+#        print(len(boneParent)) # int
+
+    
+ 
       
     if bytes:
         # int and floats are 4 bytes
@@ -112,7 +135,22 @@ def write_some_data(context, filepath, use_some_setting):
         for uv in uvs:
             for element in uv:
                 f.write(struct.pack('<f', element))
-                
+        for i in range(0, len(boneIndices), 4):
+            for j in range(4):
+                f.write(struct.pack('<i', boneIndices[i + j]))
+            for j in range(4):
+                f.write(struct.pack('<f', boneWeights[i + j]))
+
+            
+        f.write(struct.pack('<i', boneCount))
+        for bone in bone_origin:
+            for element in bone:
+                f.write(struct.pack('<f', element))
+        for bone in parent_to_this:
+            for element in bone:
+                f.write(struct.pack('<f', element))
+        for parentIndex in boneParent:
+            f.write(struct.pack('<i', parentIndex))
         
     else:
         output = ""  
@@ -129,7 +167,28 @@ def write_some_data(context, filepath, use_some_setting):
             for element in uv:
                 output += str(delimiter)
                 output += str(element)
+        for i in range(0, len(boneIndices), 4):
+            for j in range(4):
+                output += str(delimiter)
+                output += str(boneIndices[i + j])
+            for j in range(4):
+                output += str(delimiter)
+                output += str(boneWeights[i + j])
         
+        output += str(delimiter)
+        output += str(boneCount)
+        for bone in bone_origin:
+            for element in bone:
+                output += str(delimiter)
+                output += str(element)
+        for bone in parent_to_this:
+            for element in bone:
+                output += str(delimiter)
+                output += str(element)
+        for parentIndex in boneParent:
+            output += str(delimiter)
+            output += str(parentIndex)
+
         
         
         f.write(output)
@@ -138,6 +197,29 @@ def write_some_data(context, filepath, use_some_setting):
     f.close()
 
     return {'FINISHED'}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # ExportHelper is a helper class, defines filename and

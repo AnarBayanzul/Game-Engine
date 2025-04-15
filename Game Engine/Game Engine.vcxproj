@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Keyframe.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="OpenGL_testscript.cpp" />
     <ClCompile Include="main.cpp" />
@@ -37,9 +39,13 @@
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationStates.h" />
+    <ClInclude Include="boneData.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Keyframe.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="quat.h" />
     <ClInclude Include="Render.h" />
@@ -54,9 +60,13 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tile.h" />
     <ClInclude Include="Utility.h" />
+    <ClInclude Include="vertexBone.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="armatureVertexShader.txt" />
+    <Text Include="body.txt" />
     <Text Include="celShadingFragment.txt" />
+    <Text Include="dabAnim.txt" />
     <Text Include="defaultFragmentShader.txt" />
     <Text Include="defaultVertexShader.txt" />
     <Text Include="lambertianFragmentShader.txt" />
@@ -70,7 +80,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cube.gex" />
-    <None Include="game_engine_blender_custom_export.py" />
+    <None Include="game_engine_blender_animation_export.py" />
+    <None Include="game_engine_blender_mesh_export.py" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="ohMyGah.bmp" />

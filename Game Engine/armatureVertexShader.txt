@@ -1,0 +1,49 @@
+#version 410
+layout(location = 0) in vec3 pos;
+layout(location = 1) in vec3 norm;
+layout(location = 2) in vec2 texCoord;
+
+layout(location = 3) in ivec4 boneID;
+layout(location = 4) in vec4 boneWeights;
+
+uniform mat4 bones[19];
+
+uniform mat4 proj;
+uniform mat4 tran;
+smooth out vec3 normal;
+smooth out vec2 uvCoord;
+
+out vec3 worldPos;
+
+bool isZeroMatrix(mat4 m) {
+    return all(equal(m[0], vec4(0.0))) && 
+           all(equal(m[1], vec4(0.0))) && 
+           all(equal(m[2], vec4(0.0))) && 
+           all(equal(m[3], vec4(0.0)));
+}
+
+void main() {
+	normal = (tran * vec4(norm.xyz, 0.0)).xyz;
+
+	uvCoord = texCoord;
+
+
+	if (isZeroMatrix(bones[0])) {
+		gl_Position = proj * tran * vec4(pos, 1.0);
+	} else {
+		
+		
+		vec3 armPos = vec3(0.0f, 0.0f, 0.0f);
+
+
+		for (int i = 0; i < 4; ++i) {
+			armPos = ((bones[int(boneID[i])] * vec4(pos, 1.0f)) * 0.25).xyz + armPos;
+			//armPos = ((bones[int(boneID[i])] * vec4(pos, 1.0f)) * boneWeights[i]).xyz + armPos;
+			//armPos = (mat3(bones[int(boneID[i])]) * pos) * boneWeights[i] + armPos;
+		}
+
+
+		gl_Position = proj * tran  * vec4(armPos.xyz, 1.0f);
+		//gl_Position = proj * tran * vec4(armPos.xyz, 1.0f);
+	}
+}
