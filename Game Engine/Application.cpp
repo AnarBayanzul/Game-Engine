@@ -417,11 +417,11 @@ void AABBtest() {
 	int bodyIndex = AABBscene->addObject(
 		new GameObject(
 			glm::vec3(0.0, 0.0, 0.0),
-			quat(glm::vec3(1.0f, 0.0f, 0.0f), -3.1415f / 2.0f),
+			quat(glm::vec3(0.707f, 0.707f, 0.0f), -3.1415f / 2.0f),
 			bodyMesh,
 			cubeTexIndex,
 			glm::vec3(0.0f, 0.0f, 0.0f),
-			glm::vec3(0.0f, -0.5f, 0.0f),
+			glm::vec3(0.0f, -0.0f, 0.0f),
 			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
 			true
 		)

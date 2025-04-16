@@ -219,14 +219,16 @@ void draw(RenderInfo info, GameObject* object) {
 		glUniform4fv(info.uniformIndexColor, 1, glm::value_ptr(object->getColor()));
 		
 		if (object->bonesBufferable.size() > 0) {
-			//glm::mat4 cheat[19];
-			//for (int i = 0; i < 19; ++i) {
-			//	//cheat[i] = glm::mat4(1.0);
-			//	cheat[i] = object->bonesBufferable[17];
-			//}
+			glm::mat4 cheat[19];
+			for (int i = 0; i < 19; ++i) {
+				//cheat[i] = glm::mat4(1.0);
+				//cheat[i] = object->bonesBufferable[17];
+				cheat[i] = object->bonesBufferable[i];
+			}
 			//std::cout << glm::to_string(object->bonesBufferable[17]) << std::endl;
-			//glUniformMatrix4fv(info.uniformIndexBones, ANIMATIONBONES, GL_FALSE, glm::value_ptr(cheat[0]));
-			glUniformMatrix4fv(info.uniformIndexBones, ANIMATIONBONES, GL_FALSE, glm::value_ptr((object->bonesBufferable)[0]));
+			glUniformMatrix4fv(info.uniformIndexBones, ANIMATIONBONES, GL_FALSE, glm::value_ptr(cheat[0]));
+
+			//glUniformMatrix4fv(info.uniformIndexBones, ANIMATIONBONES, GL_FALSE, glm::value_ptr((object->bonesBufferable)[0]));
 		} else {
 			glm::mat4 blankMat = glm::mat4(0);
 			glUniformMatrix4fv(info.uniformIndexBones, 1, GL_FALSE, glm::value_ptr(blankMat));
@@ -427,7 +429,6 @@ bool Render::stopAnimation(int playBackIndex) {
 	std::swap(playback[playBackIndex], playback[playbackSize]);
 	return true;
 }
-
 void Render::updateAnimation(float delta) {
 	// loop through playback
 	int keyBegin = 0;

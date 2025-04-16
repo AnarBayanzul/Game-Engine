@@ -33,17 +33,19 @@ void main() {
 		gl_Position = proj * tran * vec4(pos, 1.0);
 	} else {
 		
-		worldPos = vec3(0.0, 0.0, 0.0);
-
+		vec4 armPos = vec4(0.0, 0.0, 0.0, 1.0);
+		armPos = vec4(pos, 1.0);
 
 		for (int i = 0; i < 4; ++i) {
-			worldPos = ((bones[int(boneID[i])] * vec4(pos, 1.0f)) * boneWeights[i]).xyz + worldPos;
-			//worldPos = (mat4(1.0) * vec4(pos, 1.0f) * 0.25).xyz + worldPos;
+			//armPos = (bones[int(boneID[i])] * vec4(pos, 1.0f)) * 0.25 + armPos;
+			armPos = (bones[int(boneID[i]) + 1] * vec4(pos, 1.0f)) * boneWeights[i] + armPos;
+			//armPos = (bones[17] * vec4(pos, 1.0f)) * boneWeights[i] + armPos;
+
 		}
 
-		worldPos = (bones[2] * vec4(pos, 0.0)).xyz;
-		gl_Position = proj * tran  * vec4(worldPos, 1.0f);
-		worldPos = (tran * vec4(worldPos.xyz, 1.0)).xyz;
+		gl_Position = proj * tran  * armPos;
+		
+		worldPos = (tran * vec4(armPos.xyz, 1.0)).xyz;
 		//gl_Position = proj * tran * vec4(pos.xyz, 1.0f);
 	}
 }
