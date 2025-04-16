@@ -219,12 +219,14 @@ void draw(RenderInfo info, GameObject* object) {
 		glUniform4fv(info.uniformIndexColor, 1, glm::value_ptr(object->getColor()));
 		
 		if (object->bonesBufferable.size() > 0) {
-			glm::mat4 cheat[19];
-			for (int i = 0; i < 19; ++i) {
-				cheat[i] = glm::mat4(1.0);
-			}
-			glUniformMatrix4fv(info.uniformIndexBones, ANIMATIONBONES, GL_FALSE, glm::value_ptr(cheat[0]));
-			//glUniformMatrix4fv(info.uniformIndexBones, ANIMATIONBONES, GL_FALSE, glm::value_ptr((object->bonesBufferable)[0]));
+			//glm::mat4 cheat[19];
+			//for (int i = 0; i < 19; ++i) {
+			//	//cheat[i] = glm::mat4(1.0);
+			//	cheat[i] = object->bonesBufferable[17];
+			//}
+			//std::cout << glm::to_string(object->bonesBufferable[17]) << std::endl;
+			//glUniformMatrix4fv(info.uniformIndexBones, ANIMATIONBONES, GL_FALSE, glm::value_ptr(cheat[0]));
+			glUniformMatrix4fv(info.uniformIndexBones, ANIMATIONBONES, GL_FALSE, glm::value_ptr((object->bonesBufferable)[0]));
 		} else {
 			glm::mat4 blankMat = glm::mat4(0);
 			glUniformMatrix4fv(info.uniformIndexBones, 1, GL_FALSE, glm::value_ptr(blankMat));
@@ -265,6 +267,7 @@ void Render::update(float delta) {
 	glm::mat4 firstTran;
 	glm::mat4 secondTran;
 	objectType A, B;
+	float dist;
 	for (iter = collisionSet.begin(); iter != collisionSet.end(); ++iter) {
 		firstTran = iter->first->getParentTransform();
 		secondTran = iter->second->getParentTransform();
@@ -274,8 +277,10 @@ void Render::update(float delta) {
 			iter->first->getPosition(),
 			physicsMeshes[iter->second->getRenderElement()],
 			iter->second->getRotation(),
-			iter->second->getPosition()
+			iter->second->getPosition(),
+			dist
 		)) {
+			// Collision
 			// apply func table here
 			A = iter->first->getType();
 			B = iter->second->getType();
@@ -284,6 +289,10 @@ void Render::update(float delta) {
 			} else {
 				getFromCollisionTable(A, B)(iter->first, iter->second);
 			}
+		}
+		else {
+			// This is no collision
+			//std::cout << dist << std::endl;
 		}
 	}
 
@@ -487,8 +496,8 @@ void Render::updateAnimation(float delta) {
 			//playback[i].meshIn->bones[j].parent;
 			//playback[i].meshIn->bones[j].origin;
 			toBuffer =  glm::translate((glm::mat4) rotation.back(), displacement.back() - playback[i].meshIn->bones[j].origin);
-			//playback[i].obj->bonesBufferable.push_back(toBuffer);
-			playback[i].obj->bonesBufferable.push_back(glm::mat4(1));
+			playback[i].obj->bonesBufferable.push_back(toBuffer);
+			//playback[i].obj->bonesBufferable.push_back(glm::mat4(1));
 		}
 		//std::cout << glm::to_string(playback[i].obj->bonesBufferable[3]) << "\n\n";
 		playback[i].time += delta;

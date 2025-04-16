@@ -41,7 +41,7 @@ quat slerp(quat a, quat b, float t);
 
 
 // Collisions stuff
-bool GJK(Mesh* A, quat aQ, glm::vec3 sA, Mesh* B, quat bQ, glm::vec3 sB);
+bool GJK(Mesh* A, quat aQ, glm::vec3 sA, Mesh* B, quat bQ, glm::vec3 sB, float& dist);
 
 typedef void (*collisionFunc)(GameObject*, GameObject*);
 // A must always be less than B

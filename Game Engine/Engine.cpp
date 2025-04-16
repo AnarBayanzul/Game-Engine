@@ -79,7 +79,7 @@ quat integrateAngular(float deltaTime, const glm::vec3 angular) {
 	return quat(glm::normalize(angular), glm::length(angular) * deltaTime); // not efficient? TODO
 }
 
-bool GJK(Mesh* A, quat aQ, glm::vec3 sA, Mesh* B, quat bQ, glm::vec3 sB) {
+bool GJK(Mesh* A, quat aQ, glm::vec3 sA, Mesh* B, quat bQ, glm::vec3 sB, float& dist) {
 	// arbitrary inital direction
 	glm::vec3 searchDir = glm::vec3(0.0, 0.0, 1.0);
 	// initial minkowski diff in simplex
@@ -106,6 +106,7 @@ bool GJK(Mesh* A, quat aQ, glm::vec3 sA, Mesh* B, quat bQ, glm::vec3 sB) {
 	while (1) {
 		difference = A->findSupport(searchDir, aQ, sA) - B->findSupport(-searchDir, bQ, sB);
 		if (glm::dot(difference, searchDir) < 0) {
+			dist = std::sqrt(sim.squareShortest);
 			return false; // no collision
 		}
 		sim.newest = (sim.newest + 1) % 4;
@@ -369,6 +370,7 @@ bool GJK(Mesh* A, quat aQ, glm::vec3 sA, Mesh* B, quat bQ, glm::vec3 sB) {
 					}
 				}
 			} else {
+				dist = std::sqrt(sim.squareShortest);
 				return true;
 			}
 			break;
@@ -376,10 +378,12 @@ bool GJK(Mesh* A, quat aQ, glm::vec3 sA, Mesh* B, quat bQ, glm::vec3 sB) {
 		normalizedSearchDir = glm::normalize(searchDir);
 		newSquareShortest = (float)std::pow(glm::dot(AO, normalizedSearchDir), 2);
 		if (newSquareShortest > sim.squareShortest) {
+			dist = std::sqrt(sim.squareShortest);
 			return false; // converged on closest
 		} else {
 			sim.squareShortest = newSquareShortest;
 		}
 	}
+	dist = std::sqrt(sim.squareShortest);
 	return true;
 }

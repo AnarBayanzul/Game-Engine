@@ -360,7 +360,7 @@ static void snakeUpdate(float deltaSec) {
 
 
 void genericCollision(GameObject* A, GameObject* B) {
-	std::cout << "OMG a collision\n";
+	std::cout << "[-Collision-]";
 }
 
 Render* AABBscene;
