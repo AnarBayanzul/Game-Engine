@@ -46,6 +46,9 @@ Mesh::Mesh(const size_t triangleCount, const std::vector<float>& vertexData, con
 	float minMax[6] = { vertexData[0], vertexData[1], vertexData[2], vertexData[0], vertexData[1], vertexData[2] }; // min xyz, then max xyz
 
 	for (int i = 18 * triangleCount; i < 24 * triangleCount; i = i + 2) {
+		//if (vertexData[i] > 1.0 || vertexData[i] < 0.0 || vertexData[i + 1] > 1.0 || vertexData[i + 1] < 0.0) {
+		//	std::cout << vertexData[i] << ", " << vertexData[i + 1] << '\n';
+		//}
 		uv.push_back(glm::vec2(vertexData[i], vertexData[i + 1]));
 	}
 	for (int i = 0; i < 9 * triangleCount; i = i + 3) {

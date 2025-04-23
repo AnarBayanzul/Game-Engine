@@ -17,6 +17,7 @@
 #define MAXOBJECTS 256
 #define MAXMESHES 128
 #define MAXTEXTURES 128
+#define MAXCAMERAS 16
 #define MAXANIMATIONS 16
 #define MAXPLAYINGANIMATIONS 64
 #define ANIMATIONBONES 19 // TODO this shouldn't exist
@@ -31,13 +32,15 @@ protected:
 	int meshCount;
 	int textureCount;
 	int animationCount;
+	int cameraCount;
+	int activeCamera;
 	GLuint program;
 	Texture* textures[MAXTEXTURES];
 	Mesh* meshes[MAXMESHES] = {};
 	Mesh* physicsMeshes[MAXMESHES] = {}; // Convex versions of meshes (indices are one to one with meshes)
 	Animation* animations[MAXANIMATIONS] = {};
 	GameObject* objects[MAXOBJECTS] = {};
-	Camera* camera; // TODO for now, support for only one;
+	Camera* cameras[MAXCAMERAS] = {};
 
 	AnimationStates playback[MAXPLAYINGANIMATIONS] = {};
 	int playbackSize;
@@ -80,10 +83,13 @@ public:
 	int addTexture(Texture* inputTexture);
 	int addObject(GameObject* obj);
 	GameObject** getObjects();
-	Camera* getCamera();
+	Camera* getActiveCamera();
+	Camera* getCamera(int camIndex);
 	virtual void update(float delta);
 	Mesh** getMeshes();
 
+	int addCamera(Camera* cam);
+	void setCamera(int camIndex);
 
 
 

@@ -16,7 +16,7 @@ using namespace std::chrono_literals;
 
 int main(int argc, char** argv) {
 	// Preloop
-	SDL_Manager::sdl().spawnWindow("1. Hello SDL", 400, 400, SDL_TRUE);
+	SDL_Manager::sdl().spawnWindow("1. Hello SDL", 1280, 720, SDL_TRUE);
 	//SDL_Manager::sdl().spawnWindow("2. Second SDL", 200, 200, SDL_FALSE);
 	//SDL_Manager::sdl().spawnWindow("3. Third SDL", 200, 200, SDL_FALSE);
 
@@ -60,7 +60,11 @@ int main(int argc, char** argv) {
 			case SDL_KEYDOWN:
 				lastKey = e.key;
 				break;
+			case SDL_MOUSEBUTTONDOWN:
+				mouseClick(e.button);
+				break;
 			}
+
 		}
 
 		// Game loop!

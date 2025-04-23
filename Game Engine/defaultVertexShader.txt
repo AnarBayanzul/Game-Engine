@@ -13,7 +13,7 @@ out vec3 worldPos;
 void main() {
 	normal = (tran * vec4(norm.xyz, 0.0)).xyz;
 
-	uvCoord = texCoord;
+	uvCoord = vec2(texCoord.x, 1 - texCoord.y);
 
 	vec3 worldPos = (tran * vec4(pos, 1.0f)).xyz;
 

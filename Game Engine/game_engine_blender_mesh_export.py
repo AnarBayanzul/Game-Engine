@@ -5,8 +5,8 @@ class normalEnum:
     vertex, polygon = range(2)
 
 bytes = False
-bones = True
-normalType = normalEnum.vertex
+bones = False
+normalType = normalEnum.polygon
 
 def write_some_data(context, filepath, use_some_setting):
     # Whether writing bytes or plain text
@@ -141,16 +141,16 @@ def write_some_data(context, filepath, use_some_setting):
             for j in range(4):
                 f.write(struct.pack('<f', boneWeights[i + j]))
 
-            
-        f.write(struct.pack('<i', boneCount))
-        for bone in bone_origin:
-            for element in bone:
-                f.write(struct.pack('<f', element))
-        for bone in parent_to_this:
-            for element in bone:
-                f.write(struct.pack('<f', element))
-        for parentIndex in boneParent:
-            f.write(struct.pack('<i', parentIndex))
+        if bones:
+            f.write(struct.pack('<i', boneCount))
+            for bone in bone_origin:
+                for element in bone:
+                    f.write(struct.pack('<f', element))
+            for bone in parent_to_this:
+                for element in bone:
+                    f.write(struct.pack('<f', element))
+            for parentIndex in boneParent:
+                f.write(struct.pack('<i', parentIndex))
         
     else:
         output = ""  
@@ -167,27 +167,28 @@ def write_some_data(context, filepath, use_some_setting):
             for element in uv:
                 output += str(delimiter)
                 output += str(element)
-        for i in range(0, len(boneIndices), 4):
-            for j in range(4):
-                output += str(delimiter)
-                output += str(boneIndices[i + j])
-            for j in range(4):
-                output += str(delimiter)
-                output += str(boneWeights[i + j])
+        if bones:
+            for i in range(0, len(boneIndices), 4):
+                for j in range(4):
+                    output += str(delimiter)
+                    output += str(boneIndices[i + j])
+                for j in range(4):
+                    output += str(delimiter)
+                    output += str(boneWeights[i + j])
         
-        output += str(delimiter)
-        output += str(boneCount)
-        for bone in bone_origin:
-            for element in bone:
-                output += str(delimiter)
-                output += str(element)
-        for bone in parent_to_this:
-            for element in bone:
-                output += str(delimiter)
-                output += str(element)
-        for parentIndex in boneParent:
             output += str(delimiter)
-            output += str(parentIndex)
+            output += str(boneCount)
+            for bone in bone_origin:
+                for element in bone:
+                    output += str(delimiter)
+                    output += str(element)
+            for bone in parent_to_this:
+                for element in bone:
+                    output += str(delimiter)
+                    output += str(element)
+            for parentIndex in boneParent:
+                output += str(delimiter)
+                output += str(parentIndex)
 
         
         

@@ -249,12 +249,12 @@ void Render::update(float delta) {
 
 	RenderInfo info = { uniformIndexProj, uniformIndexTran, uniformIndexColor, uniformIndexBones, textures, meshes };
 	glUseProgram(program);
-	glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(camera->getProjection()));
+	glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(getActiveCamera()->getProjection() * glm::inverse(getActiveCamera()->getModel())));
 	//for (int i = 0; i < objectCount; ++i) {
 	//	draw(info, objects[i], glm::mat4(1));
 	//}
 	// Render objects using tree
-	root->render(info, camera, glm::mat4(1), draw); // this updates parent transform
+	root->render(info, getActiveCamera(), glm::mat4(1), draw); // this updates parent transform
 
 	for (int i = 0; i < objectCount; ++i) {
 		assignAABB(objects[i]);
@@ -496,7 +496,15 @@ void Render::updateAnimation(float delta) {
 			//playback[i].meshIn->bones[j].origin;
 			//playback[i].meshIn->bones[j].parent;
 			//playback[i].meshIn->bones[j].origin;
-			toBuffer =  glm::translate((glm::mat4) rotation.back(), displacement.back() - playback[i].meshIn->bones[j].origin);
+			
+
+
+			// TODO EITHER ONE OF THESE CHECK PLS
+			//toBuffer =  glm::translate((glm::mat4) rotation.back(), displacement.back() - playback[i].meshIn->bones[j].origin);
+			toBuffer = glm::translate(displacement.back() - playback[i].meshIn->bones[j].origin) * (glm::mat4)rotation.back();
+			
+			
+			
 			playback[i].obj->bonesBufferable.push_back(toBuffer);
 			//playback[i].obj->bonesBufferable.push_back(glm::mat4(1));
 		}
@@ -519,7 +527,9 @@ Render::Render(std::string vertFile, std::string fragFile, Camera* cameraIn) {
 	textureCount = 0;
 	animationCount = 0;
 	playbackSize = 0;
-	camera = cameraIn;
+	cameras[0] = cameraIn;
+	cameraCount = 1;
+	activeCamera = 0;
 	root = nullptr;
 	initializeGrid();
 }
@@ -538,7 +548,9 @@ Render::~Render() {
 	for (int i = 0; i < animationCount; ++i) {
 		delete animations[i];
 	}
-	delete camera;
+	for (int i = 0; i < cameraCount; ++i) {
+		delete cameras[i];
+	}
 	delete root;
 }
 
@@ -546,12 +558,29 @@ GameObject** Render::getObjects() {
 	return objects;
 }
 
-Camera* Render::getCamera() {
-	return camera;
+Camera* Render::getActiveCamera() {
+	return cameras[activeCamera];
 }
 
 Mesh** Render::getMeshes() {
 	return meshes;
+}
+
+int Render::addCamera(Camera* cam) {
+	if (cameraCount >= MAXCAMERAS) {
+		std::cout << "error too many cameras\n";
+		return -1;
+	}
+	cameras[cameraCount] = cam;
+	return cameraCount++;
+}
+
+void Render::setCamera(int camIndex) {
+	activeCamera = camIndex;
+}
+
+Camera* Render::getCamera(int camIndex) {
+	return cameras[camIndex];
 }
 
 int addToRenderQueue(Render* renderObject) {

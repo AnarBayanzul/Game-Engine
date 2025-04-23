@@ -17,6 +17,7 @@ extern SDL_KeyboardEvent lastKey;
 // Declared in Application.cpp
 int initialize();
 int globalUpdate(float deltaSec);
+int mouseClick(SDL_MouseButtonEvent mEvent);
 
 
 

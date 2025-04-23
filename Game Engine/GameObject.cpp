@@ -66,6 +66,7 @@ void GameObject::applyAngularImpulse(const glm::vec3& impulse) {
 
 const glm::mat4 GameObject::getModel() {
 	return glm::translate(position) * (glm::mat4) rotation;
+	//return glm::translate((glm::mat4)rotation, position);
 }
   
 const int GameObject::getRenderElement() {

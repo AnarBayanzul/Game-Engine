@@ -10,7 +10,6 @@
 SDL_KeyboardEvent lastKey;
 
 
-
 collisionFunc collisionTable[(NUMOFTYPES * (NUMOFTYPES + 1)) / 2] = {};
 
 void addToCollisionTable(objectType A, objectType B, collisionFunc inputFunc) {

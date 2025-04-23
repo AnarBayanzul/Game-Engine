@@ -69,6 +69,9 @@
     <ClCompile Include="Keyframe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FrameBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SDL_Manager.h">
@@ -137,6 +140,12 @@
     <ClInclude Include="AnimationStates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FrameBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureProperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="mesh.txt">
@@ -171,6 +180,9 @@
     <Text Include="dabAnim.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="house.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_mesh_export.py">
@@ -182,12 +194,21 @@
     <None Include="game_engine_blender_animation_export.py">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="houseTextures.kra">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="ohMyGah.bmp">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="ohTheMisery.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="houseTex.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="houseTexDirty.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
