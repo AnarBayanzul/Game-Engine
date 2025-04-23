@@ -29,6 +29,10 @@ public:
 	bool loadSound(std::string fileName);
 	bool playSound(int index);
 	bool playSound(std::string fileName);
+	// volume should be between 0.0 and 1.0
+	bool playSound(int index, float volume, PLAYTYPE type);
+	bool playSound(std::string fileName, float volume, PLAYTYPE type);
+
 	Sound* runtimeSound;
 
 	// enforce singleton

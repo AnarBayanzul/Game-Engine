@@ -183,6 +183,12 @@
     <Text Include="house.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="floor.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="readme.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_mesh_export.py">
@@ -217,6 +223,18 @@
       <Filter>Resource Files</Filter>
     </Media>
     <Media Include="ohTheMisery.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="creepy sting.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="night cricket.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="radio.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="room ambience.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>

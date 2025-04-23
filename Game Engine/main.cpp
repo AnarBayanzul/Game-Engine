@@ -58,6 +58,7 @@ int main(int argc, char** argv) {
 				}
 				break;
 			case SDL_KEYDOWN:
+			case SDL_KEYUP:
 				lastKey = e.key;
 				break;
 			case SDL_MOUSEBUTTONDOWN:

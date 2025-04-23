@@ -81,7 +81,7 @@ void SDL_Manager::spawnWindow(const char* title, int width, int height, SDL_bool
 		glEnable(GL_CULL_FACE);
 
 
-		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+		glClearColor(0.01f, 0.01f, 0.06f, 1.0f);
 
 
 		// initialize glew

@@ -46,7 +46,7 @@ void main() {
 	color = vec4(ambient + diffuse + specular, 1.0f) * base;
 
 	// Discretize lighting
-	float smoothness = 4.0f;
+	float smoothness = 8.0f;
 	color = round(smoothness * color) / smoothness;
 
 }

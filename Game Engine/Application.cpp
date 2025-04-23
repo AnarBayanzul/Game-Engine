@@ -360,7 +360,7 @@ static void snakeUpdate(float deltaSec) {
 
 
 void genericCollision(GameObject* A, GameObject* B) {
-	std::cout << "[-Collision-]";
+	//std::cout << "[-Collision-]";
 }
 
 Render* AABBscene;
@@ -462,14 +462,23 @@ enum ROOMS {
 	ESTABLISHING,
 	KITCHEN,
 	CUPBOARD,
-	CLOSET
+	CLOSET,
+	MOVE
+};
+
+
+enum SOUNDEFFECTS {
+	STING = 0,
+	ROOM,
+	CRICKET,
+	RADIO
 };
 
 Render* firstLevel;
 void myGameInit() {
 	addToCollisionTable(GAMEOBJECT, GAMEOBJECT, genericCollision);
 
-	firstLevel = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1280.0/720.0, 0.1f, 100.0f));
+	firstLevel = new Render("defaultVertexShader.txt", "celShadingFragment.txt", new Camera(1.309f, 1280.0/720.0, 0.1f, 100.0f));
 	firstLevel->root = new Node(new GameObject());
 	
 	// outside = 0
@@ -536,7 +545,12 @@ void myGameInit() {
 	firstLevel->getCamera(CLOSET)->setPosition(glm::vec3(-4.0, 3.5, -14.0));
 	firstLevel->getCamera(CLOSET)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), 3.1415));
 
-	firstLevel->setCamera(KITCHEN);
+	// move-able camera = 13
+	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->getCamera(MOVE)->setPosition(glm::vec3(0.0f, 3.5f, 10.0f));
+	firstLevel->getCamera(MOVE)->setRotation(quat(glm::vec3(1.0, 0.0, 0.0), 0.0));
+
+	firstLevel->setCamera(MOVE);
 
 	int cubeMesh = firstLevel->addMesh("uvCube.txt", false, false);
 	Texture* cubeTex = new Texture("ohTheMisery.bmp", 0);
@@ -574,6 +588,31 @@ void myGameInit() {
 	);
 	firstLevel->root->addChild(new Node(firstLevel->getObjects()[houseIndex]));
 
+	int floorMesh = firstLevel->addMesh("floor.txt", false, false);
+	Texture* floorTex = new Texture("houseTex.bmp", 0);
+	int floorTexIndex = firstLevel->addTexture(floorTex);
+	int floorIndex = firstLevel->addObject(
+		new GameObject(
+			glm::vec3(0.0, 0.0, -5.0),
+			quat(glm::vec3(1.0, 0.0, 0.0), 0.0),
+			floorMesh,
+			floorTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+
+
+
+	SoundSystem::system().loadSound("creepy sting.wav");
+	SoundSystem::system().loadSound("room ambience.wav");
+	SoundSystem::system().loadSound("night cricket.wav");
+	SoundSystem::system().loadSound("radio.wav");
+	SoundSystem::system().playSound(RADIO, 0.08, ONCE);
+	//SoundSystem::system().playSound("ohTheMisery.wav");
+
 	addToRenderQueue(firstLevel);
 }
 
@@ -581,31 +620,27 @@ void myGameUpdate(float deltaSec) {
 	if (lastKey.keysym.sym >= SDLK_0 && lastKey.keysym.sym <= SDLK_9) {
 		firstLevel->setCamera(lastKey.keysym.sym - SDLK_0);
 	}
-	switch (lastKey.keysym.sym) {
-	case SDLK_0:
-		//std::cout << "left\n";
-		break;
-	case SDLK_1:
-		//std::cout << "right\n";
-		break;
-	case SDLK_2:
-		//std::cout << "up\n";
-		break;
-	case SDLK_3:
-		//std::cout << "down\n";
-		break;
-	case SDLK_4:
-		//std::cout << "down\n";
-		break;
-	case SDLK_5:
-		//std::cout << "down\n";
-		break;
-	case SDLK_6:
-		//std::cout << "down\n";
-		break;
-	default:
-		break;
+	if (lastKey.type == SDL_KEYDOWN) {
+		switch (lastKey.keysym.sym) {
+		case SDLK_w:
+			firstLevel->getCamera(MOVE)->move(glm::vec3(0.0, 0.0, -8 * deltaSec));
+			break;
+		case SDLK_a:
+			firstLevel->getCamera(MOVE)->move(glm::vec3(-8 * deltaSec, 0.0, 0.0));
+			break;
+		case SDLK_s:
+			firstLevel->getCamera(MOVE)->move(glm::vec3(0.0, 0.0, 8 * deltaSec));
+			break;
+		case SDLK_d:
+			firstLevel->getCamera(MOVE)->move(glm::vec3(8 * deltaSec, 0.0, 0.0));
+			break;
+		default:
+			break;
+		}
 	}
+
+
+	//lastKey.keysym.sym = NULL;
 }
 
 int mouseClick(SDL_MouseButtonEvent mEvent) {
@@ -625,7 +660,6 @@ int initialize() { // What should default initialize look like?
 
 	//AABBtest();
 	myGameInit();
-
 
 	return 0;
 }

@@ -32,7 +32,7 @@ void callback(void* userData, Uint8* stream, int length) { // length of stream
 	int newValue;
 
 	float fvolume = 128.0;
-	int volume = (int)SDL_roundf(fvolume * MIX_MAXVOLUME);
+	int volume = (int)SDL_roundf(fvolume);
 	Sint16 src, dst;
 
 	
@@ -41,7 +41,8 @@ void callback(void* userData, Uint8* stream, int length) { // length of stream
 		//std::cout << toPlay << std::endl;
 		for (int j = 0; j < toPlay; j = j + 2) {
 			src = SDL_SwapLE16(*(Sint16*)(playback[i].startPoint + j));
-			//ADJUST_VOLUME(Sint16, src, volume);
+			volume = (int)SDL_roundf(fvolume * playback[i].volume);
+			ADJUST_VOLUME(Sint16, src, volume);
 			dst = SDL_SwapLE16(*(Sint16*)(mix + 2 * j));
 			newValue = (int)src + (int)dst;
 			if (newValue > SDL_MAX_SINT16) {
@@ -70,8 +71,17 @@ void callback(void* userData, Uint8* stream, int length) { // length of stream
 		// decrement length
 		playback[i].length -= toPlay;
 		if (playback[i].length <= 0) {
-			std::swap(playback[i], playback[playbackSize - 1]);
-			SoundSystem::system().setPlaybackSize(playbackSize - 1);
+			switch (playback[i].type) {
+			case ONCE:
+				std::swap(playback[i], playback[playbackSize - 1]);
+				SoundSystem::system().setPlaybackSize(playbackSize - 1);
+				break;
+			case LOOP:
+				playback[i].startPoint = playback[i].initialStart;
+				playback[i].length = playback[i].initialLength;
+				break;
+			}
+
 		}
 	}
 	 //TODO i think this is what you're supposed to do:
@@ -155,7 +165,7 @@ bool SoundSystem::playSound(int index) {
 		std::cout << "Reached max playback count\n";
 		return false;
 	}
-	playback[playbackSize++] = SoundStates{ sounds[index]->audio_buf, sounds[index]->audio_len };
+	playback[playbackSize++] = SoundStates{ sounds[index]->audio_buf, sounds[index]->audio_len, 1.0, ONCE, sounds[index]->audio_buf, sounds[index]->audio_len };
 	return true;
 }
 bool SoundSystem::playSound(std::string fileName) {
@@ -166,7 +176,29 @@ bool SoundSystem::playSound(std::string fileName) {
 		// music
 	delete runtimeSound;
 	runtimeSound = new Sound(fileName);
-	playback[playbackSize++] = SoundStates{ runtimeSound->audio_buf, runtimeSound->audio_len };
+	playback[playbackSize++] = SoundStates{ runtimeSound->audio_buf, runtimeSound->audio_len, 1.0, ONCE, runtimeSound->audio_buf, runtimeSound->audio_len };
+	// TODO might want to deal with old playback entry.
+	return true;
+}
+
+bool SoundSystem::playSound(int index, float volume, PLAYTYPE type) {
+	// play sound indexing sounds vector
+	if (playbackSize + 1 >= MAXTRACKS) {
+		std::cout << "Reached max playback count\n";
+		return false;
+	}
+	playback[playbackSize++] = SoundStates{ sounds[index]->audio_buf, sounds[index]->audio_len, volume, type, sounds[index]->audio_buf, sounds[index]->audio_len };
+	return true;
+}
+bool SoundSystem::playSound(std::string fileName, float volume, PLAYTYPE type) {
+	// load sound not from sounds container and play
+	// expected to only support one runtime loaded sound at a time
+	// useful for large track:
+		// dialogue
+		// music
+	delete runtimeSound;
+	runtimeSound = new Sound(fileName);
+	playback[playbackSize++] = SoundStates{ runtimeSound->audio_buf, runtimeSound->audio_len, volume, type, runtimeSound->audio_buf, runtimeSound->audio_len };
 	// TODO might want to deal with old playback entry.
 	return true;
 }
