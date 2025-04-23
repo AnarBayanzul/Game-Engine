@@ -10,6 +10,8 @@
 // Intention is for source file to remain hidden
 // Including additional libraries for the user is useful here
 
+#define WIDTH 1280.0
+#define HEIGHT 720.0
 
 extern SDL_KeyboardEvent lastKey;
 

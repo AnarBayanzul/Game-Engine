@@ -203,6 +203,9 @@
     <None Include="houseTextures.kra">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="grass.kra">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="ohMyGah.bmp">
@@ -215,6 +218,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="houseTexDirty.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="grassTexture.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

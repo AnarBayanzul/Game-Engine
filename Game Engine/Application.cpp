@@ -19,7 +19,6 @@
 #include <glm/ext.hpp>
 
 
-
 static void example() {
 
 	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
@@ -475,10 +474,12 @@ enum SOUNDEFFECTS {
 };
 
 Render* firstLevel;
+ROOMS activeCam = MOVE;
 void myGameInit() {
 	addToCollisionTable(GAMEOBJECT, GAMEOBJECT, genericCollision);
 
-	firstLevel = new Render("defaultVertexShader.txt", "celShadingFragment.txt", new Camera(1.309f, 1280.0/720.0, 0.1f, 100.0f));
+	//firstLevel = new Render("defaultVertexShader.txt", "celShadingFragment.txt", new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
+	firstLevel = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->root = new Node(new GameObject());
 	
 	// outside = 0
@@ -486,71 +487,72 @@ void myGameInit() {
 	firstLevel->getCamera(OUTSIDE)->setRotation(quat(glm::vec3(1.0, 0.0, 0.0), 0.0));
 
 	// front hallway = 1
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(FRONTHALL)->setPosition(glm::vec3(5.0, 3.5, 3.5));
 	firstLevel->getCamera(FRONTHALL)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), 3.1415 / 4.0));
 
 	// bathroom = 2
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(BATHROOM)->setPosition(glm::vec3(-5.0, 3.5, 5.0));
 	firstLevel->getCamera(BATHROOM)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), 0.0 / 4.0));
 
 	// living room = 3
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(LIVINGROOM)->setPosition(glm::vec3(-13.0, 3.5, 4.0));
 	firstLevel->getCamera(LIVINGROOM)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), -3.1415 / 8.0));
 
 	// back hallway = 4
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(BACKHALL)->setPosition(glm::vec3(-12.0, 3.5, -13.0));
 	firstLevel->getCamera(BACKHALL)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), -3.1415 / 1.5));
 
 	// 2nd floor hallway = 5
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(TOPHALL)->setPosition(glm::vec3(3.0, 10.5, -15.0));
 	firstLevel->getCamera(TOPHALL)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), -3.1415 / 1.0) * quat(glm::vec3(1.0, 0.0, 0.0), -0.1));
 
 	// master bedroom = 6
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(MASTERBED)->setPosition(glm::vec3(13.0, 10.5, -11.0));
 	firstLevel->getCamera(MASTERBED)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), -4.0 / 1.0) * quat(glm::vec3(1.0, 0.0, 0.0), -0.2));
 
 	// near bedroom (closer to stairs) = 7
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(NEARBED)->setPosition(glm::vec3(-0.3, 10.5, -13.0));
 	firstLevel->getCamera(NEARBED)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), 3.5 / 2.0));
 
 	// far bedroom = 8
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(FARBED)->setPosition(glm::vec3(-0.3, 10.5, -2.0));
 	firstLevel->getCamera(FARBED)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), 3.5 / 2.0));
 	
 	// outside establishing = 9
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(ESTABLISHING)->setPosition(glm::vec3(0.0, 3.5, 20.0));
 	firstLevel->getCamera(ESTABLISHING)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), 0.0) * quat(glm::vec3(1.0, 0.0, 0.0), 0.1));
 
 	// outside establishing = 10
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(KITCHEN)->setPosition(glm::vec3(8.0, 3.5, -14.0));
 	firstLevel->getCamera(KITCHEN)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), 3.3));
 
 	// outside establishing = 11
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(CUPBOARD)->setPosition(glm::vec3(4.0, 3.5, -14.0));
 	firstLevel->getCamera(CUPBOARD)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), 3.1415));
 
 	// outside establishing = 12
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(CLOSET)->setPosition(glm::vec3(-4.0, 3.5, -14.0));
 	firstLevel->getCamera(CLOSET)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), 3.1415));
 
 	// move-able camera = 13
-	firstLevel->addCamera(new Camera(1.309f, 1280.0 / 720.0, 0.1f, 100.0f));
+	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	firstLevel->getCamera(MOVE)->setPosition(glm::vec3(0.0f, 3.5f, 10.0f));
 	firstLevel->getCamera(MOVE)->setRotation(quat(glm::vec3(1.0, 0.0, 0.0), 0.0));
 
-	firstLevel->setCamera(MOVE);
+	activeCam = MOVE;
+
 
 	int cubeMesh = firstLevel->addMesh("uvCube.txt", false, false);
 	Texture* cubeTex = new Texture("ohTheMisery.bmp", 0);
@@ -589,12 +591,12 @@ void myGameInit() {
 	firstLevel->root->addChild(new Node(firstLevel->getObjects()[houseIndex]));
 
 	int floorMesh = firstLevel->addMesh("floor.txt", false, false);
-	Texture* floorTex = new Texture("houseTex.bmp", 0);
+	Texture* floorTex = new Texture("grassTexture.bmp", 0);
 	int floorTexIndex = firstLevel->addTexture(floorTex);
 	int floorIndex = firstLevel->addObject(
 		new GameObject(
-			glm::vec3(0.0, 0.0, -5.0),
-			quat(glm::vec3(1.0, 0.0, 0.0), 0.0),
+			glm::vec3(0.0, -1.5, 0.0),
+			quat(glm::vec3(1.0, 0.0, 0.0), 3.1415 / 2.0),
 			floorMesh,
 			floorTexIndex,
 			glm::vec3(0.0, 0.0, 0.0),
@@ -603,7 +605,7 @@ void myGameInit() {
 			true
 		)
 	);
-
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[floorIndex]));
 
 
 	SoundSystem::system().loadSound("creepy sting.wav");
@@ -611,14 +613,13 @@ void myGameInit() {
 	SoundSystem::system().loadSound("night cricket.wav");
 	SoundSystem::system().loadSound("radio.wav");
 	SoundSystem::system().playSound(RADIO, 0.08, ONCE);
-	//SoundSystem::system().playSound("ohTheMisery.wav");
 
 	addToRenderQueue(firstLevel);
 }
 
 void myGameUpdate(float deltaSec) {
 	if (lastKey.keysym.sym >= SDLK_0 && lastKey.keysym.sym <= SDLK_9) {
-		firstLevel->setCamera(lastKey.keysym.sym - SDLK_0);
+		activeCam = (ROOMS) (lastKey.keysym.sym - SDLK_0);
 	}
 	if (lastKey.type == SDL_KEYDOWN) {
 		switch (lastKey.keysym.sym) {
@@ -639,14 +640,17 @@ void myGameUpdate(float deltaSec) {
 		}
 	}
 
-
-	//lastKey.keysym.sym = NULL;
+	firstLevel->setCamera(activeCam);
 }
 
 int mouseClick(SDL_MouseButtonEvent mEvent) {
 	// first detect if it is pickup click, or move click
 	std::cout << mEvent.x << ", " << mEvent.y << "\n";
-	std::cout << mEvent.state << "\n";
+
+	firstLevel;
+
+
+
 	return 0;
 }
 

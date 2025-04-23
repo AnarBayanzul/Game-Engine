@@ -88,9 +88,11 @@
     <None Include="cube.gex" />
     <None Include="game_engine_blender_animation_export.py" />
     <None Include="game_engine_blender_mesh_export.py" />
+    <None Include="grass.kra" />
     <None Include="houseTextures.kra" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="grassTexture.bmp" />
     <Image Include="houseTex.bmp" />
     <Image Include="houseTexDirty.bmp" />
     <Image Include="ohMyGah.bmp" />
