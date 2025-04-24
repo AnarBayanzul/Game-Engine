@@ -20,7 +20,6 @@ vec3 hadamard(vec3 c, vec3 d) {
 
 void main()
 { 
-    
     vec3 output = vec3(0.0, 0.0, 0.0);
     float lambertian;
     float attenuation;
@@ -39,9 +38,10 @@ void main()
     }
 
     color = vec4(output.xyz, 1.0);
-    //color = texture(diffuse, uv); // SKIP LIGHTS
+    color = texture(diffuse, uv); // SKIP LIGHTS
 
 
-    //color = texture(normTex, uv);
-    //color = texture(posTex, uv);
+    // posterization
+    float smoothness = 8.0f;
+	//color = round(smoothness * color) / smoothness;
 }

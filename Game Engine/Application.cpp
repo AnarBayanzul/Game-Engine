@@ -359,7 +359,7 @@ static void snakeUpdate(float deltaSec) {
 
 
 void genericCollision(GameObject* A, GameObject* B) {
-	//std::cout << "[-Collision-]";
+	std::cout << "[-Collision-]";
 }
 
 Render* AABBscene;
@@ -665,8 +665,8 @@ int initialize() { // What should default initialize look like?
 	//exampleAudio();
 	//snakeInit();
 
-	//AABBtest();
-	myGameInit();
+	AABBtest();
+	//myGameInit();
 
 	return 0;
 }
@@ -675,7 +675,7 @@ int globalUpdate(float deltaSec) {
 	// TODO is this necessary?
 
 	//snakeUpdate(deltaSec);
-	//AABBtestUpdate(deltaSec);
-	myGameUpdate(deltaSec);
+	AABBtestUpdate(deltaSec);
+	//myGameUpdate(deltaSec);
 	return 0;
 }
