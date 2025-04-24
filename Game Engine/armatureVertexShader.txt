@@ -12,7 +12,7 @@ uniform mat4 bones[BONECOUNT];
 
 uniform mat4 proj;
 uniform mat4 tran;
-smooth out vec3 normal;
+smooth out vec3 n;
 smooth out vec2 uvCoord;
 
 out vec3 worldPos;
@@ -25,7 +25,7 @@ bool isZeroMatrix(mat4 m) {
 }
 
 void main() {
-	normal = (tran * vec4(norm.xyz, 0.0)).xyz;
+	n = (tran * vec4(norm.xyz, 0.0)).xyz;
 
 	uvCoord = vec2(texCoord.x,  1 - texCoord.y);
 

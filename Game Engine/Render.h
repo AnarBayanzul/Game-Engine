@@ -22,6 +22,7 @@
 #define MAXANIMATIONS 16
 #define MAXPLAYINGANIMATIONS 64
 #define ANIMATIONBONES 19 // TODO this shouldn't exist
+#define MAXPOINTLIGHTS 32
 
 #define GRIDSIZE 32 // this is gridsize on a side
 #define WORLDMIN -128.0
@@ -35,6 +36,7 @@ protected:
 	int animationCount;
 	int cameraCount;
 	int activeCamera;
+	int pointLightCount;
 	GLuint program;
 	Texture* textures[MAXTEXTURES];
 	Mesh* meshes[MAXMESHES] = {};
@@ -43,6 +45,8 @@ protected:
 	GameObject* objects[MAXOBJECTS] = {};
 	Camera* cameras[MAXCAMERAS] = {};
 	FrameBuffer* fBuffer;
+	glm::vec3 lightPositions[MAXPOINTLIGHTS] = {};
+	glm::vec3 lightColors[MAXPOINTLIGHTS] = {};
 
 	AnimationStates playback[MAXPLAYINGANIMATIONS] = {};
 	int playbackSize;
@@ -94,7 +98,8 @@ public:
 	int addCamera(Camera* cam);
 	void setCamera(int camIndex);
 
-
+	int addPointLight(glm::vec3 position, glm::vec3 color);
+	void removePointLight(int index);
 
 
 

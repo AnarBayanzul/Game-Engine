@@ -1,13 +1,10 @@
 #version 410
 
-#define LIGHTCOUNT 32
 
 layout (location = 0) in vec3 position;
 //layout (location = 1) in vec3 aTexCoords;
 //layout (location = 2) in vec3 ;
 
-uniform vec3 lightPositions[LIGHTCOUNT];
-uniform vec3 lightColors[LIGHTCOUNT];
 
 smooth out vec2 uv;
 

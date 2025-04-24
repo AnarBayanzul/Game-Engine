@@ -21,7 +21,7 @@
 
 static void example() {
 
-	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
+	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	int monkeyMesh = renderObject->addMesh("monkeySmoothNormal.txt", false, false);
 	int cubeMesh = renderObject->addMesh("uvCube.txt", false, false);
 	if (monkeyMesh == -1) {
@@ -64,7 +64,7 @@ static void example() {
 }
 
 static void exampleCel() {
-	RenderCel* renderObject = new RenderCel("defaultVertexShader.txt", "celShadingFragment.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
+	RenderCel* renderObject = new RenderCel("defaultVertexShader.txt", "celShadingFragment.txt", new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	int monkeyMesh = renderObject->addMesh("monkeySmoothNormal.txt", false, false);
 	int cubeMesh = renderObject->addMesh("uvCube.txt", false, false);
 	if (monkeyMesh == -1) {
@@ -105,7 +105,7 @@ static void exampleCel() {
 }
 
 static void exampleAudio() {
-	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
+	Render* renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	
 	int cubeMesh = renderObject->addMesh("uvCube.txt", false, false);
 
@@ -155,8 +155,8 @@ int tailTexIndex;
 
 bool lost = false;
 static void snakeInit() {
-	//RenderCel* renderObject = new RenderCel("defaultVertexShader.txt", "celShadingFragment.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
-	renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
+	//RenderCel* renderObject = new RenderCel("defaultVertexShader.txt", "celShadingFragment.txt", new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
+	renderObject = new Render("defaultVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f,WIDTH / HEIGHT, 0.1f, 100.0f));
 	renderObject->root = new Node(new GameObject());
 	renderObject->root->getObject()->setPosition(glm::vec3(0.0f, 0.0f, -15.0f));
 	//renderObject->root->getObject()->setRotation(quat(glm::vec3(0.0f, 1.0f, 0.0f), 3.1415f / 4.0f));
@@ -366,7 +366,7 @@ Render* AABBscene;
 void AABBtest() {
 	addToCollisionTable(GAMEOBJECT, GAMEOBJECT, genericCollision);
 
-	AABBscene = new Render("armatureVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, 1.0f, 0.1f, 100.0f));
+	AABBscene = new Render("armatureVertexShader.txt", "defaultFragmentShader.txt", new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
 	AABBscene->root = new Node(new GameObject());
 	AABBscene->root->getObject()->setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 
@@ -553,6 +553,11 @@ void myGameInit() {
 
 	activeCam = MOVE;
 
+	// Lights
+	firstLevel->addPointLight(glm::vec3(0.0, 5.0, 0.0), glm::vec3(1.0, 0.0, 0.0));
+	firstLevel->addPointLight(glm::vec3(-3.0, 5.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+
+
 
 	int cubeMesh = firstLevel->addMesh("uvCube.txt", false, false);
 	Texture* cubeTex = new Texture("ohTheMisery.bmp", 0);
@@ -646,8 +651,6 @@ void myGameUpdate(float deltaSec) {
 int mouseClick(SDL_MouseButtonEvent mEvent) {
 	// first detect if it is pickup click, or move click
 	std::cout << mEvent.x << ", " << mEvent.y << "\n";
-
-	firstLevel;
 
 
 

@@ -1,5 +1,8 @@
 #version 410
 
+#define LIGHTCOUNT 32
+
+
 out vec4 color;
   
 smooth in vec2 uv;
@@ -8,10 +11,37 @@ uniform sampler2D diffuse;
 uniform sampler2D normTex;
 uniform sampler2D posTex;
 
+uniform vec3 lightPositions[LIGHTCOUNT];
+uniform vec3 lightColors[LIGHTCOUNT];
+
+vec3 hadamard(vec3 c, vec3 d) {
+    return vec3(c.x * d.x, c.y * d.y, c.z * c.z);
+}
+
 void main()
 { 
     
-    color = texture(diffuse, uv);
+    vec3 output = vec3(0.0, 0.0, 0.0);
+    float lambertian;
+    float attenuation;
+    float beta = 0.01;
+    float gamma = 0.01;
+    vec3 ls;
+    float lsSize;
+    for (int i = 0; i < LIGHTCOUNT; ++i) {
+        ls = lightPositions[i] - texture(posTex, uv).xyz;
+        lsSize = length(ls);
+        lambertian = clamp(dot(ls, texture(normTex, uv).xyz) / lsSize, 0, 1);
+
+        attenuation = 1 / (0.1 + beta * (lsSize) + gamma * (lsSize * lsSize));
+
+        output += lambertian * attenuation * hadamard(lightColors[i], texture(diffuse, uv).xyz);
+    }
+
+    color = vec4(output.xyz, 1.0);
+    //color = texture(diffuse, uv); // SKIP LIGHTS
+
+
     //color = texture(normTex, uv);
     //color = texture(posTex, uv);
 }

@@ -315,6 +315,10 @@ void Render::update(float delta) {
 	glUniform1i(fBuffer->uniformIndexDiffuse, 0);
 	glUniform1i(fBuffer->uniformIndexNormal, 1);
 	glUniform1i(fBuffer->uniformIndexPosition, 2);
+
+	glUniform3fv(fBuffer->uniformIndexLightPositions, MAXPOINTLIGHTS, glm::value_ptr(lightPositions[0]));
+	glUniform3fv(fBuffer->uniformIndexLightColors, MAXPOINTLIGHTS, glm::value_ptr(lightColors[0]));
+
 	//fBuffer->bindTexture(0);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -657,4 +661,26 @@ Camera* Render::getCamera(int camIndex) {
 int addToRenderQueue(Render* renderObject) {
 	RenderQueue[renderCount] = renderObject;
 	return renderCount++;
+}
+
+int Render::addPointLight(glm::vec3 position, glm::vec3 color) {
+	if (pointLightCount >= MAXPOINTLIGHTS) {
+		std::cout << "Too many point lights\n";
+		return -1;
+	}
+	lightPositions[pointLightCount] = position;
+	lightColors[pointLightCount] = color;
+	++pointLightCount;
+}
+
+void Render::removePointLight(int index) {
+	if (index >= pointLightCount) {
+		std::cout << "This index of light can't be removed, or already has been\n";
+		return;
+	}
+	--pointLightCount;
+	std::swap(lightPositions[index], lightPositions[pointLightCount]);
+	std::swap(lightColors[index], lightColors[pointLightCount]);
+	lightPositions[pointLightCount] = glm::vec3(0.0);
+	lightColors[pointLightCount] = glm::vec3(0.0);
 }
