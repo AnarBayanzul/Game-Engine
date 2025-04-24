@@ -1,6 +1,7 @@
  #include "Render.h"
 #include "Utility.h"
 #include "RenderInfo.h"
+#include "TextureProperties.h"
 
 #include <iostream>
 #include <string>
@@ -8,7 +9,7 @@
 #include <fstream>
 
 
-int Render::loadShaders(std::string vertFile, std::string fragFile) {
+GLuint Render::loadShaders(std::string vertFile, std::string fragFile) {
 	const GLchar* vertShader;
 	const GLchar* fragShader;
 
@@ -50,13 +51,13 @@ int Render::loadShaders(std::string vertFile, std::string fragFile) {
 		std::cout << infoLog;
 	}
 
-	program = glCreateProgram();
-	glAttachShader(program, vert);
-	glAttachShader(program, frag);
-	glLinkProgram(program);
-	glGetProgramiv(program, GL_LINK_STATUS, &success);
+	GLuint newProgram = glCreateProgram();
+	glAttachShader(newProgram, vert);
+	glAttachShader(newProgram, frag);
+	glLinkProgram(newProgram);
+	glGetProgramiv(newProgram, GL_LINK_STATUS, &success);
 	if (!success) {
-		glGetProgramInfoLog(program, 512, NULL, infoLog);
+		glGetProgramInfoLog(newProgram, 512, NULL, infoLog);
 		std::cout << "Combined\n";
 		std::cout << infoLog;
 	}
@@ -65,12 +66,7 @@ int Render::loadShaders(std::string vertFile, std::string fragFile) {
 	glDeleteShader(frag);
 
 	glUseProgram(0);
-	uniformIndexProj = glGetUniformLocation(program, "proj");
-	uniformIndexTran = glGetUniformLocation(program, "tran");
-	uniformIndexColor = glGetUniformLocation(program, "baseColor");
-	uniformIndexBones = glGetUniformLocation(program, "bones");
-
-	return 0;
+	return newProgram;
 }
 
 // SHOULD BE CALLED EVERYTIME MESH IS CHANGED, GAME OBJECT POSITION/ROTATION IS CHANGED
@@ -205,6 +201,47 @@ int Render::addObject(GameObject* obj) {
 	return objectCount++;
 }
 
+void Render::generateFrameBuffer() {
+	// overwrite-able function, this is for deferred lighting
+	std:: vector<TextureProperties> texProps; // diffuse, normal, position
+	texProps.push_back(TextureProperties{
+			0,
+			GL_RGB32F,
+			(GLsizei)WIDTH,
+			(GLsizei)HEIGHT,
+			0,
+			GL_RGB,
+			GL_FLOAT
+		});
+	texProps.push_back(TextureProperties{
+		0,
+		GL_RGB32F,
+		(GLsizei)WIDTH,
+		(GLsizei)HEIGHT,
+		0,
+		GL_RGB,
+		GL_FLOAT
+		});
+	texProps.push_back(TextureProperties{
+		0,
+		GL_RGB32F,
+		(GLsizei)WIDTH,
+		(GLsizei)HEIGHT,
+		0,
+		GL_RGB,
+		GL_FLOAT
+		});
+	fBuffer = new FrameBuffer((int)WIDTH, (int)HEIGHT, texProps);
+	fBuffer->setProgram(loadShaders( // TODO make this customizable
+		"postBufferVertex.txt", "postBufferFragment.txt"
+	));
+	fBuffer->uniformIndexDiffuse = glGetUniformLocation(fBuffer->getProgram(), "diffuse");
+	fBuffer->uniformIndexNormal = glGetUniformLocation(fBuffer->getProgram(), "normTex");
+	fBuffer->uniformIndexPosition = glGetUniformLocation(fBuffer->getProgram(), "posTex");
+	fBuffer->uniformIndexLightPositions = glGetUniformLocation(fBuffer->getProgram(), "lightPositions");
+	fBuffer->uniformIndexLightColors = glGetUniformLocation(fBuffer->getProgram(), "lightColors");
+}
+
 void draw(RenderInfo info, GameObject* object) {
 	if (object->show) {
 		glBindVertexArray((info.meshes[object->getRenderElement()])->getVAO());
@@ -250,11 +287,39 @@ void Render::update(float delta) {
 	RenderInfo info = { uniformIndexProj, uniformIndexTran, uniformIndexColor, uniformIndexBones, textures, meshes };
 	glUseProgram(program);
 	glUniformMatrix4fv(uniformIndexProj, 1, GL_FALSE, glm::value_ptr(getActiveCamera()->getProjection() * glm::inverse(getActiveCamera()->getModel())));
+	
+	
+	
+	// Render buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, fBuffer->getFBO());
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	
 	//for (int i = 0; i < objectCount; ++i) {
 	//	draw(info, objects[i], glm::mat4(1));
 	//}
 	// Render objects using tree
 	root->render(info, getActiveCamera(), glm::mat4(1), draw); // this updates parent transform
+
+
+	// Screen render
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	// use screen shader
+	glUseProgram(fBuffer->getProgram());
+	// frameBufferquad
+	glBindVertexArray(fBuffer->getQuadVAO());
+	glDisable(GL_DEPTH_TEST);
+	fBuffer->bindTextures();
+
+	glUniform1i(fBuffer->uniformIndexDiffuse, 0);
+	glUniform1i(fBuffer->uniformIndexNormal, 1);
+	glUniform1i(fBuffer->uniformIndexPosition, 2);
+	//fBuffer->bindTexture(0);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
+
 
 	for (int i = 0; i < objectCount; ++i) {
 		assignAABB(objects[i]);
@@ -518,10 +583,15 @@ void Render::updateAnimation(float delta) {
 
 
 Render::Render(std::string vertFile, std::string fragFile, Camera* cameraIn) {
-	if (loadShaders(vertFile, fragFile)) {
+	program = loadShaders(vertFile, fragFile);
+	if (program == -1) {
 		std::cout << "Shaders didn't load correctly\n";
 		throw;
 	}
+	uniformIndexProj = glGetUniformLocation(program, "proj");
+	uniformIndexTran = glGetUniformLocation(program, "tran");
+	uniformIndexColor = glGetUniformLocation(program, "baseColor");
+	uniformIndexBones = glGetUniformLocation(program, "bones");
 	objectCount = 0;
 	meshCount = 0;
 	textureCount = 0;
@@ -532,6 +602,7 @@ Render::Render(std::string vertFile, std::string fragFile, Camera* cameraIn) {
 	activeCamera = 0;
 	root = nullptr;
 	initializeGrid();
+	generateFrameBuffer();
 }
 
 Render::~Render() {

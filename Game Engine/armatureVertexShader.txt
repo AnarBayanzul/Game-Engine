@@ -6,7 +6,9 @@ layout(location = 2) in vec2 texCoord;
 layout(location = 3) in ivec4 boneID;
 layout(location = 4) in vec4 boneWeights;
 
-uniform mat4 bones[19];
+#define BONECOUNT 19
+
+uniform mat4 bones[BONECOUNT];
 
 uniform mat4 proj;
 uniform mat4 tran;

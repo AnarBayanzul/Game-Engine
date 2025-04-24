@@ -189,6 +189,8 @@
     <Text Include="readme.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="postBufferVertex.txt" />
+    <Text Include="postBufferFragment.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_mesh_export.py">

@@ -1,0 +1,17 @@
+#version 410
+
+out vec4 color;
+  
+smooth in vec2 uv;
+
+uniform sampler2D diffuse;
+uniform sampler2D normTex;
+uniform sampler2D posTex;
+
+void main()
+{ 
+    
+    color = texture(diffuse, uv);
+    //color = texture(normTex, uv);
+    //color = texture(posTex, uv);
+}

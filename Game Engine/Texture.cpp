@@ -34,7 +34,7 @@ Texture::Texture(std::string fileName, int mipmapLevel) {
 }
 
 Texture::~Texture() {
-
+	glDeleteTextures(1, &tbo);
 }
 
 GLuint Texture::getTBO() {

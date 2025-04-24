@@ -79,6 +79,8 @@
     <Text Include="monkeyHull.txt" />
     <Text Include="monkeyMesh.txt" />
     <Text Include="monkeySmoothNormal.txt" />
+    <Text Include="postBufferFragment.txt" />
+    <Text Include="postBufferVertex.txt" />
     <Text Include="readme.txt" />
     <Text Include="test.txt" />
     <Text Include="texCube.txt" />

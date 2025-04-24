@@ -8,6 +8,7 @@
 #include "tile.h"
 #include "Engine.h"
 #include "AnimationStates.h"
+#include "FrameBuffer.h"
 
 #include <GL/glew.h>
 #include <string>
@@ -41,11 +42,12 @@ protected:
 	Animation* animations[MAXANIMATIONS] = {};
 	GameObject* objects[MAXOBJECTS] = {};
 	Camera* cameras[MAXCAMERAS] = {};
+	FrameBuffer* fBuffer;
 
 	AnimationStates playback[MAXPLAYINGANIMATIONS] = {};
 	int playbackSize;
 
-	int loadShaders(std::string vertFile, std::string fragFile);
+	GLuint loadShaders(std::string vertFile, std::string fragFile);
 	GLint uniformIndexProj;
 	GLint uniformIndexTran;
 	GLint uniformIndexColor;
@@ -85,6 +87,7 @@ public:
 	GameObject** getObjects();
 	Camera* getActiveCamera();
 	Camera* getCamera(int camIndex);
+	virtual void generateFrameBuffer();
 	virtual void update(float delta);
 	Mesh** getMeshes();
 
