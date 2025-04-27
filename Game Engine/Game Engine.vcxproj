@@ -84,7 +84,9 @@
     <Text Include="defaultFragmentShader.txt" />
     <Text Include="defaultVertexShader.txt" />
     <Text Include="floor.txt" />
+    <Text Include="hammer.txt" />
     <Text Include="house.txt" />
+    <Text Include="key.txt" />
     <Text Include="lambertianFragmentShader.txt" />
     <Text Include="light.txt" />
     <Text Include="mesh.txt" />
@@ -108,8 +110,10 @@
   <ItemGroup>
     <Image Include="grassTexture.bmp" />
     <Image Include="grassTextureBright.bmp" />
+    <Image Include="hammerTex.bmp" />
     <Image Include="houseTex.bmp" />
     <Image Include="houseTexDirty.bmp" />
+    <Image Include="keyTex.bmp" />
     <Image Include="ohMyGah.bmp" />
     <Image Include="ohTheMisery.bmp" />
   </ItemGroup>

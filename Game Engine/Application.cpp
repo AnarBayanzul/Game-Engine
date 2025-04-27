@@ -692,8 +692,39 @@ void myGameInit() {
 	);
 	firstLevel->root->addChild(new Node(firstLevel->getObjects()[lightIndex6]));
 
+	int keyMesh = firstLevel->addMesh("key.txt", false, false); // front hall
+	Texture* keyTex = new Texture("keyTex.bmp", 0);
+	int keyTexIndex = firstLevel->addTexture(keyTex);
+	int keyIndex = firstLevel->addObject(
+		new GameObject(
+			glm::vec3(-3.5, 0.1, -9.0),
+			quat(glm::vec3(1.0, 0.0, 0.0), 3.1415 / 2.0),
+			keyMesh,
+			keyTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[keyIndex]));
 
-
+	int hammerMesh = firstLevel->addMesh("hammer.txt", false, false); // front hall
+	Texture* hammerTex = new Texture("hammerTex.bmp", 0);
+	int hammerTexIndex = firstLevel->addTexture(hammerTex);
+	int hammerIndex = firstLevel->addObject(
+		new GameObject(
+			glm::vec3(4.5, 0.1, -9.0),
+			quat(glm::vec3(0.0, 1.0, 0.0), 3.1415 / 2.0) * quat(glm::vec3(1.0, 0.0, 0.0), 3.1415 / 2.0),
+			hammerMesh,
+			hammerTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[hammerIndex]));
 
 	SoundSystem::system().loadSound("creepy sting.wav");
 	SoundSystem::system().loadSound("room ambience.wav");

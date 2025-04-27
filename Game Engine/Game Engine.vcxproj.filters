@@ -223,6 +223,12 @@
     <Text Include="light.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="key.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="hammer.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_mesh_export.py">
@@ -258,6 +264,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="grassTextureBright.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="keyTex.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="hammerTex.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
