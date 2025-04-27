@@ -20,7 +20,7 @@ void main() {
 
     // bloom + hdr
     const float gamma = 1.0;
-    const float exposure = 0.7; // pls 0.7
+    const float exposure = 1.0; // pls 0.7
     vec3 hdrColor = texture(diffuse, uv).rgb;   
     
 

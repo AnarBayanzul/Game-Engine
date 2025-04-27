@@ -229,6 +229,12 @@
     <Text Include="hammer.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="door.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="planks.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_mesh_export.py">
@@ -244,6 +250,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="grass.kra">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="planks.kra">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -272,6 +281,15 @@
     <Image Include="hammerTex.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="doorTex.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="planksTex.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="planksDirty.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="ohMyGah.wav">
@@ -296,6 +314,9 @@
       <Filter>Resource Files</Filter>
     </Media>
     <Media Include="footstepsDeep.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="serenade.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>

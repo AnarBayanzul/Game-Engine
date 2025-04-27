@@ -470,7 +470,8 @@ enum SOUNDEFFECTS {
 	ROOM,
 	CRICKET,
 	RADIO,
-	FOOTSTEPS
+	FOOTSTEPS,
+	SERENADE
 };
 
 Render* firstLevel;
@@ -726,14 +727,107 @@ void myGameInit() {
 	);
 	firstLevel->root->addChild(new Node(firstLevel->getObjects()[hammerIndex]));
 
+	int doorMesh = firstLevel->addMesh("door.txt", false, false); // front hall
+	Texture* doorTex = new Texture("doorTex.bmp", 0);
+	int doorTexIndex = firstLevel->addTexture(doorTex);
+	int frontDoorIndex = firstLevel->addObject(
+		new GameObject(
+			glm::vec3(-0.5, 0.0, 4.5),
+			quat(glm::vec3(0.0, 1.0, 0.0), 3.1415 / 2.0),
+			doorMesh,
+			doorTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[frontDoorIndex]));
+
+	int bathroomDoorIndex = firstLevel->addObject(
+		new GameObject(
+			glm::vec3(-2.75, 0.0, 0.5),
+			quat(glm::vec3(0.0, 1.0, 0.0), 3.1415 / 2.0),
+			doorMesh,
+			doorTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[bathroomDoorIndex]));
+
+	int nearBedDoorIndex = firstLevel->addObject(
+		new GameObject(
+			glm::vec3(-2.0, 7.5, -11.0),
+			quat(glm::vec3(0.0, 1.0, 0.0), 3.3),
+			doorMesh,
+			doorTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[nearBedDoorIndex]));
+
+	int farBedDoorIndex = firstLevel->addObject(
+		new GameObject(
+			glm::vec3(-2.0, 7.5, -3.0),
+			quat(glm::vec3(0.0, 1.0, 0.0), 3.3),
+			doorMesh,
+			doorTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[farBedDoorIndex]));
+
+	int masterBedDoorIndex = firstLevel->addObject(
+		new GameObject(
+			glm::vec3(7.0, 7.5, -13.5),
+			//quat(glm::vec3(0.0, 1.0, 0.0),  -0.7), // open
+			quat(glm::vec3(0.0, 1.0, 0.0), -3.1415 / 2.0),
+			doorMesh,
+			doorTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[masterBedDoorIndex]));
+
+
+	int planksMesh = firstLevel->addMesh("planks.txt", false, false); // front hall
+	Texture* planksTex = new Texture("planksDirty.bmp", 0);
+	int planksTexIndex = firstLevel->addTexture(planksTex);
+	int planksIndex = firstLevel->addObject(
+		new GameObject(
+			glm::vec3(-3.6, 0.0, -11.0),
+			quat(glm::vec3(0.0, 1.0, 0.0), 3.1415),
+			planksMesh,
+			planksTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[planksIndex]));
+
 	SoundSystem::system().loadSound("creepy sting.wav");
 	SoundSystem::system().loadSound("room ambience.wav");
 	SoundSystem::system().loadSound("night cricket.wav");
 	SoundSystem::system().loadSound("radio.wav");
 	SoundSystem::system().loadSound("footstepsDeep.wav");
+	SoundSystem::system().loadSound("serenade.wav");
 	SoundSystem::system().playSound(RADIO, 0.01, LOOP);
 	SoundSystem::system().playSound(ROOM, 0.2, LOOP);
-	//SoundSystem::system().playSound(CRICKET, 0.04, LOOP);
+	//SoundSystem::system().playSound(SERENADE, 0.1, LOOP);
 
 
 	addToRenderQueue(firstLevel);
@@ -745,7 +839,6 @@ void transitionCallback(void* data, void* other) {
 }
 
 void transition(ROOMS room) {
-	std::cout << "transition\n\n\n\n";
 	// play sound
 	SoundSystem::system().playSound(FOOTSTEPS, 0.5, ONCE);
 	// fade in and out
@@ -891,6 +984,11 @@ void myGameUpdate(float deltaSec) {
 		case SDLK_d:
 			firstLevel->getCamera(MOVE)->move(glm::vec3(8 * deltaSec, 0.0, 0.0));
 			break;
+		case SDLK_SPACE:
+			firstLevel->getCamera(MOVE)->move(glm::vec3(0.0, 8 * deltaSec, 0.0));
+			break;
+		case SDLK_LSHIFT:
+			firstLevel->getCamera(MOVE)->move(glm::vec3(0.0, -8 * deltaSec, 0.0));
 		default:
 			break;
 		}

@@ -83,6 +83,7 @@
     <Text Include="dabAnim.txt" />
     <Text Include="defaultFragmentShader.txt" />
     <Text Include="defaultVertexShader.txt" />
+    <Text Include="door.txt" />
     <Text Include="floor.txt" />
     <Text Include="hammer.txt" />
     <Text Include="house.txt" />
@@ -93,6 +94,7 @@
     <Text Include="monkeyHull.txt" />
     <Text Include="monkeyMesh.txt" />
     <Text Include="monkeySmoothNormal.txt" />
+    <Text Include="planks.txt" />
     <Text Include="postBufferFragment.txt" />
     <Text Include="postBufferVertex.txt" />
     <Text Include="readme.txt" />
@@ -106,8 +108,10 @@
     <None Include="game_engine_blender_mesh_export.py" />
     <None Include="grass.kra" />
     <None Include="houseTextures.kra" />
+    <None Include="planks.kra" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="doorTex.bmp" />
     <Image Include="grassTexture.bmp" />
     <Image Include="grassTextureBright.bmp" />
     <Image Include="hammerTex.bmp" />
@@ -116,6 +120,8 @@
     <Image Include="keyTex.bmp" />
     <Image Include="ohMyGah.bmp" />
     <Image Include="ohTheMisery.bmp" />
+    <Image Include="planksDirty.bmp" />
+    <Image Include="planksTex.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="creepy sting.wav" />
@@ -126,6 +132,7 @@
     <Media Include="ohTheMisery.wav" />
     <Media Include="radio.wav" />
     <Media Include="room ambience.wav" />
+    <Media Include="serenade.wav" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

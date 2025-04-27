@@ -20,3 +20,7 @@ https://pixabay.com/sound-effects/harbour-light-of-the-windwards-53584/
 ## footsteps
 freesound_community
 https://pixabay.com/sound-effects/scary-creaking-knocking-wood-6103/
+
+## End song
+Schubert - Serenade (piano arr.) - Anonymous
+https://musopen.org/music/7818-schwanengesang-d-957/
