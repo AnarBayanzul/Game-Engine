@@ -220,6 +220,9 @@
     <Text Include="postBufferFragment.txt" />
     <Text Include="bloomVertex.txt" />
     <Text Include="bloomFragment.txt" />
+    <Text Include="light.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_mesh_export.py">
@@ -275,6 +278,12 @@
       <Filter>Resource Files</Filter>
     </Media>
     <Media Include="room ambience.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="footsteps.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="footstepsDeep.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>

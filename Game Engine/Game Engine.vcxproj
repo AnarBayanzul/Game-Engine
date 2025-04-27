@@ -86,6 +86,7 @@
     <Text Include="floor.txt" />
     <Text Include="house.txt" />
     <Text Include="lambertianFragmentShader.txt" />
+    <Text Include="light.txt" />
     <Text Include="mesh.txt" />
     <Text Include="monkeyHull.txt" />
     <Text Include="monkeyMesh.txt" />
@@ -114,6 +115,8 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="creepy sting.wav" />
+    <Media Include="footsteps.wav" />
+    <Media Include="footstepsDeep.wav" />
     <Media Include="night cricket.wav" />
     <Media Include="ohMyGah.wav" />
     <Media Include="ohTheMisery.wav" />

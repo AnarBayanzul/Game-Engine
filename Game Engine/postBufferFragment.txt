@@ -32,7 +32,7 @@ void main()
     float lambertian;
     float attenuation;
     float beta = 0.01;
-    float gamma = 0.03;
+    float gamma = 0.030;
     vec3 ls;
     float lsSize;
     for (int i = 0; i < LIGHTCOUNT; ++i) {

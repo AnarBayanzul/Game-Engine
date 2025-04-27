@@ -64,6 +64,7 @@ void main() {
 
 
     vec3 bloomColor = col;
+    bloomColor = vec3(0.0);
     //vec3 bloomColor = texture(bloomTex, uv).rgb;
     
     
@@ -88,4 +89,5 @@ void main() {
     // posterization
     const float smoothness = 8.0f;
 	color = round(smoothness * color) / smoothness;
+    //color = vec4(bloomColor, 1.0);
 }

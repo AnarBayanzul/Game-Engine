@@ -469,7 +469,8 @@ enum SOUNDEFFECTS {
 	STING = 0,
 	ROOM,
 	CRICKET,
-	RADIO
+	RADIO,
+	FOOTSTEPS
 };
 
 Render* firstLevel;
@@ -556,8 +557,13 @@ void myGameInit() {
 	firstLevel->addPointLight(glm::vec3(0.5, 5.0, 0.0), glm::vec4(1.0, 0.0, 0.0, 1.0)); // front hall
 	firstLevel->addPointLight(glm::vec3(-3.0, 5.0, 0.0), glm::vec4(0.0, 1.0, 0.0, 1.0)); // bathroom
 	firstLevel->addPointLight(glm::vec3(0.5, 5.0, -12.0), glm::vec4(1.0, 0.0, 0.0, 1.0)); // back hall
-	//firstLevel->addPointLight(glm::vec3(-0.0, 2.0, 12.0), glm::vec4(1.0, 1.0, 0.0, 1.0)); // outside, doesn't really work well
+	firstLevel->addPointLight(glm::vec3(-0.0, 0.5, 24.0), glm::vec4(1.0, 2.0, 0.0, 1.0)); // outside
+	firstLevel->addPointLight(glm::vec3(-0.0, 0.5, 16.0), glm::vec4(1.0, 2.0, 0.0, 1.0)); // outside closer
 	firstLevel->addPointLight(glm::vec3(10.0, 5.0, 1.0), glm::vec4(0.8, 0.8, 0.4, 1.0)); // kitchen
+	firstLevel->addPointLight(glm::vec3(4.5, 0.5, -9.0), glm::vec4(2.0, 1.0, 0.4, 1.0)); // cupboard
+	firstLevel->addPointLight(glm::vec3(-3.5, 0.5, -9.0), glm::vec4(1.8, 1.0, 0.4, 1.0)); // closet
+	//firstLevel->addPointLight(glm::vec3(0.5, 2.0, 0.0), glm::vec4(5.0, 5.0, 1.0, 1.0)); // super bright
+
 
 
 	int cubeMesh = firstLevel->addMesh("uvCube.txt", false, false);
@@ -613,12 +619,91 @@ void myGameInit() {
 	);
 	firstLevel->root->addChild(new Node(firstLevel->getObjects()[floorIndex]));
 
+	int lightMesh = firstLevel->addMesh("light.txt", false, false); // front hall
+	Texture* lightTex = new Texture("lightTex.bmp", 0);
+	int lightTexIndex = firstLevel->addTexture(lightTex);
+	int lightIndex1 = firstLevel->addObject(
+		new GameObject(
+			glm::vec3(0.5, 5.5, 0.0),
+			quat(glm::vec3(1.0, 0.0, 0.0), 0.0),
+			lightMesh,
+			lightTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[lightIndex1]));
+
+	int lightIndex3 = firstLevel->addObject( // back hall
+		new GameObject(
+			glm::vec3(0.5, 5.5, -12.0),
+			quat(glm::vec3(1.0, 0.0, 0.0), 0.0),
+			lightMesh,
+			lightTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[lightIndex3]));
+
+	int lightIndex4 = firstLevel->addObject( // kitchen
+		new GameObject(
+			glm::vec3(10.0, 5.75, 1.0),
+			quat(glm::vec3(1.0, 0.0, 0.0), 0.0),
+			lightMesh,
+			lightTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[lightIndex4]));
+
+	int lightIndex5 = firstLevel->addObject( // cupboard
+		new GameObject(
+			glm::vec3(4.5, 4.5, -9.0),
+			quat(glm::vec3(1.0, 0.0, 0.0), 0.0),
+			lightMesh,
+			lightTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[lightIndex5]));
+
+	int lightIndex6 = firstLevel->addObject( // closet
+		new GameObject(
+			glm::vec3(-3.5, 4.5, -9.0),
+			quat(glm::vec3(1.0, 0.0, 0.0), 0.0),
+			lightMesh,
+			lightTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[lightIndex6]));
+
+
+
 
 	SoundSystem::system().loadSound("creepy sting.wav");
 	SoundSystem::system().loadSound("room ambience.wav");
 	SoundSystem::system().loadSound("night cricket.wav");
 	SoundSystem::system().loadSound("radio.wav");
-	SoundSystem::system().playSound(RADIO, 0.004, LOOP);
+	SoundSystem::system().loadSound("footstepsDeep.wav");
+	SoundSystem::system().playSound(RADIO, 0.01, LOOP);
+	SoundSystem::system().playSound(ROOM, 0.2, LOOP);
+	//SoundSystem::system().playSound(CRICKET, 0.04, LOOP);
+
 
 	addToRenderQueue(firstLevel);
 }
@@ -631,10 +716,10 @@ void transitionCallback(void* data, void* other) {
 void transition(ROOMS room) {
 	std::cout << "transition\n\n\n\n";
 	// play sound
-
+	SoundSystem::system().playSound(FOOTSTEPS, 0.5, ONCE);
 	// fade in and out
 	firstLevel->addSAnimation(ScreenAnimation{
-		0.0, 1.0, FADEOUT, (void*)room, (void*) new ScreenAnimation{0.0, 0.5, DARK, (void*)room, (void*)new ScreenAnimation{0.0, 1.0, FADEIN, nullptr, nullptr, nullptr}, transitionCallback},
+		0.0, 0.8, FADEOUT, (void*)room, (void*) new ScreenAnimation{0.0, 0.2, DARK, (void*)room, (void*)new ScreenAnimation{0.0, 0.8, FADEIN, nullptr, nullptr, nullptr}, transitionCallback},
 		transitionCallback
 		});
 }
