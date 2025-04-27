@@ -1,9 +1,9 @@
 #version 410
 
 #define LIGHTCOUNT 32
+const float kernelOffset = 1.0 / 720;
 
-
-out vec4 color;
+//out vec4 color;
   
 smooth in vec2 uv;
 
@@ -11,8 +11,15 @@ uniform sampler2D diffuse;
 uniform sampler2D normTex;
 uniform sampler2D posTex;
 
+
+
 uniform vec3 lightPositions[LIGHTCOUNT];
 uniform vec3 lightColors[LIGHTCOUNT];
+
+layout (location = 0) out vec3 diffuseOut;
+layout (location = 1) out vec3 positionOut;
+layout (location = 2) out vec3 bloomOut;
+
 
 vec3 hadamard(vec3 c, vec3 d) {
     return vec3(c.x * d.x, c.y * d.y, c.z * c.z);
@@ -20,11 +27,12 @@ vec3 hadamard(vec3 c, vec3 d) {
 
 void main()
 { 
+    vec4 color = vec4(0.0);
     vec3 output = vec3(0.0, 0.0, 0.0);
     float lambertian;
     float attenuation;
     float beta = 0.01;
-    float gamma = 0.01;
+    float gamma = 0.03;
     vec3 ls;
     float lsSize;
     for (int i = 0; i < LIGHTCOUNT; ++i) {
@@ -37,11 +45,57 @@ void main()
         output += lambertian * attenuation * hadamard(lightColors[i], texture(diffuse, uv).xyz);
     }
 
-    color = vec4(output.xyz, 1.0);
-    color = texture(diffuse, uv); // SKIP LIGHTS
+
+    // edge highlighting kernel stuff
+    vec2 offsets[9] = vec2[](
+        vec2(-kernelOffset,  kernelOffset), // top-left
+        vec2( 0.0f,    kernelOffset), // top-center
+        vec2( kernelOffset,  kernelOffset), // top-right
+        vec2(-kernelOffset,  0.0f),   // center-left
+        vec2( 0.0f,    0.0f),   // center-center
+        vec2( kernelOffset,  0.0f),   // center-right
+        vec2(-kernelOffset, -kernelOffset), // bottom-left
+        vec2( 0.0f,   -kernelOffset), // bottom-center
+        vec2( kernelOffset, -kernelOffset)  // bottom-right    
+    );
+    float kernel[9] = float[](
+        1, 1, 1,
+        1,  -8, 1,
+        1, 1, 1
+    );
+
+    vec3 sampleTex[9];
+    for (int i = 0; i < 9; ++i) {
+        sampleTex[i] = vec3(texture(diffuse, uv + offsets[i]));
+    }
+    vec3 col = vec3(0.0);
+    for (int i = 0; i < 9; ++i) {
+        col += sampleTex[i] * kernel[i];
+    }
+
+    //color = vec4(output.xyz, 1.0);
+    //color = texture(diffuse, uv); // SKIP LIGHTS
+    //color = vec4(col, 1.0); // kernel
+    color = 0.75 * vec4(col, 1.0) + 0.40 * vec4(output.xyz, 1.0);
 
 
-    // posterization
-    float smoothness = 8.0f;
-	//color = round(smoothness * color) / smoothness;
+
+
+    
+
+
+
+
+    diffuseOut = color.xyz;
+    positionOut = texture(posTex, uv).xyz;
+
+
+
+    float bloomCutoff = 4.0;
+
+    if (dot(color.xyz, color.xyz) > bloomCutoff) {
+        bloomOut = color.xyz;
+    } else {
+        bloomOut = vec3(0.0);
+    }
 }

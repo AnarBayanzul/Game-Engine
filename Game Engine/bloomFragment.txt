@@ -1,0 +1,91 @@
+#version 410
+
+uniform sampler2D diffuse;
+uniform sampler2D posTex;
+uniform sampler2D bloomTex;
+
+const float kernelOffset = 1.0 / 500;
+
+out vec4 color;
+
+smooth in vec2 uv;
+
+
+uniform float visibility;
+
+
+
+void main() {
+	color = texture(diffuse, uv);
+
+    // bloom + hdr
+    const float gamma = 1.0;
+    const float exposure = 0.7; // pls 0.7
+    vec3 hdrColor = texture(diffuse, uv).rgb;   
+    
+
+
+
+
+    // bloom blur
+    vec2 offsets[9] = vec2[](
+        vec2(-kernelOffset,  kernelOffset), // top-left
+        vec2( 0.0f,    kernelOffset), // top-center
+        vec2( kernelOffset,  kernelOffset), // top-right
+        vec2(-kernelOffset,  0.0f),   // center-left
+        vec2( 0.0f,    0.0f),   // center-center
+        vec2( kernelOffset,  0.0f),   // center-right
+        vec2(-kernelOffset, -kernelOffset), // bottom-left
+        vec2( 0.0f,   -kernelOffset), // bottom-center
+        vec2( kernelOffset, -kernelOffset)  // bottom-right    
+    );
+    float gaussianKernel[9] = float[](
+        0.0625, 0.125, 0.0625,
+        0.125,  0.25,  0.125,
+        0.0625, 0.125, 0.0625
+    );
+//    float gaussianKernel[25] = float[](
+//        1.0 / 273.0,    4.0 / 273.0,    7.0 / 273.0,    4.0 / 273.0,    1.0 / 273.0,
+//        4.0 / 273.0,    16.0 / 273.0,   26.0 / 273.0,   16.0 / 273.0,   4.0 / 273.0,
+//        7.0 / 273.0,    26.0 / 273.0,   41.0 / 273.0,   26.0 / 273.0,   7.0 / 273.0,
+//        4.0 / 273.0,    16.0 / 273.0,   26.0 / 273.0,   16.0 / 273.0,   4.0 / 273.0,
+//        1.0 / 273.0,    4.0 / 273.0,    7.0 / 273.0,    4.0 / 273.0,    1.0 / 273.0,
+//    );
+
+    vec3 sampleTex[9];
+    for (int i = 0; i < 9; ++i) {
+        sampleTex[i] = vec3(texture(bloomTex, uv + offsets[i]));
+    }
+    vec3 col = vec3(0.0);
+    for (int i = 0; i < 9; ++i) {
+        col += sampleTex[i] * gaussianKernel[i];
+    }
+
+
+
+    vec3 bloomColor = col;
+    //vec3 bloomColor = texture(bloomTex, uv).rgb;
+    
+    
+    hdrColor += bloomColor; // additive blending
+    // tone mapping
+    vec3 result = vec3(1.0) - exp(-hdrColor * exposure);
+    result = pow(result, vec3(1.0 / gamma));
+    color = vec4(result, 1.0);
+
+
+
+
+
+
+    // screen transition
+    color = visibility * color;
+    //color = texture(bloomTex, uv);
+    //color = vec4(bloomColor, 1.0);
+    //color = texture(diffuse, uv);
+
+
+    // posterization
+    const float smoothness = 8.0f;
+	color = round(smoothness * color) / smoothness;
+}

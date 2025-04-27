@@ -9,6 +9,11 @@
 #include "Engine.h"
 #include "AnimationStates.h"
 #include "FrameBuffer.h"
+#include "Button2D.h"
+#include "PointLight.h"
+#include "ScreenAnimation.h"
+#include "PointLightBuffer.h"
+#include "BloomBuffer.h"
 
 #include <GL/glew.h>
 #include <string>
@@ -20,9 +25,11 @@
 #define MAXTEXTURES 128
 #define MAXCAMERAS 16
 #define MAXANIMATIONS 16
+#define MAXSANIMATIONS 2
 #define MAXPLAYINGANIMATIONS 64
 #define ANIMATIONBONES 19 // TODO this shouldn't exist
 #define MAXPOINTLIGHTS 32
+#define MAXBUTTONS 128
 
 #define GRIDSIZE 32 // this is gridsize on a side
 #define WORLDMIN -128.0
@@ -37,6 +44,8 @@ protected:
 	int cameraCount;
 	int activeCamera;
 	int pointLightCount;
+	int buttonCount;
+	int sAnimationCount;
 	GLuint program;
 	Texture* textures[MAXTEXTURES];
 	Mesh* meshes[MAXMESHES] = {};
@@ -44,9 +53,14 @@ protected:
 	Animation* animations[MAXANIMATIONS] = {};
 	GameObject* objects[MAXOBJECTS] = {};
 	Camera* cameras[MAXCAMERAS] = {};
-	FrameBuffer* fBuffer;
+	ScreenAnimation sAnimations[MAXSANIMATIONS] = {};
+
+	PointLightBuffer* fBuffer;
+	BloomBuffer* bBuffer;
 	glm::vec3 lightPositions[MAXPOINTLIGHTS] = {};
 	glm::vec3 lightColors[MAXPOINTLIGHTS] = {};
+	PointLight* pointLights[MAXPOINTLIGHTS] = {};
+	
 
 	AnimationStates playback[MAXPLAYINGANIMATIONS] = {};
 	int playbackSize;
@@ -71,6 +85,7 @@ protected:
 
 
 public:
+	Button2D* buttons[MAXBUTTONS] = {};
 	Node* root;
 	// these methods return index
 	// these two are for convex meshes
@@ -98,9 +113,15 @@ public:
 	int addCamera(Camera* cam);
 	void setCamera(int camIndex);
 
-	int addPointLight(glm::vec3 position, glm::vec3 color);
+	int addPointLight(PointLight* light);
+	int addPointLight(glm::vec3 position, glm::vec4 color);
 	void removePointLight(int index);
 
+	int addButton(Button2D* button);
+	void removeButton(int index);
+
+	float updateSAnimation(float delta);
+	int addSAnimation(ScreenAnimation sAnimation);
 
 
 

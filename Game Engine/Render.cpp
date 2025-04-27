@@ -201,6 +201,7 @@ int Render::addObject(GameObject* obj) {
 	return objectCount++;
 }
 
+
 void Render::generateFrameBuffer() {
 	// overwrite-able function, this is for deferred lighting
 	std:: vector<TextureProperties> texProps; // diffuse, normal, position
@@ -231,15 +232,55 @@ void Render::generateFrameBuffer() {
 		GL_RGB,
 		GL_FLOAT
 		});
-	fBuffer = new FrameBuffer((int)WIDTH, (int)HEIGHT, texProps);
+	fBuffer = new PointLightBuffer((int)WIDTH, (int)HEIGHT, texProps);
 	fBuffer->setProgram(loadShaders( // TODO make this customizable
 		"postBufferVertex.txt", "postBufferFragment.txt"
 	));
 	fBuffer->uniformIndexDiffuse = glGetUniformLocation(fBuffer->getProgram(), "diffuse");
 	fBuffer->uniformIndexNormal = glGetUniformLocation(fBuffer->getProgram(), "normTex");
 	fBuffer->uniformIndexPosition = glGetUniformLocation(fBuffer->getProgram(), "posTex");
+	//fBuffer->uniformIndexBloom = glGetUniformLocation(fBuffer->getProgram(), "bloomTex");
+
 	fBuffer->uniformIndexLightPositions = glGetUniformLocation(fBuffer->getProgram(), "lightPositions");
 	fBuffer->uniformIndexLightColors = glGetUniformLocation(fBuffer->getProgram(), "lightColors");
+
+	
+	std::vector<TextureProperties> bloomProps; // diffuse, position, brightColors
+	bloomProps.push_back(TextureProperties{
+		0,
+		GL_RGB32F,
+		(GLsizei)WIDTH,
+		(GLsizei)HEIGHT,
+		0,
+		GL_RGB,
+		GL_FLOAT
+		});
+	bloomProps.push_back(TextureProperties{
+		0,
+		GL_RGB32F,
+		(GLsizei)WIDTH,
+		(GLsizei)HEIGHT,
+		0,
+		GL_RGB,
+		GL_FLOAT
+		});
+	bloomProps.push_back(TextureProperties{
+		0,
+		GL_RGB32F,
+		(GLsizei)WIDTH,
+		(GLsizei)HEIGHT,
+		0,
+		GL_RGB,
+		GL_FLOAT
+		});
+	bBuffer = new BloomBuffer((int)WIDTH, (int)HEIGHT, texProps);
+	bBuffer->setProgram(loadShaders( // TODO make this customizable
+		"bloomVertex.txt", "bloomFragment.txt"
+	));
+	bBuffer->uniformIndexDiffuse = glGetUniformLocation(bBuffer->getProgram(), "diffuse");
+	bBuffer->uniformIndexPosition = glGetUniformLocation(bBuffer->getProgram(), "position");
+	bBuffer->uniformIndexBloom = glGetUniformLocation(bBuffer->getProgram(), "bloomTex");
+	bBuffer->uniformIndexVisibility = glGetUniformLocation(bBuffer->getProgram(), "visibility");
 }
 
 void draw(RenderInfo info, GameObject* object) {
@@ -282,6 +323,10 @@ void Render::update(float delta) {
 		removeFromGrid(objects[i]);
 		objects[i]->update(delta);
 	}
+	for (int i = 0; i < pointLightCount; ++i) {
+		pointLights[i]->update(delta);
+	}
+
 	updateAnimation(delta); // Internally loops through playback
 
 	RenderInfo info = { uniformIndexProj, uniformIndexTran, uniformIndexColor, uniformIndexBones, textures, meshes };
@@ -303,7 +348,7 @@ void Render::update(float delta) {
 
 
 	// Screen render
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, bBuffer->getFBO());
 	glClear(GL_COLOR_BUFFER_BIT);
 	// use screen shader
 	glUseProgram(fBuffer->getProgram());
@@ -315,6 +360,16 @@ void Render::update(float delta) {
 	glUniform1i(fBuffer->uniformIndexDiffuse, 0);
 	glUniform1i(fBuffer->uniformIndexNormal, 1);
 	glUniform1i(fBuffer->uniformIndexPosition, 2);
+	//glUniform1i(fBuffer->uniformIndexBloom, 3);
+
+
+
+	glm::vec3 lightPositions[MAXPOINTLIGHTS] = {};
+	glm::vec3 lightColors[MAXPOINTLIGHTS] = {};
+	for (int i = 0; i < pointLightCount; ++i) {
+		lightPositions[i] = pointLights[i]->getPosition();
+		lightColors[i] = (glm::vec3)pointLights[i]->getColor();
+	}
 
 	glUniform3fv(fBuffer->uniformIndexLightPositions, MAXPOINTLIGHTS, glm::value_ptr(lightPositions[0]));
 	glUniform3fv(fBuffer->uniformIndexLightColors, MAXPOINTLIGHTS, glm::value_ptr(lightColors[0]));
@@ -322,6 +377,24 @@ void Render::update(float delta) {
 	//fBuffer->bindTexture(0);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
+
+
+	// bloom final
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glUseProgram(bBuffer->getProgram());
+	glBindVertexArray(fBuffer->getQuadVAO());
+	glDisable(GL_DEPTH_TEST);
+	bBuffer->bindTextures();
+
+	glUniform1i(bBuffer->uniformIndexDiffuse, 0);
+	glUniform1i(bBuffer->uniformIndexPosition, 1);
+	glUniform1i(bBuffer->uniformIndexBloom, 2);
+
+	float visibility = updateSAnimation(delta);
+	glUniform1f(bBuffer->uniformIndexVisibility, visibility);
+	
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
 
@@ -489,7 +562,7 @@ int Render::playAnimation(int animationIndex, int objIndex) {
 
 	return playbackSize++;
 }
-bool Render::stopAnimation(int playBackIndex) {
+bool Render::stopAnimation(int playBackIndex) { // TODO idk if this works properly, because pretty sure order in playback is not properly preserved
 	if (playBackIndex >= playbackSize) {
 		std::cout << "Animation to stop doesn't exist.\n";
 		return false;
@@ -583,8 +656,47 @@ void Render::updateAnimation(float delta) {
 
 }
 
+float Render::updateSAnimation(float delta) {
+	float total = 1.0;
+	float visibility;
+	for (int i = sAnimationCount - 1; i >=0; --i) {
+		visibility = 1.0;
+		// if over time
+		if (sAnimations[i].time > sAnimations[i].duration) {
+			if (sAnimations[i].callback != nullptr) {
+				sAnimations[i].callback(sAnimations[i].data, sAnimations[i].other);
+			}
+			--sAnimationCount;
+			std::swap(sAnimations[i], sAnimations[sAnimationCount]);
+		}
+		switch (sAnimations[i].type) {
+		case FADEIN:
+			visibility = sAnimations[i].time / sAnimations[i].duration;
 
-
+			break;
+		case FADEOUT:
+			visibility = 1 - sAnimations[i].time / sAnimations[i].duration;
+			break;
+		case DARK:
+			visibility = 0;
+			break;
+		default:
+			break;
+		}
+		sAnimations[i].time += delta;
+		total *= visibility;
+	}
+	//std::cout << total << "\n";
+	return total;
+}
+int Render::addSAnimation(ScreenAnimation sAnimation) {
+	if (sAnimationCount >= MAXSANIMATIONS) {
+		std::cout << "Too many screen animations\n";
+		return -1;
+	}
+	sAnimations[sAnimationCount] = sAnimation;
+	return sAnimationCount++;
+}
 
 Render::Render(std::string vertFile, std::string fragFile, Camera* cameraIn) {
 	program = loadShaders(vertFile, fragFile);
@@ -604,6 +716,7 @@ Render::Render(std::string vertFile, std::string fragFile, Camera* cameraIn) {
 	cameras[0] = cameraIn;
 	cameraCount = 1;
 	activeCamera = 0;
+	sAnimationCount = 0;
 	root = nullptr;
 	initializeGrid();
 	generateFrameBuffer();
@@ -625,6 +738,9 @@ Render::~Render() {
 	}
 	for (int i = 0; i < cameraCount; ++i) {
 		delete cameras[i];
+	}
+	for (int i = 0; i < pointLightCount; ++i) {
+		delete pointLights[i];
 	}
 	delete root;
 }
@@ -663,14 +779,22 @@ int addToRenderQueue(Render* renderObject) {
 	return renderCount++;
 }
 
-int Render::addPointLight(glm::vec3 position, glm::vec3 color) {
+int Render::addPointLight(glm::vec3 position, glm::vec4 color) {
 	if (pointLightCount >= MAXPOINTLIGHTS) {
 		std::cout << "Too many point lights\n";
 		return -1;
 	}
-	lightPositions[pointLightCount] = position;
-	lightColors[pointLightCount] = color;
-	++pointLightCount;
+	pointLights[pointLightCount] = new PointLight(position, color);
+	return pointLightCount++;
+}
+
+int Render::addPointLight(PointLight* light) {
+	if (pointLightCount >= MAXPOINTLIGHTS) {
+		std::cout << "Too many point lights\n";
+		return -1;
+	}
+	pointLights[pointLightCount] = light;
+	return pointLightCount++;
 }
 
 void Render::removePointLight(int index) {
@@ -679,8 +803,24 @@ void Render::removePointLight(int index) {
 		return;
 	}
 	--pointLightCount;
-	std::swap(lightPositions[index], lightPositions[pointLightCount]);
-	std::swap(lightColors[index], lightColors[pointLightCount]);
-	lightPositions[pointLightCount] = glm::vec3(0.0);
-	lightColors[pointLightCount] = glm::vec3(0.0);
+	std::swap(pointLights[index], pointLights[pointLightCount]);
+	delete pointLights[pointLightCount];
+}
+
+int Render::addButton(Button2D* button) {
+	if (buttonCount >= MAXBUTTONS) {
+		std::cout << "Too many buttons\n";
+		return -1;
+	}
+	buttons[buttonCount] = button;
+	++buttonCount;
+}
+
+void Render::removeButton(int index) {
+	if (index >= buttonCount) {
+		std::cout << "Button index (" << index << ") to remove doesn't exist\n";
+		return;
+	}
+	--buttonCount;
+	std::swap(buttons[index], buttons[buttonCount]);
 }

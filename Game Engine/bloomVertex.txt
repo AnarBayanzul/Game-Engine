@@ -1,0 +1,12 @@
+#version 410
+
+
+layout (location = 0) in vec3 position;
+
+smooth out vec2 uv;
+
+void main()
+{
+    gl_Position = vec4(position.xyz, 1.0); 
+    uv = 0.5f * (position.xy + vec2(1.0f));
+}  

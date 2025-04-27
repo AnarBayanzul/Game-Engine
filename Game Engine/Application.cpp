@@ -359,7 +359,7 @@ static void snakeUpdate(float deltaSec) {
 
 
 void genericCollision(GameObject* A, GameObject* B) {
-	std::cout << "[-Collision-]";
+	//std::cout << "[-Collision-]";
 }
 
 Render* AABBscene;
@@ -465,7 +465,6 @@ enum ROOMS {
 	MOVE
 };
 
-
 enum SOUNDEFFECTS {
 	STING = 0,
 	ROOM,
@@ -474,7 +473,7 @@ enum SOUNDEFFECTS {
 };
 
 Render* firstLevel;
-ROOMS activeCam = MOVE;
+ROOMS activeCam = ESTABLISHING;
 void myGameInit() {
 	addToCollisionTable(GAMEOBJECT, GAMEOBJECT, genericCollision);
 
@@ -528,7 +527,7 @@ void myGameInit() {
 	
 	// outside establishing = 9
 	firstLevel->addCamera(new Camera(1.309f, WIDTH / HEIGHT, 0.1f, 100.0f));
-	firstLevel->getCamera(ESTABLISHING)->setPosition(glm::vec3(0.0, 3.5, 20.0));
+	firstLevel->getCamera(ESTABLISHING)->setPosition(glm::vec3(0.0, 3.5, 40.0));
 	firstLevel->getCamera(ESTABLISHING)->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), 0.0) * quat(glm::vec3(1.0, 0.0, 0.0), 0.1));
 
 	// outside establishing = 10
@@ -554,9 +553,11 @@ void myGameInit() {
 	activeCam = MOVE;
 
 	// Lights
-	firstLevel->addPointLight(glm::vec3(0.0, 5.0, 0.0), glm::vec3(1.0, 0.0, 0.0));
-	firstLevel->addPointLight(glm::vec3(-3.0, 5.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-
+	firstLevel->addPointLight(glm::vec3(0.5, 5.0, 0.0), glm::vec4(1.0, 0.0, 0.0, 1.0)); // front hall
+	firstLevel->addPointLight(glm::vec3(-3.0, 5.0, 0.0), glm::vec4(0.0, 1.0, 0.0, 1.0)); // bathroom
+	firstLevel->addPointLight(glm::vec3(0.5, 5.0, -12.0), glm::vec4(1.0, 0.0, 0.0, 1.0)); // back hall
+	//firstLevel->addPointLight(glm::vec3(-0.0, 2.0, 12.0), glm::vec4(1.0, 1.0, 0.0, 1.0)); // outside, doesn't really work well
+	firstLevel->addPointLight(glm::vec3(10.0, 5.0, 1.0), glm::vec4(0.8, 0.8, 0.4, 1.0)); // kitchen
 
 
 	int cubeMesh = firstLevel->addMesh("uvCube.txt", false, false);
@@ -596,7 +597,7 @@ void myGameInit() {
 	firstLevel->root->addChild(new Node(firstLevel->getObjects()[houseIndex]));
 
 	int floorMesh = firstLevel->addMesh("floor.txt", false, false);
-	Texture* floorTex = new Texture("grassTexture.bmp", 0);
+	Texture* floorTex = new Texture("grassTextureBright.bmp", 0);
 	int floorTexIndex = firstLevel->addTexture(floorTex);
 	int floorIndex = firstLevel->addObject(
 		new GameObject(
@@ -617,14 +618,148 @@ void myGameInit() {
 	SoundSystem::system().loadSound("room ambience.wav");
 	SoundSystem::system().loadSound("night cricket.wav");
 	SoundSystem::system().loadSound("radio.wav");
-	SoundSystem::system().playSound(RADIO, 0.08, ONCE);
+	SoundSystem::system().playSound(RADIO, 0.004, LOOP);
 
 	addToRenderQueue(firstLevel);
+}
+void transitionCallback(void* data, void* other) {
+	activeCam = (ROOMS)(int) other;
+	firstLevel->addSAnimation(*(ScreenAnimation*) data);
+	delete (ScreenAnimation*) data;
+}
+
+void transition(ROOMS room) {
+	std::cout << "transition\n\n\n\n";
+	// play sound
+
+	// fade in and out
+	firstLevel->addSAnimation(ScreenAnimation{
+		0.0, 1.0, FADEOUT, (void*)room, (void*) new ScreenAnimation{0.0, 0.5, DARK, (void*)room, (void*)new ScreenAnimation{0.0, 1.0, FADEIN, nullptr, nullptr, nullptr}, transitionCallback},
+		transitionCallback
+		});
+}
+
+
+void myGameManageClick(SDL_MouseButtonEvent mEvent) { // TODO detect if mouseDown
+	// first check which room you are currently in
+	switch (activeCam) {
+		// different behavior depending on which room
+	case OUTSIDE:
+		// check mouse click range
+		if (Button2D(glm::vec2(0.438, 0.365), glm::vec2(0.638, 0.964), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(FRONTHALL);
+		}
+		break;
+	case FRONTHALL:
+		if (Button2D(glm::vec2(0.088, 0.176), glm::vec2(0.332, 0.865), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(BATHROOM);
+		} else if (Button2D(glm::vec2(0.662, 0.01), glm::vec2(0.999, 0.8), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(TOPHALL);
+		} else if (Button2D(glm::vec2(0.464, 0.251), glm::vec2(0.691, 0.882), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(BACKHALL);
+		}
+		break;
+	case BATHROOM:
+		if (Button2D(glm::vec2(0.82, 0.003), glm::vec2(0.995, 0.999), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(FRONTHALL);
+		} else if (Button2D(glm::vec2(0.0, 0.0), glm::vec2(0.377, 1.0), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(LIVINGROOM);
+		}
+		break;
+	case LIVINGROOM:
+		if (Button2D(glm::vec2(0.44, 0.397), glm::vec2(0.509, 0.614), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(BACKHALL);
+		} else if (Button2D(glm::vec2(0.868, 0.0), glm::vec2(1.0, 1.0), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(BATHROOM);
+		}
+		break;
+	case BACKHALL:
+		if (Button2D(glm::vec2(0.785937, 0.3375), glm::vec2(0.871875, 0.731944), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(LIVINGROOM);
+		}
+		else if (Button2D(glm::vec2(0.38125, 0.427778), glm::vec2(0.403906, 0.818056), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(CLOSET);
+		}
+		else if (Button2D(glm::vec2(0.338281, 0.470833), glm::vec2(0.35, 0.6625), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(CUPBOARD);
+		}
+		else if (Button2D(glm::vec2(0.353906, 0.309722), glm::vec2(0.369531, 0.722222), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(FRONTHALL);
+		}
+		else if (Button2D(glm::vec2(0.270313, 0.409722), glm::vec2(0.335938, 0.626389), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(KITCHEN);
+		}
+		break;
+	case TOPHALL:
+		if (Button2D(glm::vec2(0.386719, 0.529167), glm::vec2(0.536719, 0.733333), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(FRONTHALL);
+		}
+		else if (Button2D(glm::vec2(0.0015625, 0.00416667), glm::vec2(0.2, 0.988889), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(MASTERBED);
+		}
+		else if (Button2D(glm::vec2(0.932813, 0.148611), glm::vec2(0.996875, 0.998611), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(NEARBED);
+		}
+		else if (Button2D(glm::vec2(0.607031, 0.361111), glm::vec2(0.636719, 0.619444), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(FARBED);
+		}
+		break;
+	case MASTERBED:
+		if (Button2D(glm::vec2(0.820312, 0.00277778), glm::vec2(0.995313, 0.995833), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(TOPHALL);
+		}
+		break;
+	case NEARBED:
+		if (Button2D(glm::vec2(0, 0.858333), glm::vec2(0.998437, 0.993056), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(TOPHALL);
+		}
+		break;
+	case FARBED:
+		if (Button2D(glm::vec2(0, 0.858333), glm::vec2(0.998437, 0.993056), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(TOPHALL);
+		}
+		break;
+	case ESTABLISHING:
+		if (Button2D(glm::vec2(0.492188, 0.547222), glm::vec2(0.51875, 0.634722), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(OUTSIDE);
+		}
+		break;
+	case KITCHEN:
+		if (Button2D(glm::vec2(0.728, 0.0), glm::vec2(1.0, 1.0), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(CUPBOARD);
+		}
+	case CUPBOARD:
+		if (Button2D(glm::vec2(0.773, 0.007), glm::vec2(1.0, 1.0), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(BACKHALL);
+		}
+		else if (Button2D(glm::vec2(0.0, 0.0), glm::vec2(0.164, 1.0), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(KITCHEN);
+		}
+		break;
+	case CLOSET:
+		if (Button2D(glm::vec2(0.773, 0.007), glm::vec2(1.0, 1.0), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			transition(BACKHALL);
+		}
+		else if (Button2D(glm::vec2(0.0, 0.0), glm::vec2(0.164, 1.0), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			//transition(FRONTHALL);
+		}
+		break;
+	case MOVE:
+		break;
+
+
+	default:
+		break;
+	}
+
+
+
 }
 
 void myGameUpdate(float deltaSec) {
 	if (lastKey.keysym.sym >= SDLK_0 && lastKey.keysym.sym <= SDLK_9) {
 		activeCam = (ROOMS) (lastKey.keysym.sym - SDLK_0);
+		lastKey.keysym.sym = NULL;
 	}
 	if (lastKey.type == SDL_KEYDOWN) {
 		switch (lastKey.keysym.sym) {
@@ -644,15 +779,20 @@ void myGameUpdate(float deltaSec) {
 			break;
 		}
 	}
-
 	firstLevel->setCamera(activeCam);
 }
 
+
+
+
+
+// Below 3 are pre allocated functions
+// for mouse down event
 int mouseClick(SDL_MouseButtonEvent mEvent) {
 	// first detect if it is pickup click, or move click
-	std::cout << mEvent.x << ", " << mEvent.y << "\n";
+	std::cout << "glm::vec2(" << mEvent.x / WIDTH << ", " << mEvent.y / HEIGHT << "),\n"; // mouse position scaled by width and height
 
-
+	myGameManageClick(mEvent);
 
 	return 0;
 }
@@ -665,8 +805,8 @@ int initialize() { // What should default initialize look like?
 	//exampleAudio();
 	//snakeInit();
 
-	AABBtest();
-	//myGameInit();
+	//AABBtest();
+	myGameInit();
 
 	return 0;
 }
@@ -675,7 +815,7 @@ int globalUpdate(float deltaSec) {
 	// TODO is this necessary?
 
 	//snakeUpdate(deltaSec);
-	AABBtestUpdate(deltaSec);
-	//myGameUpdate(deltaSec);
+	//AABBtestUpdate(deltaSec);
+	myGameUpdate(deltaSec);
 	return 0;
 }

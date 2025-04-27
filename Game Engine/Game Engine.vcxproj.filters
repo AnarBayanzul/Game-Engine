@@ -72,6 +72,18 @@
     <ClCompile Include="FrameBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Button2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLightBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BloomBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SDL_Manager.h">
@@ -146,6 +158,21 @@
     <ClInclude Include="TextureProperties.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Button2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenAnimation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLightBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BloomBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="mesh.txt">
@@ -191,6 +218,8 @@
     </Text>
     <Text Include="postBufferVertex.txt" />
     <Text Include="postBufferFragment.txt" />
+    <Text Include="bloomVertex.txt" />
+    <Text Include="bloomFragment.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_mesh_export.py">
@@ -223,6 +252,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="grassTexture.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="grassTextureBright.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

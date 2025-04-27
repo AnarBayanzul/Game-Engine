@@ -29,11 +29,5 @@ public:
 	GLuint getProgram();
 	void bindTextures();
 	void bindTexture(int i);
-
-	GLint uniformIndexDiffuse;
-	GLint uniformIndexNormal;
-	GLint uniformIndexPosition;
-	GLint uniformIndexLightPositions;
-	GLint uniformIndexLightColors;
 };
 
