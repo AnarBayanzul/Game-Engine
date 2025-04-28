@@ -471,11 +471,31 @@ enum SOUNDEFFECTS {
 	CRICKET,
 	RADIO,
 	FOOTSTEPS,
-	SERENADE
+	SERENADE,
+	PICKUP,
+	PLANKREMOVE,
+	LOCKED,
+	UNLOCK,
+	ANGRY
 };
 
 Render* firstLevel;
-ROOMS activeCam = ESTABLISHING;
+ROOMS activeCam = MOVE;
+int hammerIndex;
+int planksIndex;
+int keyIndex;
+int frontDoorIndex;
+int masterBedDoorIndex;
+bool doorLocked = true;
+bool frontLocked = true;
+
+void plankCallback(void* data, void* other) {
+	activeCam = (ROOMS)(int)other;
+	firstLevel->addSAnimation(*(ScreenAnimation*)data);
+	delete (ScreenAnimation*)data;
+	firstLevel->getObjects()[planksIndex]->show = false;
+}
+
 void myGameInit() {
 	addToCollisionTable(GAMEOBJECT, GAMEOBJECT, genericCollision);
 
@@ -562,7 +582,9 @@ void myGameInit() {
 	firstLevel->addPointLight(glm::vec3(-0.0, 0.5, 16.0), glm::vec4(1.0, 2.0, 0.0, 1.0)); // outside closer
 	firstLevel->addPointLight(glm::vec3(10.0, 5.0, 1.0), glm::vec4(0.8, 0.8, 0.4, 1.0)); // kitchen
 	firstLevel->addPointLight(glm::vec3(4.5, 0.5, -9.0), glm::vec4(2.0, 1.0, 0.4, 1.0)); // cupboard
-	firstLevel->addPointLight(glm::vec3(-3.5, 0.5, -9.0), glm::vec4(1.8, 1.0, 0.4, 1.0)); // closet
+	firstLevel->addPointLight(glm::vec3(-3.5, 0.5, -9.0), glm::vec4(1.6, 1.0, 0.4, 1.0)); // closet
+	firstLevel->addPointLight(glm::vec3(6.0, 10.0, -13.0), glm::vec4(0.9, 0.5, 0.2, 1.0)); // tophall
+	firstLevel->addPointLight(glm::vec3(-3.5, 3.0, -12.0), glm::vec4(0.5, 0.5, 0.1, 1.0)); // planks
 	//firstLevel->addPointLight(glm::vec3(0.5, 2.0, 0.0), glm::vec4(5.0, 5.0, 1.0, 1.0)); // super bright
 
 
@@ -696,7 +718,7 @@ void myGameInit() {
 	int keyMesh = firstLevel->addMesh("key.txt", false, false); // front hall
 	Texture* keyTex = new Texture("keyTex.bmp", 0);
 	int keyTexIndex = firstLevel->addTexture(keyTex);
-	int keyIndex = firstLevel->addObject(
+	keyIndex = firstLevel->addObject(
 		new GameObject(
 			glm::vec3(-3.5, 0.1, -9.0),
 			quat(glm::vec3(1.0, 0.0, 0.0), 3.1415 / 2.0),
@@ -713,7 +735,7 @@ void myGameInit() {
 	int hammerMesh = firstLevel->addMesh("hammer.txt", false, false); // front hall
 	Texture* hammerTex = new Texture("hammerTex.bmp", 0);
 	int hammerTexIndex = firstLevel->addTexture(hammerTex);
-	int hammerIndex = firstLevel->addObject(
+	hammerIndex = firstLevel->addObject(
 		new GameObject(
 			glm::vec3(4.5, 0.1, -9.0),
 			quat(glm::vec3(0.0, 1.0, 0.0), 3.1415 / 2.0) * quat(glm::vec3(1.0, 0.0, 0.0), 3.1415 / 2.0),
@@ -730,10 +752,10 @@ void myGameInit() {
 	int doorMesh = firstLevel->addMesh("door.txt", false, false); // front hall
 	Texture* doorTex = new Texture("doorTex.bmp", 0);
 	int doorTexIndex = firstLevel->addTexture(doorTex);
-	int frontDoorIndex = firstLevel->addObject(
+	frontDoorIndex = firstLevel->addObject(
 		new GameObject(
 			glm::vec3(-0.5, 0.0, 4.5),
-			quat(glm::vec3(0.0, 1.0, 0.0), 3.1415 / 2.0),
+			quat(glm::vec3(0.0, 1.0, 0.0), 0.0 / 2.0),
 			doorMesh,
 			doorTexIndex,
 			glm::vec3(0.0, 0.0, 0.0),
@@ -786,7 +808,7 @@ void myGameInit() {
 	);
 	firstLevel->root->addChild(new Node(firstLevel->getObjects()[farBedDoorIndex]));
 
-	int masterBedDoorIndex = firstLevel->addObject(
+	masterBedDoorIndex = firstLevel->addObject(
 		new GameObject(
 			glm::vec3(7.0, 7.5, -13.5),
 			//quat(glm::vec3(0.0, 1.0, 0.0),  -0.7), // open
@@ -805,7 +827,7 @@ void myGameInit() {
 	int planksMesh = firstLevel->addMesh("planks.txt", false, false); // front hall
 	Texture* planksTex = new Texture("planksDirty.bmp", 0);
 	int planksTexIndex = firstLevel->addTexture(planksTex);
-	int planksIndex = firstLevel->addObject(
+	planksIndex = firstLevel->addObject(
 		new GameObject(
 			glm::vec3(-3.6, 0.0, -11.0),
 			quat(glm::vec3(0.0, 1.0, 0.0), 3.1415),
@@ -825,6 +847,12 @@ void myGameInit() {
 	SoundSystem::system().loadSound("radio.wav");
 	SoundSystem::system().loadSound("footstepsDeep.wav");
 	SoundSystem::system().loadSound("serenade.wav");
+	SoundSystem::system().loadSound("pickup.wav");
+	SoundSystem::system().loadSound("plankRemove.wav");
+	SoundSystem::system().loadSound("locked.wav");
+	SoundSystem::system().loadSound("unlock.wav");
+	SoundSystem::system().loadSound("angry.wav");
+
 	SoundSystem::system().playSound(RADIO, 0.01, LOOP);
 	SoundSystem::system().playSound(ROOM, 0.2, LOOP);
 	//SoundSystem::system().playSound(SERENADE, 0.1, LOOP);
@@ -838,6 +866,7 @@ void transitionCallback(void* data, void* other) {
 	delete (ScreenAnimation*) data;
 }
 
+
 void transition(ROOMS room) {
 	// play sound
 	SoundSystem::system().playSound(FOOTSTEPS, 0.5, ONCE);
@@ -848,7 +877,6 @@ void transition(ROOMS room) {
 		});
 }
 
-
 void myGameManageClick(SDL_MouseButtonEvent mEvent) { // TODO detect if mouseDown
 	// first check which room you are currently in
 	switch (activeCam) {
@@ -856,6 +884,11 @@ void myGameManageClick(SDL_MouseButtonEvent mEvent) { // TODO detect if mouseDow
 	case OUTSIDE:
 		// check mouse click range
 		if (Button2D(glm::vec2(0.438, 0.365), glm::vec2(0.638, 0.964), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			if (frontLocked) {
+				frontLocked = false;
+				firstLevel->getObjects()[frontDoorIndex]->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), 5.0 / 2.0));
+				SoundSystem::system().playSound(UNLOCK, 0.5, ONCE);
+			}
 			transition(FRONTHALL);
 		}
 		break;
@@ -900,13 +933,28 @@ void myGameManageClick(SDL_MouseButtonEvent mEvent) { // TODO detect if mouseDow
 		}
 		break;
 	case TOPHALL:
+		if (Button2D(glm::vec2(0.0015625, 0.00416667), glm::vec2(0.2, 0.988889), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			if (firstLevel->getObjects()[keyIndex]->show == false) {
+				if (doorLocked) {
+					// unlock door
+					SoundSystem::system().playSound(UNLOCK, 0.5, ONCE); // TODO unlock sound
+					firstLevel->getObjects()[masterBedDoorIndex]->setRotation(quat(glm::vec3(0.0, 1.0, 0.0), -0.7));
+					doorLocked = false;
+				}
+				else {
+					transition(MASTERBED);
+				}
+			}
+			else {
+				// play locked sound
+				SoundSystem::system().playSound(LOCKED, 0.5, ONCE); // TODO locked sound
+			}
+			
+		}
+
 		if (Button2D(glm::vec2(0.386719, 0.529167), glm::vec2(0.536719, 0.733333), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
 			transition(FRONTHALL);
-		}
-		else if (Button2D(glm::vec2(0.0015625, 0.00416667), glm::vec2(0.2, 0.988889), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
-			transition(MASTERBED);
-		}
-		else if (Button2D(glm::vec2(0.932813, 0.148611), glm::vec2(0.996875, 0.998611), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+		} else if (Button2D(glm::vec2(0.932813, 0.148611), glm::vec2(0.996875, 0.998611), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
 			transition(NEARBED);
 		}
 		else if (Button2D(glm::vec2(0.607031, 0.361111), glm::vec2(0.636719, 0.619444), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
@@ -914,16 +962,46 @@ void myGameManageClick(SDL_MouseButtonEvent mEvent) { // TODO detect if mouseDow
 		}
 		break;
 	case MASTERBED:
+		if (Button2D(glm::vec2(0.116, 0.449), glm::vec2(0.319, 0.617), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			SoundSystem::system().playSound(STING, 0.4, ONCE);
+			// play sound
+			// fade in and out
+			firstLevel->addSAnimation(ScreenAnimation{
+				0.0, 0.8, FADEOUT, (void*)ESTABLISHING, (void*) new ScreenAnimation{0.0, 4.0, DARK, (void*)ESTABLISHING, (void*)new ScreenAnimation{0.0, 0.8, FADEIN, nullptr, nullptr, nullptr}, transitionCallback},
+				transitionCallback
+				});
+			// TODO win animation
+		}
+
+
+
+
+
+
+
 		if (Button2D(glm::vec2(0.820312, 0.00277778), glm::vec2(0.995313, 0.995833), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
 			transition(TOPHALL);
 		}
 		break;
 	case NEARBED:
+		if (Button2D(glm::vec2(0.453125, 0.583333), glm::vec2(0.602344, 0.729167), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			SoundSystem::system().playSound(ANGRY, 0.5, ONCE);
+			// TODO tell user it's not for you
+		}
+
+
 		if (Button2D(glm::vec2(0, 0.858333), glm::vec2(0.998437, 0.993056), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
 			transition(TOPHALL);
 		}
 		break;
 	case FARBED:
+		if (Button2D(glm::vec2(0.34375, 0.584722), glm::vec2(0.511719, 0.718056), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			SoundSystem::system().playSound(ANGRY, 0.5, ONCE);
+			// TODO tell user it's not for you
+		}
+
+
+
 		if (Button2D(glm::vec2(0, 0.858333), glm::vec2(0.998437, 0.993056), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
 			transition(TOPHALL);
 		}
@@ -938,6 +1016,15 @@ void myGameManageClick(SDL_MouseButtonEvent mEvent) { // TODO detect if mouseDow
 			transition(CUPBOARD);
 		}
 	case CUPBOARD:
+		if (firstLevel->getObjects()[hammerIndex]->show == true && Button2D(glm::vec2(0.417969, 0.901389), glm::vec2(0.510938, 0.997222), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			firstLevel->getObjects()[hammerIndex]->show = false;
+			SoundSystem::system().playSound(PICKUP, 0.5, ONCE);
+		}
+
+
+
+
+
 		if (Button2D(glm::vec2(0.773, 0.007), glm::vec2(1.0, 1.0), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
 			transition(BACKHALL);
 		}
@@ -946,6 +1033,27 @@ void myGameManageClick(SDL_MouseButtonEvent mEvent) { // TODO detect if mouseDow
 		}
 		break;
 	case CLOSET:
+		if (firstLevel->getObjects()[hammerIndex]->show == false && firstLevel->getObjects()[planksIndex]->show == true && Button2D(glm::vec2(0.178125, 0.277778), glm::vec2(0.695312, 1.0), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			// remove planks
+			
+			SoundSystem::system().playSound(PLANKREMOVE, 0.5, ONCE);
+			// fade in and out
+			firstLevel->addSAnimation(ScreenAnimation{
+				0.0, 0.8, FADEOUT, (void*)CLOSET, (void*) new ScreenAnimation{0.0, 1.0, DARK, (void*)CLOSET, (void*)new ScreenAnimation{0.0, 0.8, FADEIN, nullptr, nullptr, nullptr}, plankCallback},
+				plankCallback
+				});
+		}
+		else if (firstLevel->getObjects()[planksIndex]->show == false && Button2D(glm::vec2(0.417969, 0.901389), glm::vec2(0.510938, 0.997222), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
+			// pickup key
+			firstLevel->getObjects()[keyIndex]->show = false;
+			SoundSystem::system().playSound(PICKUP, 0.5, ONCE);
+		}
+
+
+
+
+
+
 		if (Button2D(glm::vec2(0.773, 0.007), glm::vec2(1.0, 1.0), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
 			transition(BACKHALL);
 		}
@@ -964,6 +1072,7 @@ void myGameManageClick(SDL_MouseButtonEvent mEvent) { // TODO detect if mouseDow
 
 
 }
+
 
 void myGameUpdate(float deltaSec) {
 	if (lastKey.keysym.sym >= SDLK_0 && lastKey.keysym.sym <= SDLK_9) {

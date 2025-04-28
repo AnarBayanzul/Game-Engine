@@ -319,5 +319,20 @@
     <Media Include="serenade.wav">
       <Filter>Resource Files</Filter>
     </Media>
+    <Media Include="pickup.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="plankRemove.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="locked.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="unlock.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="angry.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

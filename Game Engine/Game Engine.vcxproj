@@ -124,15 +124,20 @@
     <Image Include="planksTex.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="angry.wav" />
     <Media Include="creepy sting.wav" />
     <Media Include="footsteps.wav" />
     <Media Include="footstepsDeep.wav" />
+    <Media Include="locked.wav" />
     <Media Include="night cricket.wav" />
     <Media Include="ohMyGah.wav" />
     <Media Include="ohTheMisery.wav" />
+    <Media Include="pickup.wav" />
+    <Media Include="plankRemove.wav" />
     <Media Include="radio.wav" />
     <Media Include="room ambience.wav" />
     <Media Include="serenade.wav" />
+    <Media Include="unlock.wav" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
