@@ -88,6 +88,6 @@ void main() {
 
     // posterization
     const float smoothness = 8.0f;
-	//color = round(smoothness * color) / smoothness;
+	color = round(smoothness * color) / smoothness;
     //color = vec4(bloomColor, 1.0);
 }
