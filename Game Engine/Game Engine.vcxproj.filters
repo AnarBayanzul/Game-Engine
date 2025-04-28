@@ -235,6 +235,9 @@
     <Text Include="planks.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="billboard.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_mesh_export.py">
@@ -288,6 +291,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="planksDirty.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="GO TO BED.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="WELL-RESTED.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

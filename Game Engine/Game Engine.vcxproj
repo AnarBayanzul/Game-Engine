@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="armatureVertexShader.txt" />
+    <Text Include="billboard.txt" />
     <Text Include="bloomFragment.txt" />
     <Text Include="bloomVertex.txt" />
     <Text Include="body.txt" />
@@ -112,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="doorTex.bmp" />
+    <Image Include="GO TO BED.bmp" />
     <Image Include="grassTexture.bmp" />
     <Image Include="grassTextureBright.bmp" />
     <Image Include="hammerTex.bmp" />
@@ -122,6 +124,7 @@
     <Image Include="ohTheMisery.bmp" />
     <Image Include="planksDirty.bmp" />
     <Image Include="planksTex.bmp" />
+    <Image Include="WELL-RESTED.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="angry.wav" />

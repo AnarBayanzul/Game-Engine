@@ -486,6 +486,8 @@ int planksIndex;
 int keyIndex;
 int frontDoorIndex;
 int masterBedDoorIndex;
+int billBoardIndex;
+int wellRestedTexIndex;
 bool doorLocked = true;
 bool frontLocked = true;
 
@@ -572,7 +574,7 @@ void myGameInit() {
 	firstLevel->getCamera(MOVE)->setPosition(glm::vec3(0.0f, 3.5f, 10.0f));
 	firstLevel->getCamera(MOVE)->setRotation(quat(glm::vec3(1.0, 0.0, 0.0), 0.0));
 
-	activeCam = MOVE;
+	activeCam = ESTABLISHING;
 
 	// Lights
 	firstLevel->addPointLight(glm::vec3(0.5, 5.0, 0.0), glm::vec4(1.0, 0.0, 0.0, 1.0)); // front hall
@@ -589,23 +591,23 @@ void myGameInit() {
 
 
 
-	int cubeMesh = firstLevel->addMesh("uvCube.txt", false, false);
-	Texture* cubeTex = new Texture("ohTheMisery.bmp", 0);
-	int cubeTexIndex = firstLevel->addTexture(cubeTex);
+	//int cubeMesh = firstLevel->addMesh("uvCube.txt", false, false);
+	//Texture* cubeTex = new Texture("ohTheMisery.bmp", 0);
+	//int cubeTexIndex = firstLevel->addTexture(cubeTex);
 
-	int cubeIndex = firstLevel->addObject(
-		new GameObject(
-			glm::vec3(3.0, 3.0, 7.0),
-			quat(glm::vec3(1.0f, 0.0f, 0.0f), 0.0f),
-			cubeMesh,
-			cubeTexIndex,
-			glm::vec3(0.0f, 0.0f, 0.0f),
-			glm::vec3(0.0f, 0.0f, 0.5f),
-			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-			true
-		)
-	);
-	firstLevel->root->addChild(new Node(firstLevel->getObjects()[cubeIndex]));
+	//int cubeIndex = firstLevel->addObject(
+	//	new GameObject(
+	//		glm::vec3(3.0, 3.0, 7.0),
+	//		quat(glm::vec3(1.0f, 0.0f, 0.0f), 0.0f),
+	//		cubeMesh,
+	//		cubeTexIndex,
+	//		glm::vec3(0.0f, 0.0f, 0.0f),
+	//		glm::vec3(0.0f, 0.0f, 0.5f),
+	//		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+	//		true
+	//	)
+	//);
+	//firstLevel->root->addChild(new Node(firstLevel->getObjects()[cubeIndex]));
 
 	int houseMesh = firstLevel->addMesh("house.txt", false, false);
 	//Texture* houseTex = new Texture("houseTex.bmp", 0);
@@ -841,6 +843,28 @@ void myGameInit() {
 	);
 	firstLevel->root->addChild(new Node(firstLevel->getObjects()[planksIndex]));
 
+
+	int billboardMesh = firstLevel->addMesh("billboard.txt", false, false); // front hall
+	Texture* goToBedTex = new Texture("GO TO BED.bmp", 0);
+	int goToBedTexIndex = firstLevel->addTexture(goToBedTex);
+	Texture* wellRestedTex = new Texture("WELL-RESTED.bmp", 0);
+	wellRestedTexIndex = firstLevel->addTexture(wellRestedTex);
+
+	billBoardIndex = firstLevel->addObject(
+		new GameObject(
+			glm::vec3(-0.0, 6.0, 37.0), // go to bed
+			//glm::vec3(0.0, 0.3, 32.0), // well rested
+			quat(glm::vec3(0.0, 1.0, 0.0), 3.1415 / 2.0) * quat(glm::vec3(1.0, 0.0, 0.0), 3.1415 / 2.0),
+			billboardMesh,
+			goToBedTexIndex,
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec3(0.0, 0.0, 0.0),
+			glm::vec4(1.0, 1.0, 1.0, 1.0),
+			true
+		)
+	);
+	firstLevel->root->addChild(new Node(firstLevel->getObjects()[billBoardIndex]));
+
 	SoundSystem::system().loadSound("creepy sting.wav");
 	SoundSystem::system().loadSound("room ambience.wav");
 	SoundSystem::system().loadSound("night cricket.wav");
@@ -970,7 +994,9 @@ void myGameManageClick(SDL_MouseButtonEvent mEvent) { // TODO detect if mouseDow
 				0.0, 0.8, FADEOUT, (void*)ESTABLISHING, (void*) new ScreenAnimation{0.0, 4.0, DARK, (void*)ESTABLISHING, (void*)new ScreenAnimation{0.0, 0.8, FADEIN, nullptr, nullptr, nullptr}, transitionCallback},
 				transitionCallback
 				});
-			// TODO win animation
+			firstLevel->getObjects()[billBoardIndex]->setPosition(glm::vec3(0.0, 0.3, 32.0)); // well rested billboard
+			firstLevel->getObjects()[billBoardIndex]->setTextureElement(wellRestedTexIndex);
+			firstLevel->getObjects()[billBoardIndex]->show = true;
 		}
 
 
@@ -1007,8 +1033,14 @@ void myGameManageClick(SDL_MouseButtonEvent mEvent) { // TODO detect if mouseDow
 		}
 		break;
 	case ESTABLISHING:
+		if (firstLevel->getObjects()[billBoardIndex]->show) {
+			firstLevel->getObjects()[billBoardIndex]->show = false;			
+			SoundSystem::system().playSound(PICKUP, 0.5, ONCE);
+			break;
+		}
 		if (Button2D(glm::vec2(0.492188, 0.547222), glm::vec2(0.51875, 0.634722), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
 			transition(OUTSIDE);
+
 		}
 		break;
 	case KITCHEN:
