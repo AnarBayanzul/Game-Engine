@@ -42,6 +42,7 @@ public:
 	glm::vec3 getPosition();
 	void setRotation(quat rotationIn);
 	quat getRotation();
+	void rotate(quat rotationIn);
 	void setTextureElement(int TE);
 	const int getRenderElement();
 	void setRenderElement(int RE);

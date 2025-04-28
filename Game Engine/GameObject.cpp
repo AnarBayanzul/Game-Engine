@@ -97,6 +97,10 @@ quat GameObject::getRotation() {
 	return rotation;
 }
 
+void GameObject::rotate(quat rotationIn) {
+	rotation = rotationIn * rotation;
+}
+
 void GameObject::setTextureElement(int TE) {
 	textureElement = TE;
 }

@@ -988,6 +988,7 @@ void myGameManageClick(SDL_MouseButtonEvent mEvent) { // TODO detect if mouseDow
 	case MASTERBED:
 		if (Button2D(glm::vec2(0.116, 0.449), glm::vec2(0.319, 0.617), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
 			SoundSystem::system().playSound(STING, 0.4, ONCE);
+			SoundSystem::system().playSound(SERENADE, 0.2, ONCE);
 			// play sound
 			// fade in and out
 			firstLevel->addSAnimation(ScreenAnimation{
@@ -1113,6 +1114,9 @@ void myGameUpdate(float deltaSec) {
 	}
 	if (lastKey.type == SDL_KEYDOWN) {
 		switch (lastKey.keysym.sym) {
+		case SDLK_m:
+			activeCam = MOVE;
+			break;
 		case SDLK_w:
 			firstLevel->getCamera(MOVE)->move(glm::vec3(0.0, 0.0, -8 * deltaSec));
 			break;
@@ -1130,6 +1134,19 @@ void myGameUpdate(float deltaSec) {
 			break;
 		case SDLK_LSHIFT:
 			firstLevel->getCamera(MOVE)->move(glm::vec3(0.0, -8 * deltaSec, 0.0));
+			break;
+		case SDLK_LEFT:
+			firstLevel->getCamera(MOVE)->rotate(quat(glm::vec3(0.0, 1.0, 0.0), 8 * deltaSec));
+			break;
+		case SDLK_RIGHT:
+			firstLevel->getCamera(MOVE)->rotate(quat(glm::vec3(0.0, 1.0, 0.0), -8 * deltaSec));
+			break;
+		//case SDLK_UP:
+		//	firstLevel->getCamera(MOVE)->rotate(quat(glm::vec3(1.0, 0.0, 0.0), 8 * deltaSec));
+		//	break;
+		//case SDLK_DOWN:
+		//	firstLevel->getCamera(MOVE)->rotate(quat(glm::vec3(1.0, 0.0, 0.0), -8 * deltaSec));
+			break;
 		default:
 			break;
 		}
