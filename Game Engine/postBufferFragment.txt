@@ -73,7 +73,7 @@ void main()
         col += sampleTex[i] * kernel[i];
     }
 
-    //color = vec4(output.xyz, 1.0);
+    color = vec4(output.xyz, 1.0);
     //color = texture(diffuse, uv); // SKIP LIGHTS
     //color = vec4(col, 1.0); // kernel
     color = 0.75 * vec4(col, 1.0) + 0.40 * vec4(output.xyz, 1.0);
@@ -91,7 +91,7 @@ void main()
 
 
 
-    float bloomCutoff = 4.0;
+    float bloomCutoff = 1.0;
 
     if (dot(color.xyz, color.xyz) > bloomCutoff) {
         bloomOut = color.xyz;

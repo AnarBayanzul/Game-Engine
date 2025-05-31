@@ -988,7 +988,7 @@ void myGameManageClick(SDL_MouseButtonEvent mEvent) { // TODO detect if mouseDow
 	case MASTERBED:
 		if (Button2D(glm::vec2(0.116, 0.449), glm::vec2(0.319, 0.617), false).has(glm::vec2(mEvent.x / WIDTH, mEvent.y / HEIGHT))) {
 			SoundSystem::system().playSound(STING, 0.4, ONCE);
-			SoundSystem::system().playSound(SERENADE, 0.2, ONCE);
+			SoundSystem::system().playSound(SERENADE, 0.1, ONCE);
 			// play sound
 			// fade in and out
 			firstLevel->addSAnimation(ScreenAnimation{
