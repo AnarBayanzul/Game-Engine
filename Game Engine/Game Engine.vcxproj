@@ -75,30 +75,68 @@
     <ClInclude Include="vertexBone.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="armatureVertexShader.txt" />
-    <Text Include="billboard.txt" />
-    <Text Include="bloomFragment.txt" />
-    <Text Include="bloomVertex.txt" />
-    <Text Include="body.txt" />
-    <Text Include="celShadingFragment.txt" />
+    <Text Include="armatureVertexShader.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="billboard.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="bloomFragment.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="bloomVertex.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="body.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="celShadingFragment.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
     <Text Include="dabAnim.txt" />
-    <Text Include="defaultFragmentShader.txt" />
-    <Text Include="defaultVertexShader.txt" />
-    <Text Include="door.txt" />
-    <Text Include="floor.txt" />
-    <Text Include="hammer.txt" />
-    <Text Include="house.txt" />
-    <Text Include="key.txt" />
-    <Text Include="lambertianFragmentShader.txt" />
-    <Text Include="light.txt" />
+    <Text Include="defaultFragmentShader.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="defaultVertexShader.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="door.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="floor.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="hammer.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="house.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="key.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="lambertianFragmentShader.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="light.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
     <Text Include="mesh.txt" />
     <Text Include="monkeyHull.txt" />
     <Text Include="monkeyMesh.txt" />
     <Text Include="monkeySmoothNormal.txt" />
-    <Text Include="planks.txt" />
-    <Text Include="postBufferFragment.txt" />
-    <Text Include="postBufferVertex.txt" />
-    <Text Include="readme.txt" />
+    <Text Include="planks.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="postBufferFragment.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="postBufferVertex.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
+    <Text Include="readme.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
     <Text Include="test.txt" />
     <Text Include="texCube.txt" />
     <Text Include="uvCube.txt" />
@@ -112,35 +150,84 @@
     <None Include="planks.kra" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="doorTex.bmp" />
-    <Image Include="GO TO BED.bmp" />
-    <Image Include="grassTexture.bmp" />
-    <Image Include="grassTextureBright.bmp" />
-    <Image Include="hammerTex.bmp" />
-    <Image Include="houseTex.bmp" />
-    <Image Include="houseTexDirty.bmp" />
-    <Image Include="keyTex.bmp" />
+    <Image Include="doorTex.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="GO TO BED.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="grassTexture.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="grassTextureBright.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="hammerTex.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="houseTex.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="houseTexDirty.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="keyTex.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="lightTex.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
     <Image Include="ohMyGah.bmp" />
     <Image Include="ohTheMisery.bmp" />
-    <Image Include="planksDirty.bmp" />
-    <Image Include="planksTex.bmp" />
-    <Image Include="WELL-RESTED.bmp" />
+    <Image Include="planksDirty.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="planksTex.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="WELL-RESTED.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="angry.wav" />
-    <Media Include="creepy sting.wav" />
-    <Media Include="footsteps.wav" />
-    <Media Include="footstepsDeep.wav" />
-    <Media Include="locked.wav" />
-    <Media Include="night cricket.wav" />
+    <Media Include="angry.wav">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Media>
+    <Media Include="creepy sting.wav">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Media>
+    <Media Include="footsteps.wav">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Media>
+    <Media Include="footstepsDeep.wav">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Media>
+    <Media Include="locked.wav">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Media>
+    <Media Include="night cricket.wav">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Media>
     <Media Include="ohMyGah.wav" />
     <Media Include="ohTheMisery.wav" />
-    <Media Include="pickup.wav" />
-    <Media Include="plankRemove.wav" />
-    <Media Include="radio.wav" />
-    <Media Include="room ambience.wav" />
-    <Media Include="serenade.wav" />
-    <Media Include="unlock.wav" />
+    <Media Include="pickup.wav">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Media>
+    <Media Include="plankRemove.wav">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Media>
+    <Media Include="radio.wav">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Media>
+    <Media Include="room ambience.wav">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Media>
+    <Media Include="serenade.wav">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Media>
+    <Media Include="unlock.wav">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Media>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

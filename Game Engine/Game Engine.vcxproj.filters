@@ -181,13 +181,9 @@
     <Text Include="monkeyMesh.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="defaultVertexShader.txt" />
-    <Text Include="defaultFragmentShader.txt" />
-    <Text Include="celShadingFragment.txt" />
     <Text Include="monkeySmoothNormal.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="lambertianFragmentShader.txt" />
     <Text Include="texCube.txt">
       <Filter>Resource Files</Filter>
     </Text>
@@ -203,7 +199,6 @@
     <Text Include="body.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="armatureVertexShader.txt" />
     <Text Include="dabAnim.txt">
       <Filter>Resource Files</Filter>
     </Text>
@@ -216,10 +211,6 @@
     <Text Include="readme.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="postBufferVertex.txt" />
-    <Text Include="postBufferFragment.txt" />
-    <Text Include="bloomVertex.txt" />
-    <Text Include="bloomFragment.txt" />
     <Text Include="light.txt">
       <Filter>Resource Files</Filter>
     </Text>
@@ -238,6 +229,15 @@
     <Text Include="billboard.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="bloomFragment.txt" />
+    <Text Include="celShadingFragment.txt" />
+    <Text Include="defaultFragmentShader.txt" />
+    <Text Include="lambertianFragmentShader.txt" />
+    <Text Include="postBufferFragment.txt" />
+    <Text Include="postBufferVertex.txt" />
+    <Text Include="armatureVertexShader.txt" />
+    <Text Include="bloomVertex.txt" />
+    <Text Include="defaultVertexShader.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="game_engine_blender_mesh_export.py">
@@ -297,6 +297,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="WELL-RESTED.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="lightTex.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
