@@ -1162,7 +1162,7 @@ void myGameUpdate(float deltaSec) {
 // for mouse down event
 int mouseClick(SDL_MouseButtonEvent mEvent) {
 	// first detect if it is pickup click, or move click
-	std::cout << "glm::vec2(" << mEvent.x / WIDTH << ", " << mEvent.y / HEIGHT << "),\n"; // mouse position scaled by width and height
+	//std::cout << "glm::vec2(" << mEvent.x / WIDTH << ", " << mEvent.y / HEIGHT << "),\n"; // mouse position scaled by width and height
 
 	myGameManageClick(mEvent);
 

@@ -17,6 +17,6 @@ Sound::Sound(std::string fileName) {
 }
 
 Sound::~Sound() {
-	std::cout << "oh the misery";
+	//std::cout << "oh the misery";
 	SDL_FreeWAV(audio_buf);
 }

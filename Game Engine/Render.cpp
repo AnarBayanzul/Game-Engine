@@ -724,8 +724,10 @@ Render::Render(std::string vertFile, std::string fragFile, Camera* cameraIn) {
 
 Render::~Render() {
 	for (int i = 0; i < meshCount; ++i) {
+		if (meshes[i] != physicsMeshes[i]) {
+			physicsMeshes[i];
+		}
 		delete meshes[i];
-		delete physicsMeshes[i];
 	}
 	for (int i = 0; i < objectCount; ++i) {
 		delete objects[i];
