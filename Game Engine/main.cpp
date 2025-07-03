@@ -16,7 +16,7 @@ using namespace std::chrono_literals;
 
 int main(int argc, char** argv) {
 	// Preloop
-	SDL_Manager::sdl().spawnWindow("1. Hello SDL", WIDTH, HEIGHT, SDL_TRUE);
+	SDL_Manager::sdl().spawnWindow("Game Engine", WIDTH, HEIGHT, SDL_TRUE);
 	//SDL_Manager::sdl().spawnWindow("2. Second SDL", 200, 200, SDL_FALSE);
 	//SDL_Manager::sdl().spawnWindow("3. Third SDL", 200, 200, SDL_FALSE);
 

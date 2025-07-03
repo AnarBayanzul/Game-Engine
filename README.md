@@ -50,7 +50,6 @@ Various shader and post processing effects:
 - Bloom
 - Posterization
 - Edge-detecting and highlighting image processing kernel
-- 
 
 Audio Rendering:
 - Automatically manages audio device
@@ -69,3 +68,20 @@ Collisions and Event-Driven Interactions
 - Narrow-phase collision detection on convex shapes through Gilbert-Johnson Keerthi (GJK) algorithm
 	- Returns true on collision, minimum distance between objects on no collision
 - User provided function runs on collision between object types for event-driven interation.
+
+
+
+# Indie-style Horror Demo Game
+A minimalist point and click game where you navigate through a house and unlock rooms to go to sleep.
+
+## Shader Effects
+- Blinn-Phong and point lighting
+- Bloom
+- Posterization
+- Edge-highlighting kernel effect
+
+## Other
+- Background and event-based audio
+- 3D modeled-house, furniture, and small items
+- Scene transitions
+- Persistent inventory state
