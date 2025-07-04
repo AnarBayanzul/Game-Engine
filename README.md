@@ -1,7 +1,7 @@
 # Indie-style Horror Demo Game
 A minimalist point and click game where you navigate through a house and unlock rooms to go to sleep.
 
-**For more information on the game engine itself and features, scroll to [bottom.](https://github.com/AnarBayanzul/Game-Engine/tree/master?tab=readme-ov-file#game-engine)**
+**For more information on the game engine itself and features, scroll to [bottom.](https://github.com/AnarBayanzul/Game-Engine#game-engine)**
 
 A release for the demo game is available to play.
 
